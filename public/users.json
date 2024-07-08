@@ -1,0 +1,170 @@
+[
+  {
+    "id": "1",
+    "name": "John Doe",
+    "avatar": "https://randomuser.me/api/portraits/women/1.jpg",
+    "permissions": ["ADMIN", "PURCHASE ORDER"]
+  },
+  {
+    "id": "2",
+    "name": "Jane Smith",
+    "avatar": "https://www.vhv.rs/dpng/d/473-4739617_transparent-face-profile-png-round-profile-picture-png.png",
+    "permissions": ["STOCK IN", "PRODUCT MASTER"]
+  },
+  {
+    "id": "3",
+    "name": "Alice Johnson",
+    "avatar": null,
+    "permissions": ["PURCHASE ORDER", "STOCK OUT"]
+  },
+  {
+    "id": "4",
+    "name": "Bob Brown",
+    "avatar": null,
+    "permissions": ["STOCK IN", "PRODUCT MASTER", "ADMIN"]
+  },
+  {
+    "id": "5",
+    "name": "John Doe",
+    "avatar": "https://randomuser.me/api/portraits/women/1.jpg",
+    "permissions": ["ADMIN", "PURCHASE ORDER"]
+  },
+  {
+    "id": "6",
+    "name": "Jane Smith",
+    "avatar": "https://www.vhv.rs/dpng/d/473-4739617_transparent-face-profile-png-round-profile-picture-png.png",
+    "permissions": ["STOCK IN", "PRODUCT MASTER"]
+  },
+  {
+    "id": "8",
+    "name": "Alice Johnson",
+    "avatar": null,
+    "permissions": ["PURCHASE ORDER", "STOCK OUT"]
+  },
+  {
+    "id": "1",
+    "name": "John Doe",
+    "avatar": "https://randomuser.me/api/portraits/women/1.jpg",
+    "permissions": ["ADMIN", "PURCHASE ORDER"]
+  },
+  {
+    "id": "2",
+    "name": "Jane Smith",
+    "avatar": "https://www.vhv.rs/dpng/d/473-4739617_transparent-face-profile-png-round-profile-picture-png.png",
+    "permissions": ["STOCK IN", "PRODUCT MASTER"]
+  },
+  {
+    "id": "3",
+    "name": "Alice Johnson",
+    "avatar": null,
+    "permissions": ["PURCHASE ORDER", "STOCK OUT"]
+  },
+  {
+    "id": "4",
+    "name": "Bob Brown",
+    "avatar": null,
+    "permissions": ["STOCK IN", "PRODUCT MASTER", "ADMIN"]
+  },
+  {
+    "id": "5",
+    "name": "John Doe",
+    "avatar": "https://randomuser.me/api/portraits/women/1.jpg",
+    "permissions": ["ADMIN", "PURCHASE ORDER"]
+  },
+  {
+    "id": "6",
+    "name": "Jane Smith",
+    "avatar": "https://www.vhv.rs/dpng/d/473-4739617_transparent-face-profile-png-round-profile-picture-png.png",
+    "permissions": ["STOCK IN", "PRODUCT MASTER"]
+  },
+  {
+    "id": "8",
+    "name": "Alice Johnson",
+    "avatar": null,
+    "permissions": ["PURCHASE ORDER", "STOCK OUT"]
+  },
+  {
+    "id": "1",
+    "name": "John Doe",
+    "avatar": "https://randomuser.me/api/portraits/women/1.jpg",
+    "permissions": ["ADMIN", "PURCHASE ORDER"]
+  },
+  {
+    "id": "2",
+    "name": "Jane Smith",
+    "avatar": "https://www.vhv.rs/dpng/d/473-4739617_transparent-face-profile-png-round-profile-picture-png.png",
+    "permissions": ["STOCK IN", "PRODUCT MASTER"]
+  },
+  {
+    "id": "3",
+    "name": "Alice Johnson",
+    "avatar": null,
+    "permissions": ["PURCHASE ORDER", "STOCK OUT"]
+  },
+  {
+    "id": "4",
+    "name": "Bob Brown",
+    "avatar": null,
+    "permissions": ["STOCK IN", "PRODUCT MASTER", "ADMIN"]
+  },
+  {
+    "id": "5",
+    "name": "John Doe",
+    "avatar": "https://randomuser.me/api/portraits/women/1.jpg",
+    "permissions": ["ADMIN", "PURCHASE ORDER"]
+  },
+  {
+    "id": "6",
+    "name": "Jane Smith",
+    "avatar": "https://www.vhv.rs/dpng/d/473-4739617_transparent-face-profile-png-round-profile-picture-png.png",
+    "permissions": ["STOCK IN", "PRODUCT MASTER"]
+  },
+  {
+    "id": "8",
+    "name": "Alice Johnson",
+    "avatar": null,
+    "permissions": ["PURCHASE ORDER", "STOCK OUT"]
+  },
+  {
+    "id": "1",
+    "name": "John Doe",
+    "avatar": "https://randomuser.me/api/portraits/women/1.jpg",
+    "permissions": ["ADMIN", "PURCHASE ORDER"]
+  },
+  {
+    "id": "2",
+    "name": "Jane Smith",
+    "avatar": "https://www.vhv.rs/dpng/d/473-4739617_transparent-face-profile-png-round-profile-picture-png.png",
+    "permissions": ["STOCK IN", "PRODUCT MASTER"]
+  },
+  {
+    "id": "3",
+    "name": "Alice Johnson",
+    "avatar": null,
+    "permissions": ["PURCHASE ORDER", "STOCK OUT"]
+  },
+  {
+    "id": "4",
+    "name": "Bob Brown",
+    "avatar": null,
+    "permissions": ["STOCK IN", "PRODUCT MASTER", "ADMIN"]
+  },
+  {
+    "id": "5",
+    "name": "John Doe",
+    "avatar": "https://randomuser.me/api/portraits/women/1.jpg",
+    "permissions": ["ADMIN", "PURCHASE ORDER"]
+  },
+  {
+    "id": "6",
+    "name": "Jane Smith",
+    "avatar": "https://www.vhv.rs/dpng/d/473-4739617_transparent-face-profile-png-round-profile-picture-png.png",
+    "permissions": ["STOCK IN", "PRODUCT MASTER"]
+  },
+  {
+    "id": "8",
+    "name": "Alice Johnson",
+    "avatar": null,
+    "permissions": ["PURCHASE ORDER", "STOCK OUT"]
+  }
+]
