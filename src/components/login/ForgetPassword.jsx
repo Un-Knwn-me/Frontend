@@ -18,7 +18,11 @@ const ForgotPassword = () => {
   
       try {
         // Call your API to handle the forgot password functionality
-        const response = await apiService.post("/notifications/request", { userId });
+        const response = await apiService.post("/notifications/request", { userId }, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
   
         if (response.data.statusCode === 200) {
           alert("Password reset link sent to your email");

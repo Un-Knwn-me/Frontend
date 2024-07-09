@@ -27,7 +27,11 @@ const Brand = ({ searchQuery, isModalOpen, onClose }) => {
 
   const fetchAllBrands = async () => {
     try {
-      const response = await apiService.get("/brands/getall");
+      const response = await apiService.get("/brands/getall", {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       console.log(response.data);
       setData(response.data); // Assuming response.data contains an array of brands
     } catch (error) {
@@ -40,6 +44,10 @@ const Brand = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/brands/${id}`, {
         isActive: !isActive,
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
       if (response.status === 200) {
         fetchAllBrands();
@@ -67,6 +75,10 @@ const Brand = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/brands/${id}`, {
         brandName: editedBrandName,
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
       if (response.status === 200) {
         fetchAllBrands();
@@ -87,7 +99,11 @@ const Brand = ({ searchQuery, isModalOpen, onClose }) => {
   // handle delete button click
   const handleDelete = async (id) => {
     try {
-      const response = await apiService.delete(`/brands/${id}`);
+      const response = await apiService.delete(`/brands/${id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       console.log(response);
       if (response.status === 202) {
         fetchAllBrands();
@@ -118,6 +134,10 @@ const Brand = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.post("/brands/create", {
         brandName: singleBrands,
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
 
       if (response.status === 201) {
@@ -132,8 +152,12 @@ const Brand = ({ searchQuery, isModalOpen, onClose }) => {
   const handleAddBrand = async () => {
     try {
       if (inputValue.trim() !== "") {
-        await apiService.post("/brands/create", { Brand: inputValue.trim() });
-        setAddedBrands([...addedBrands, inputValue.trim()]); // Assuming response returns the created brand object with a property like `brandName`
+        await apiService.post("/brands/create", { Brand: inputValue.trim() }, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        setAddedBrands([...addedBrands, inputValue.trim()]); 
         setInputValue("");
       }
     } catch (error) {

@@ -27,7 +27,11 @@ const Category = ({ searchQuery, isModalOpen, onClose }) => {
 
   const fetchAllCategorys = async () => {
     try {
-      const response = await apiService.get("/categories/getall");
+      const response = await apiService.get("/categories/getall", {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       console.log(response.data);
       setData(response.data); 
     } catch (error) {
@@ -40,6 +44,10 @@ const Category = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/categories/${id}`, {
         isActive: !isActive,
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
       if (response.status === 200) {
         fetchAllCategorys();
@@ -66,6 +74,10 @@ const Category = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/categories/${id}`, {
         categoryName: editedCategoryName,
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
       if (response.status === 200) {
         fetchAllCategorys();
@@ -86,7 +98,11 @@ const Category = ({ searchQuery, isModalOpen, onClose }) => {
   // handle delete button click
   const handleDelete = async (id) => {
     try {
-      const response = await apiService.delete(`/categories/${id}`);
+      const response = await apiService.delete(`/categories/${id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       console.log(response);
       if (response.status === 202) {
         fetchAllCategorys();
@@ -117,6 +133,10 @@ const Category = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.post("/categories/create", {
         categoryName: singleCategory,
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
 
       if (response.status === 201) {

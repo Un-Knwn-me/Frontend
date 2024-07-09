@@ -5,9 +5,9 @@ const API_BASE_URL = 'http://167.71.231.139';
 
 const apiService = axios.create({
   baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  // headers: {
+  //   'Content-Type': 'application/json',
+  // },
 });
 
 // 167.71.231.139
