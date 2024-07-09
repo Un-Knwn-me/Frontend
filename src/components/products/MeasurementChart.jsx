@@ -90,10 +90,19 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
     }
   };
 
-  const handleStatusToggle = (index) => {
-    const newData = [...data];
-    newData[index].status = newData[index].status === 'active' ? 'inactive' : 'active';
-    setData(newData);
+  // handle toggle button click
+  const handleStatusToggle = async ({ id, isActive }) => {
+    try {
+      const response = await apiService.put(`/mesurementCharts/${id}`, {
+        isActive: !isActive,
+      });
+      if (response.status === 200) {
+        fetchAllMeasurements();
+      }
+    } catch (error) {
+      console.error(`Error toggling status for length with ID ${id}:`, error);
+      // Handle error as needed
+    }
   };
 
   const handleEditClick = (index) => {
@@ -124,10 +133,17 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
     }
   };
 
-  const handleDelete = () => {
-    const newData = data.filter((row) => !checkedIds.includes(row.id));
-    setData(newData);
-    setCheckedIds([]);
+  const handleDelete = async (id) => {
+    try {
+      const response = await apiService.delete(`/mesurementCharts/${id}`);
+      console.log(response);
+      if (response.status === 202) {
+        fetchAllMeasurements();
+      }
+    } catch (error) {
+      console.error("Error deleting length:", error);
+      // Handle error as needed
+    }
   };
 
   const handlePageChange = (direction) => {
@@ -208,14 +224,29 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
                 </td>
                 <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black flex-grow">
                   <button
-                    onClick={() => handleStatusToggle(startIndex + index)}
+                  onClick={() =>
+                    handleStatusToggle({ id: row.id, isActive: row.isActive })
+                  }
                     className="px-2 py-1 rounded-full"
                   >
-                    <div className='flex space-x-2'>
-                      <span className={row.status === 'active' ? 'text-green-600 w-20' : 'text-gray-300 w-20'}>
-                        {row.status === 'active' ? 'Active' : 'In-Active'}
+                    <div className="flex space-x-2">
+                      <span
+                        className={
+                          row.isActive === true
+                            ? "text-green-600 w-20"
+                            : "text-gray-300 w-20"
+                        }
+                      >
+                        {row.isActive === true ? "Active" : "In-Active"}
                       </span>
-                      <img src={row.status === 'active' ? toggleActiveIcon : toggleInactiveIcon} alt="Toggle Status" />
+                      <img
+                        src={
+                          row.isActive === true
+                            ? toggleActiveIcon
+                            : toggleInactiveIcon
+                        }
+                        alt="Toggle Status"
+                      />
                     </div>
                   </button>
                 </td>
