@@ -27,7 +27,11 @@ const Colors = ({ searchQuery, isModalOpen, onClose }) => {
 
   const fetchAllColors = async () => {
     try {
-      const response = await apiService.get("/colors/getall");
+      const response = await apiService.get("/colors/getall", {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response.data);
       setData(response.data); // Assuming response.data contains an array of brands
     } catch (error) {
@@ -41,6 +45,10 @@ const Colors = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/colors/${id}`, {
         isActive: !isActive,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllColors();
@@ -70,6 +78,10 @@ const Colors = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/colors/${id}`, {
         colorName: editedColorName,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllColors();
@@ -91,7 +103,11 @@ const Colors = ({ searchQuery, isModalOpen, onClose }) => {
   // handle delete button click
   const handleDelete = async (id) => {
     try {
-      const response = await apiService.delete(`/colors/${id}`);
+      const response = await apiService.delete(`/colors/${id}`, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response);
       if (response.status === 202) {
         fetchAllColors();
@@ -123,6 +139,10 @@ const Colors = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.post("/colors/create", {
         colorName: singleColors,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
 
       if (response.status === 201) {

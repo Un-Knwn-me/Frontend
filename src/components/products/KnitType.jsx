@@ -27,7 +27,11 @@ const KnitType = ({ searchQuery, isModalOpen, onClose }) => {
 
   const fetchAllKints = async () => {
     try {
-      const response = await apiService.get("/knitTypes/getall");
+      const response = await apiService.get("/knitTypes/getall", {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response.data);
       setData(response.data); // Assuming response.data contains an array of brands
     } catch (error) {
@@ -41,6 +45,10 @@ const KnitType = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/knitTypes/${id}`, {
         isActive: !isActive,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllKints();
@@ -68,6 +76,10 @@ const KnitType = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/knitTypes/${id}`, {
         knitType: editedKnitName,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllKints();
@@ -89,7 +101,11 @@ const KnitType = ({ searchQuery, isModalOpen, onClose }) => {
   // handle delete button click
   const handleDelete = async (id) => {
     try {
-      const response = await apiService.delete(`/knitTypes/${id}`);
+      const response = await apiService.delete(`/knitTypes/${id}`, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response);
       if (response.status === 202) {
         fetchAllKints();
@@ -122,6 +138,10 @@ const KnitType = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.post("/knitTypes/create", {
         knitType: singleKints,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
 
       if (response.status === 201) {

@@ -112,6 +112,7 @@ const AddProductModal = ({ show, onClose }) => {
   const [outerCortonDropdown, setOuterCortonDropdown] = useState(false);
   const [outerCortonSuggestions, setOuterCortonSuggestions] = useState([]);
   const [selectedOuterCortonId, setSelectedOuterCortonId] = useState(null);
+  const [selectedMesurement, setSelectedMesurement] = useState(null);
 
   //suggestion mesurement states
   const [mesurementDropdown, setMesurementDropdown] = useState(false);
@@ -259,7 +260,7 @@ const AddProductModal = ({ show, onClose }) => {
       if (gsmInput.length > 0) {
         const response = await apiService.get("/gsms/getall");
         const filteredGsms = response.data.filter((b) =>
-          b.gsmValue.startsWith(gsmInput)
+          b.gsmValue.toString().startsWith(gsmInput)
         );
         console.log(gsmInput, filteredGsms);
         setGsmSuggestions(filteredGsms);
@@ -605,7 +606,7 @@ const AddProductModal = ({ show, onClose }) => {
       if (innerInput.length > 0) {
         const response = await apiService.get("/innerPcs/getall");
         const filteredInners = response.data.filter((b) =>
-          b.number_of_pcs.toLowerCase().startsWith(innerInput.toLowerCase())
+          b.number_of_pcs.toString().toLowerCase().startsWith(innerInput.toLowerCase())
         );
         setInnerSuggestions(filteredInners);
       } else {
@@ -637,7 +638,7 @@ const AddProductModal = ({ show, onClose }) => {
         const response = await apiService.get("/outerCortons/getall");
         const filteredOuterCortons = response.data.filter((b) =>
           b.number_of_pcs
-            .toLowerCase()
+        .toString().toLowerCase()
             .startsWith(outerCortonInput.toLowerCase())
         );
         setOuterCortonSuggestions(filteredOuterCortons);
@@ -689,6 +690,7 @@ const AddProductModal = ({ show, onClose }) => {
 
   const handleMesurementChartSelect = (mesurementChart) => {
     setMeasurementChart(mesurementChart.name);
+    setSelectedMesurement(mesurementChart);
     setSelectedMesurementId(mesurementChart.id);
     setMesurementSuggestions([]);
     setMesurementDropdown(false);
@@ -754,7 +756,7 @@ const AddProductModal = ({ show, onClose }) => {
     const formData = new FormData();
     formData.append("reference_number", referenceNo);
     formData.append("style_id", styleNo);
-    formData.append("category_id", 1); // Example, update as needed
+    formData.append("category_id", categorie);
     formData.append("brand_id", brand);
     formData.append("fabric_id", fabric);
     formData.append("fabric_finish_id", fabricFinish);
@@ -1320,31 +1322,19 @@ const AddProductModal = ({ show, onClose }) => {
               </div>
 
               <div className="flex flex-col gap-2 relative">
-                <label className="font-semibold" htmlFor="measurementChart">
+                <label className="font-semibold" htmlFor="mesurementChart">
                   Measurement Chart:
                 </label>
                 <input
                   type="text"
-                  id="measurementChart"
+                  id="mesurementChart"
                   value={measurementChart}
                   onChange={handleMesurementChartChange}
-                  className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
+                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter Measurement Chart"
                 />
-                {/* <label
-                  htmlFor="fileInput"
-                  className="cursor-pointer text-blue-500 underline"
-                >
-                  Upload Picture
-                </label>
-                <input
-                  type="file"
-                  id="fileInput"
-                  className="hidden"
-                  onChange={(e) => handleFileUpload(e)}
-                /> */}
                 {mesurementDropdown && measurementChart && (
-                  <ul className="absolute top-16 left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
+                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
                     {mesurementSuggestions.map((item) => (
                       <li
                         key={item.id}
@@ -1357,6 +1347,15 @@ const AddProductModal = ({ show, onClose }) => {
                   </ul>
                 )}
               </div>
+          {selectedMesurement && selectedMesurement.sample_size_file && (
+            <div className="flex justify-center mt-4">
+              <img
+                src={selectedMesurement.sample_size_file}
+                alt="Measurement Chart"
+                className="max-w-full h-auto rounded-md"
+              />
+            </div>
+          )}
             </div>
             {/* <button className="bg-sky-600 px-28 py-2 text-white absolute bottom-5 right-40 rounded-lg font-bold text-sm" >Add Products</button> */}
             <div className="mt-10 flex justify-center gap-4">

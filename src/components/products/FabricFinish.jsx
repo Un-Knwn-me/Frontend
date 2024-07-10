@@ -27,7 +27,11 @@ const FabricFinish = ({ searchQuery, isModalOpen, onClose }) => {
 
   const fetchAllfabricFinishes = async () => {
     try {
-      const response = await apiService.get("/fabricFinishes/getall");
+      const response = await apiService.get("/fabricFinishes/getall", {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       setData(response.data); // Assuming response.data contains an array of brands
     } catch (error) {
       console.error("Error fetching fabricFinishes:", error);
@@ -40,6 +44,10 @@ const FabricFinish = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/fabricFinishes/${id}`, {
         isActive: !isActive,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllfabricFinishes();
@@ -66,6 +74,10 @@ const FabricFinish = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/fabricFinishes/${id}`, {
         fabricFinishName: editedfabricFinishName,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllfabricFinishes();
@@ -86,7 +98,11 @@ const FabricFinish = ({ searchQuery, isModalOpen, onClose }) => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await apiService.delete(`/fabricFinishes/${id}`);
+      const response = await apiService.delete(`/fabricFinishes/${id}`, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response);
       if (response.status === 202) {
         fetchAllfabricFinishes();
@@ -118,6 +134,10 @@ const FabricFinish = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.post("/fabricFinishes/create", {
         fabricFinishName: singleFabricFinishes,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 201) {
         setSingleFabricFinishes("");

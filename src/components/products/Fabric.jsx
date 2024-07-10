@@ -27,7 +27,11 @@ const Fabric = ({ searchQuery, isModalOpen, onClose }) => {
 
   const fetchAllfabrics = async () => {
     try {
-      const response = await apiService.get("/fabrics/getall");
+      const response = await apiService.get("/fabrics/getall", {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response.data);
       setData(response.data); // Assuming response.data contains an array of brands
     } catch (error) {
@@ -40,6 +44,10 @@ const Fabric = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/fabrics/${id}`, {
         isActive: !isActive,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllfabrics();
@@ -67,6 +75,10 @@ const Fabric = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/fabrics/${id}`, {
         fabricName: editedFabricName,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllfabrics();
@@ -87,7 +99,11 @@ const Fabric = ({ searchQuery, isModalOpen, onClose }) => {
     // handle delete button click
     const handleDelete = async (id) => {
       try {
-        const response = await apiService.delete(`/fabrics/${id}`);
+        const response = await apiService.delete(`/fabrics/${id}`, {
+          headers:{
+            'Content-Type': 'application/json',
+          }
+        });
         console.log(response);
         if (response.status === 202) {
           fetchAllfabrics();
@@ -119,6 +135,10 @@ const Fabric = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.post("/fabrics/create", {
         fabricName: singleFabrics,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 201) {
         setSingleFabrics("");

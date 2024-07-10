@@ -29,7 +29,11 @@ const Neck = ({ searchQuery, isModalOpen, onClose }) => {
 
   const fetchAllNecks = async () => {
     try {
-      const response = await apiService.get("/necks/getall");
+      const response = await apiService.get("/necks/getall", {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response.data);
       setData(response.data); // Assuming response.data contains an array of brands
     } catch (error) {
@@ -45,6 +49,10 @@ const Neck = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/necks/${id}`, {
         isActive: !isActive,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllNecks();
@@ -71,6 +79,10 @@ const Neck = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/necks/${id}`, {
         neckType: editedNeck,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllNecks();
@@ -91,7 +103,11 @@ const Neck = ({ searchQuery, isModalOpen, onClose }) => {
 // handle delete button click
 const handleDelete = async (id) => {
   try {
-    const response = await apiService.delete(`/necks/${id}`);
+    const response = await apiService.delete(`/necks/${id}`, {
+      headers:{
+        'Content-Type': 'application/json',
+      }
+    });
     console.log(response);
     if (response.status === 202) {
       fetchAllNecks();
@@ -123,6 +139,10 @@ const handleDelete = async (id) => {
     try {
       const response = await apiService.post("/necks/create", {
         neckType: singleNecks,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
 
       if (response.status === 201) {

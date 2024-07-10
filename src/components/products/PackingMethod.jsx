@@ -27,7 +27,11 @@ const PackingMethod = ({ searchQuery, isModalOpen, onClose }) => {
 
   const fetchAllPacking = async () => {
     try {
-      const response = await apiService.get("/packingMethods/getall");
+      const response = await apiService.get("/packingMethods/getall", {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response.data);
       setData(response.data); // Assuming response.data contains an array of brands
     } catch (error) {
@@ -40,6 +44,10 @@ const PackingMethod = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/packingMethods/${id}`, {
         isActive: !isActive,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllPacking();
@@ -69,6 +77,10 @@ const PackingMethod = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/packingMethods/${id}`, {
         packingType: editedPacking,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllPacking();
@@ -97,7 +109,11 @@ const PackingMethod = ({ searchQuery, isModalOpen, onClose }) => {
   // handle delete button click
   const handleDelete = async (id) => {
     try {
-      const response = await apiService.delete(`/packingMethods/${id}`);
+      const response = await apiService.delete(`/packingMethods/${id}`, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response);
       if (response.status === 202) {
         fetchAllPacking();
@@ -128,6 +144,10 @@ const PackingMethod = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.post("/packingMethods/create", {
         packingType: singlePacking,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
 
       if (response.status === 201) {

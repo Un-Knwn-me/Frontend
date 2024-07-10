@@ -27,7 +27,11 @@ const PiecesPerOuterCarton = ({ searchQuery, isModalOpen, onClose }) => {
 
   const fetchAllCarton = async () => {
     try {
-      const response = await apiService.get("/outerCortons/getall");
+      const response = await apiService.get("/outerCortons/getall", {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response.data);
       setData(response.data); // Assuming response.data contains an array of brands
     } catch (error) {
@@ -40,6 +44,10 @@ const PiecesPerOuterCarton = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/outerCortons/${id}`, {
         isActive: !isActive,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllCarton();
@@ -69,6 +77,10 @@ const PiecesPerOuterCarton = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/outerCortons/${id}`, {
         number_of_pcs: editedCarton,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllCarton();
@@ -97,7 +109,11 @@ const PiecesPerOuterCarton = ({ searchQuery, isModalOpen, onClose }) => {
   // handle delete button click
   const handleDelete = async (id) => {
     try {
-      const response = await apiService.delete(`/outerCortons/${id}`);
+      const response = await apiService.delete(`/outerCortons/${id}`, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response);
       if (response.status === 202) {
         fetchAllCarton();
@@ -127,6 +143,10 @@ const PiecesPerOuterCarton = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.post("/outerCortons/create", {
         number_of_pcs: singleCarton,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
 
       if (response.status === 201) {

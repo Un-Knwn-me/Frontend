@@ -27,7 +27,11 @@ const GSM = ({ searchQuery, isModalOpen, onClose }) => {
 
   const fetchAllgsms = async () => {
     try {
-      const response = await apiService.get("/gsms/getall");
+      const response = await apiService.get("/gsms/getall", {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       setData(response.data); // Assuming response.data contains an array of brands
     } catch (error) {
       console.error("Error fetching gsms:", error);
@@ -39,6 +43,10 @@ const GSM = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/gsms/${id}`, {
         isActive: !isActive,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllgsms();
@@ -65,6 +73,10 @@ const GSM = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/gsms/${id}`, {
         gsmValue: editedGsmName,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllgsms();
@@ -84,7 +96,11 @@ const GSM = ({ searchQuery, isModalOpen, onClose }) => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await apiService.delete(`/gsms/${id}`);
+      const response = await apiService.delete(`/gsms/${id}`, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response);
       if (response.status === 202) {
         fetchAllgsms();
@@ -115,6 +131,10 @@ const GSM = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.post("/gsms/create", {
         gsmValue: singleGsms,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
 
       if (response.status === 201) {

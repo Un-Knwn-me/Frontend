@@ -27,7 +27,11 @@ const Decorations = ({ searchQuery, isModalOpen, onClose }) => {
 
   const fetchAllDecorations = async () => {
     try {
-      const response = await apiService.get("/decorations/getall");
+      const response = await apiService.get("/decorations/getall", {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response.data);
       setData(response.data); // Assuming response.data contains an array of brands
     } catch (error) {
@@ -41,6 +45,10 @@ const Decorations = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/decorations/${id}`, {
         isActive: !isActive,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllDecorations();
@@ -71,6 +79,10 @@ const Decorations = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/decorations/${id}`, {
         decorationName: editedDecorationName,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllDecorations();
@@ -91,7 +103,11 @@ const Decorations = ({ searchQuery, isModalOpen, onClose }) => {
   // handle delete button click
   const handleDelete = async (id) => {
     try {
-      const response = await apiService.delete(`/decorations/${id}`);
+      const response = await apiService.delete(`/decorations/${id}`, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response);
       if (response.status === 202) {
         fetchAllDecorations();
@@ -123,6 +139,10 @@ const Decorations = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.post("/decorations/create", {
         decorationName: singleDecorations,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
 
       if (response.status === 201) {

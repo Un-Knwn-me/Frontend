@@ -28,7 +28,11 @@ const Length = ({ searchQuery, isModalOpen, onClose }) => {
 
   const fetchAllLengths = async () => {
     try {
-      let response = await apiService.get("/lengths/getall");
+      let response = await apiService.get("/lengths/getall", {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response.data);
       setData(response.data);
     } catch (err) {
@@ -42,6 +46,10 @@ const Length = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/lengths/${id}`, {
         isActive: !isActive,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllLengths();
@@ -68,6 +76,10 @@ const Length = ({ searchQuery, isModalOpen, onClose }) => {
   try {
     const response = await apiService.put(`/lengths/${id}`, {
       lengthType: editedLength,
+    }, {
+      headers:{
+        'Content-Type': 'application/json',
+      }
     });
     if (response.status === 200) {
       fetchAllLengths();
@@ -89,7 +101,11 @@ const Length = ({ searchQuery, isModalOpen, onClose }) => {
   // handle delete button click
   const handleDelete = async (id) => {
     try {
-      const response = await apiService.delete(`/lengths/${id}`);
+      const response = await apiService.delete(`/lengths/${id}`, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response);
       if (response.status === 202) {
         fetchAllLengths();
@@ -122,6 +138,10 @@ const Length = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.post("/lengths/create", {
         lengthType: singleLength,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
 
       if (response.status === 201) {

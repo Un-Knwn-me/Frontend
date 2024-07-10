@@ -27,7 +27,11 @@ const StitchDetails = ({ searchQuery, isModalOpen, onClose }) => {
 
   const fetchAllStitch = async () => {
     try {
-      const response = await apiService.get("/stitchDetails/getall");
+      const response = await apiService.get("/stitchDetails/getall", {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response.data);
       setData(response.data); // Assuming response.data contains an array of brands
     } catch (error) {
@@ -40,6 +44,10 @@ const StitchDetails = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/stitchDetails/${id}`, {
         isActive: !isActive,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllStitch();
@@ -69,6 +77,10 @@ const StitchDetails = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/stitchDetails/${id}`, {
         stictchDetail: editedStitch,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllStitch();
@@ -89,7 +101,11 @@ const StitchDetails = ({ searchQuery, isModalOpen, onClose }) => {
   // handle delete button click
   const handleDelete = async (id) => {
     try {
-      const response = await apiService.delete(`/stitchDetails/${id}`);
+      const response = await apiService.delete(`/stitchDetails/${id}`, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response);
       if (response.status === 202) {
         fetchAllStitch();
@@ -124,6 +140,10 @@ const StitchDetails = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.post("/stitchDetails/create", {
         stictchDetail: singleStitch,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
 
       if (response.status === 201) {

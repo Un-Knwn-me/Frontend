@@ -26,7 +26,11 @@ const PrintOrEmb = ({ searchQuery, isModalOpen, onClose }) => {
 
   const fetchAllPrints = async () => {
     try {
-      const response = await apiService.get("/printEmb/getall");
+      const response = await apiService.get("/printEmb/getall", {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response.data);
       setData(response.data); // Assuming response.data contains an array of brands
     } catch (error) {
@@ -39,6 +43,10 @@ const PrintOrEmb = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/printEmb/${id}`, {
         isActive: !isActive,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllPrints();
@@ -65,6 +73,10 @@ const PrintOrEmb = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/printEmb/${id}`, {
         printType: editedPrint,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllPrints();
@@ -85,7 +97,11 @@ const PrintOrEmb = ({ searchQuery, isModalOpen, onClose }) => {
   // handle delete button click
   const handleDelete = async (id) => {
     try {
-      const response = await apiService.delete(`/printEmb/${id}`);
+      const response = await apiService.delete(`/printEmb/${id}`, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response);
       if (response.status === 202) {
         fetchAllPrints();
@@ -116,6 +132,10 @@ const PrintOrEmb = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.post("/printEmb/create", {
         printType: singlePrints,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
 
       if (response.status === 201) {

@@ -28,7 +28,11 @@ const Sleeve = ({ searchQuery, isModalOpen, onClose }) => {
 
   const fetchAllSleeves = async () => {
     try {
-      const response = await apiService.get("/sleeves/getall");
+      const response = await apiService.get("/sleeves/getall", {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response.data);
       setData(response.data); // Assuming response.data contains an array of brands
     } catch (error) {
@@ -42,6 +46,10 @@ const Sleeve = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/sleeves/${id}`, {
         isActive: !isActive,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllSleeves();
@@ -69,6 +77,10 @@ const handleEditClick = ({ id, sleeveName }) => {
     try {
       const response = await apiService.put(`/sleeves/${id}`, {
         sleeveName: editedSleeveName,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllSleeves();
@@ -91,7 +103,11 @@ const handleEditClick = ({ id, sleeveName }) => {
    // handle delete button click
    const handleDelete = async (id) => {
     try {
-      const response = await apiService.delete(`/sleeves/${id}`);
+      const response = await apiService.delete(`/sleeves/${id}`, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response);
       if (response.status === 202) {
         fetchAllSleeves();
@@ -122,6 +138,10 @@ const handleEditClick = ({ id, sleeveName }) => {
     try {
       const response = await apiService.post("/sleeves/create", {
         sleeveName: singleSleeves,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
 
       if (response.status === 201) {

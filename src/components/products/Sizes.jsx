@@ -72,9 +72,9 @@ const Sizes = ({ searchQuery, isModalOpen, onClose }) => {
           'Content-Type': 'application/json',
         },
       })
-      console.log('====================================');
-      console.log(response.data);
-      console.log('====================================');
+      if (response.status === 201) {
+        fetchAllSizes();
+      }
     } catch (error) {
       console.error('Error creating sizes:', error);
     }
@@ -98,6 +98,10 @@ const Sizes = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/sizes/${id}`, {
         isActive: !isActive,
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
       if (response.status === 200) {
         fetchAllSizes();
@@ -119,6 +123,10 @@ const Sizes = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/sizes${id}`, {
         type_name: editedSizes,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllSizes();
@@ -145,7 +153,11 @@ const Sizes = ({ searchQuery, isModalOpen, onClose }) => {
   // handle delete button click
   const handleDelete = async (id) => {
     try {
-      const response = await apiService.delete(`/sizes/${id}`);
+      const response = await apiService.delete(`/sizes/${id}`, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response);
       if (response.status === 202) {
         fetchAllSizes();

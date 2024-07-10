@@ -32,7 +32,11 @@ const StyleNo = ({ searchQuery, isModalOpen, onClose }) => {
 
   const fetchAllStyles = async () => {
     try {
-      const response = await apiService.get("/styles/getall");
+      const response = await apiService.get("/styles/getall", {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response.data);
       setData(response.data);
     } catch (error) {
@@ -47,6 +51,10 @@ const StyleNo = ({ searchQuery, isModalOpen, onClose }) => {
         style_no: singleStyle,
         short_description: oneShortDescreption,
         full_description: oneLongDescription,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
 
       if (response.status === 201) {
@@ -65,6 +73,10 @@ const StyleNo = ({ searchQuery, isModalOpen, onClose }) => {
       const response = await apiService.put(`/styles/${id}`, {
         isActive: !isActive,
         style_no: styleNo,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllStyles();
@@ -92,6 +104,10 @@ const StyleNo = ({ searchQuery, isModalOpen, onClose }) => {
         style_no: editedStyleNo,
         short_description: editedShortDescription,
         full_description: editedLongDescription,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllStyles();
@@ -111,7 +127,11 @@ const StyleNo = ({ searchQuery, isModalOpen, onClose }) => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await apiService.delete(`/styles/${id}`);
+      const response = await apiService.delete(`/styles/${id}`, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response);
       if (response.status === 202) {
         fetchAllStyles();
@@ -141,7 +161,11 @@ const StyleNo = ({ searchQuery, isModalOpen, onClose }) => {
   const handleAddBrand = async () => {
     try {
       if (inputValue.trim() !== "") {
-        await apiService.post("/brands/create", { Brand: inputValue.trim() });
+        await apiService.post("/brands/create", { Brand: inputValue.trim() }, {
+          headers:{
+            'Content-Type': 'application/json',
+          }
+        });
         setAddedBrands([...addedBrands, inputValue.trim()]); // Assuming response returns the created brand object with a property like `brandName`
         setInputValue("");
       }

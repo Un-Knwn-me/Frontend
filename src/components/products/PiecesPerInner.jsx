@@ -27,7 +27,11 @@ const PiecesPerInner = ({ searchQuery, isModalOpen, onClose }) => {
 
   const fetchAllPiecesPerInner = async () => {
     try {
-      const response = await apiService.get("/innerPcs/getall");
+      const response = await apiService.get("/innerPcs/getall", {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response.data);
       setData(response.data); // Assuming response.data contains an array of brands
     } catch (error) {
@@ -40,6 +44,10 @@ const PiecesPerInner = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/innerPcs/${id}`, {
         isActive: !isActive,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllPiecesPerInner();
@@ -66,6 +74,10 @@ const PiecesPerInner = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.put(`/innerPcs/${id}`, {
         number_of_pcs: editedPiecesPerInner,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
       if (response.status === 200) {
         fetchAllPiecesPerInner();
@@ -94,7 +106,11 @@ const PiecesPerInner = ({ searchQuery, isModalOpen, onClose }) => {
   // handle delete button click
   const handleDelete = async (id) => {
     try {
-      const response = await apiService.delete(`/innerPcs/${id}`);
+      const response = await apiService.delete(`/innerPcs/${id}`, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(response);
       if (response.status === 202) {
         fetchAllPiecesPerInner();
@@ -125,6 +141,10 @@ const PiecesPerInner = ({ searchQuery, isModalOpen, onClose }) => {
     try {
       const response = await apiService.post("/innerPcs/create", {
         number_of_pcs: singlePiecesPerInner,
+      }, {
+        headers:{
+          'Content-Type': 'application/json',
+        }
       });
 
       if (response.status === 201) {
