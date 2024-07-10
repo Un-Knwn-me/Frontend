@@ -6,7 +6,7 @@ import apiService from "../../../apiService";
 
 const AddProductModal = ({ show, onClose }) => {
   const [styleNo, setStyleNo] = useState("");
-  const [referenceNo] = useState("");
+  const [referenceNo, setReferenceNo] = useState("");
   const [brand, setBrand] = useState("");
   const [fabric, setFabric] = useState("");
   const [fabricFinish, setFabricFinish] = useState("");
@@ -16,13 +16,12 @@ const AddProductModal = ({ show, onClose }) => {
   const [sizes, setSizes] = useState("");
   const [decorations, setDecorations] = useState("");
   const [printOrEmbName, setPrintOrEmbName] = useState("");
-  const [shortDescription, setShortDescription] = useState("");
-  const [fullDescription, setFullDescription] = useState("");
   const [stitchDetails, setStitchDetails] = useState("");
   const [neck, setNeck] = useState("");
   const [sleeve, setSleeve] = useState("");
   const [length, setLength] = useState("");
   const [measurementChart, setMeasurementChart] = useState("");
+  const [selectedMeasurementImage, setSelectedMeasurementImage] = useState(null);
   const [packingMethod, setPackingMethod] = useState("");
   const [inner, setInner] = useState("");
   const [outerCorton, setOuterCorton] = useState("");
@@ -125,6 +124,7 @@ const AddProductModal = ({ show, onClose }) => {
   const [selectedCategorieId, setSelectedCategorieId] = useState(null);
 
   const [images, setImages] = useState([]);
+  const [previews, setPreviews] = useState([]);
 
   const [loading, setLoading] = useState(false);
 
@@ -469,7 +469,7 @@ const AddProductModal = ({ show, onClose }) => {
 
   const handleStitchDetailSelect = (stitchDetails) => {
     setStitchDetails(stitchDetails.stictchDetail);
-    setSelectedBrandId(stitchDetails.id);
+    setSelectedStitchDetailId(stitchDetails.id);
     setStitchDetailSuggestions([]);
     setStitchDetailDropdown(false);
   };
@@ -606,7 +606,10 @@ const AddProductModal = ({ show, onClose }) => {
       if (innerInput.length > 0) {
         const response = await apiService.get("/innerPcs/getall");
         const filteredInners = response.data.filter((b) =>
-          b.number_of_pcs.toString().toLowerCase().startsWith(innerInput.toLowerCase())
+          b.number_of_pcs
+            .toString()
+            .toLowerCase()
+            .startsWith(innerInput.toLowerCase())
         );
         setInnerSuggestions(filteredInners);
       } else {
@@ -638,7 +641,8 @@ const AddProductModal = ({ show, onClose }) => {
         const response = await apiService.get("/outerCortons/getall");
         const filteredOuterCortons = response.data.filter((b) =>
           b.number_of_pcs
-        .toString().toLowerCase()
+            .toString()
+            .toLowerCase()
             .startsWith(outerCortonInput.toLowerCase())
         );
         setOuterCortonSuggestions(filteredOuterCortons);
@@ -690,6 +694,7 @@ const AddProductModal = ({ show, onClose }) => {
 
   const handleMesurementChartSelect = (mesurementChart) => {
     setMeasurementChart(mesurementChart.name);
+    setSelectedMeasurementImage(mesurementChart.sample_size_file);
     setSelectedMesurement(mesurementChart);
     setSelectedMesurementId(mesurementChart.id);
     setMesurementSuggestions([]);
@@ -751,29 +756,51 @@ const AddProductModal = ({ show, onClose }) => {
   // Configuration options: https://www.bytescale.com/docs/upload-widget/frameworks/react#customize
   const options = { multi: true };
 
+  // Image uploader
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length + images.length > 13) {
+      alert("You can only upload up to 13 images.");
+      return;
+    }
+
+    setImages([...images, ...files]);
+
+    const newPreviews = files.map((file) => URL.createObjectURL(file));
+    setPreviews([...previews, ...newPreviews]);
+  };
+
+  const removeImage = (index) => {
+    const newImages = images.filter((_, i) => i !== index);
+    setImages(newImages);
+
+    const newPreviews = previews.filter((_, i) => i !== index);
+    setPreviews(newPreviews);
+  };
+
   const handleSubmit = async () => {
     setLoading(true);
     const formData = new FormData();
     formData.append("reference_number", referenceNo);
-    formData.append("style_id", styleNo);
-    formData.append("category_id", categorie);
-    formData.append("brand_id", brand);
-    formData.append("fabric_id", fabric);
-    formData.append("fabric_finish_id", fabricFinish);
-    formData.append("gsm_id", gsm);
-    formData.append("knit_type_id", knitType);
-    formData.append("color_id", colors);
-    formData.append("size_id", sizes);
-    formData.append("decoration_id", decorations);
-    formData.append("print_emb_id", printOrEmbName);
-    formData.append("stitch_detail_id", stitchDetails);
-    formData.append("neck_id", neck);
-    formData.append("sleeve_id", sleeve);
-    formData.append("length_id", length);
-    formData.append("packing_method_id", packingMethod);
-    formData.append("inner_pcs_id", inner);
-    formData.append("outer_carton_pcs_id", outerCorton);
-    formData.append("measurement_chart_id", measurementChart);
+    formData.append("style_id", selectedStyleId);
+    formData.append("category_id", selectedCategorieId);
+    formData.append("brand_id", selectedBrandId);
+    formData.append("fabric_id", selectedFabricId);
+    formData.append("fabric_finish_id", selectedFabricFinishId);
+    formData.append("gsm_id", selectedGsmId);
+    formData.append("knit_type_id", selectedKnitId);
+    formData.append("color_id", selectedColorId);
+    formData.append("size_id", selectedSizeId);
+    formData.append("decoration_id", selecteDecorationId);
+    formData.append("print_emb_id", selectedPrintId);
+    formData.append("stitch_detail_id", selectedStitchDetailId);
+    formData.append("neck_id", selectedNeckId);
+    formData.append("sleeve_id", selectedSleeveId);
+    formData.append("length_id", selectedLengthId);
+    formData.append("packing_method_id", selectedPackingId);
+    formData.append("inner_pcs_id", selectedInnerId);
+    formData.append("outer_carton_pcs_id", selectedOuterCortonId);
+    formData.append("measurement_chart_id", selectedMesurementId);
     formData.append("is_Stocked", false);
     images.forEach((image, index) => {
       formData.append(`images[${index}]`, image);
@@ -827,7 +854,8 @@ const AddProductModal = ({ show, onClose }) => {
                   Choose up to 13 images
                 </span>
               </div>
-              <div className="flex flex-wrap gap-4">
+
+              {/* <div className="flex flex-wrap gap-4">
                 <UploadButton
                   uploader={uploader}
                   options={options}
@@ -847,6 +875,38 @@ const AddProductModal = ({ show, onClose }) => {
                     <button onClick={onClick}>Upload a file...</button>
                   )}
                 </UploadButton>
+              </div> */}
+
+              <div className="min-h-40 bg-gray-100 flex items-center justify-center">
+                <div className="container mx-auto px-4 py-4">
+                  <div className="mb-4">
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="block w-full text-sm text-gray-500 file:mr-2 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
+                    {previews.map((preview, index) => (
+                      <div key={index} className="relative">
+                        <img
+                          src={preview}
+                          alt={`Preview ${index}`}
+                          className="w-full h-32 object-cover rounded-lg shadow-md"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeImage(index)}
+                          className="absolute top-2 right-2 bg-red-600 text-white rounded-full px-1.5 focus:outline-none"
+                        >
+                          &times;
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
             <div className="mt-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -875,6 +935,20 @@ const AddProductModal = ({ show, onClose }) => {
                     ))}
                   </ul>
                 )}
+              </div>
+
+              <div className="flex flex-col gap-2 relative">
+                <label className="font-semibold" htmlFor="RefNo">
+                  Reference Number:
+                </label>
+                <input
+                  type="text"
+                  id="referenceNo"
+                  value={referenceNo}
+                  onChange={(e) => setReferenceNo(e.target.value)}
+                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  placeholder="Enter Reference Number"
+                />
               </div>
 
               <div className="flex flex-col gap-2 relative">
@@ -1325,16 +1399,25 @@ const AddProductModal = ({ show, onClose }) => {
                 <label className="font-semibold" htmlFor="mesurementChart">
                   Measurement Chart:
                 </label>
-                <input
-                  type="text"
-                  id="mesurementChart"
-                  value={measurementChart}
-                  onChange={handleMesurementChartChange}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
-                  placeholder="Enter Measurement Chart"
-                />
+                <div className="flex items-center gap-4">
+                  <input
+                    type="text"
+                    id="mesurementChart"
+                    value={measurementChart}
+                    onChange={handleMesurementChartChange}
+                    className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                    placeholder="Enter Measurement Chart"
+                  />
+                  {selectedMeasurementImage && (
+                    <img
+                      src={selectedMeasurementImage}
+                      alt="Measurement Chart Preview"
+                      className="w-16 h-16 object-cover rounded-md"
+                    />
+                  )}
+                </div>
                 {mesurementDropdown && measurementChart && (
-                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
+                  <ul className="absolute top-16 left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
                     {mesurementSuggestions.map((item) => (
                       <li
                         key={item.id}
@@ -1347,15 +1430,16 @@ const AddProductModal = ({ show, onClose }) => {
                   </ul>
                 )}
               </div>
-          {selectedMesurement && selectedMesurement.sample_size_file && (
-            <div className="flex justify-center mt-4">
-              <img
-                src={selectedMesurement.sample_size_file}
-                alt="Measurement Chart"
-                className="max-w-full h-auto rounded-md"
-              />
-            </div>
-          )}
+
+              {selectedMesurement && selectedMesurement.sample_size_file && (
+                <div className="flex justify-center mt-4">
+                  <img
+                    src={selectedMesurement.sample_size_file}
+                    alt="Measurement Chart"
+                    className="max-w-full h-auto rounded-md"
+                  />
+                </div>
+              )}
             </div>
             {/* <button className="bg-sky-600 px-28 py-2 text-white absolute bottom-5 right-40 rounded-lg font-bold text-sm" >Add Products</button> */}
             <div className="mt-10 flex justify-center gap-4">

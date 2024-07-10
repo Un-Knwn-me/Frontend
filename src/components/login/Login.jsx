@@ -19,12 +19,8 @@ const Login = () => {
 
   const login = async (e) => {
     e.preventDefault();
-
-    // Get email and password from the form
-    const email = e.target.email.value;
-    const password = e.target.password.value;
-
-    // Validate email and password
+    try {
+    //   // Validate email and password
     // if (!email.trim() || !password.trim()) {
     //   alert("Please enter both email and password");
     //   return;
@@ -34,9 +30,9 @@ const Login = () => {
     //   alert("Please enter a valid email address");
     //   return;
     // }
-
-    try {
-      console.log(email, password);
+      // Get email and password from the form
+      const email = e.target.email.value;
+      const password = e.target.password.value;
       // Use the apiService to make the API request
       const response = await apiService.post("/users/signin", {
         userVerify: email,

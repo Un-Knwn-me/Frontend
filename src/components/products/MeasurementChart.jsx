@@ -22,6 +22,8 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
   const [addedStyles, setAddedStyles] = useState([]);
   const [isSecondModalOpen, setIsSecondModalOpen] = useState(false);
   const [sizes, setSizes] = useState([{ key: '', value: '' }]);
+  const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
 
   useEffect(() => {
@@ -48,6 +50,7 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // handle size change
   const handleAddSizeField = () => {
     setSizes([...sizes, { key: '', value: '' }]);
   };
@@ -77,6 +80,9 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
       const formData = new FormData();
       formData.append("name", name);
       formData.append('sizes', JSON.stringify(formattedSizes));
+      if (image) {
+        formData.append("sample_size_file", image);
+      }
 
       // let formData = {"name":name,"sizes":varients}
       const response = await apiService.post(
@@ -177,6 +183,23 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
   const handleRecordsPerPageChange = (e) => {
     setRecordsPerPage(Number(e.target.value));
     setCurrentPage(1);
+  };
+
+  // handle images
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+      setImagePreview(URL.createObjectURL(file));
+    } else {
+      setImage(null);
+      setImagePreview(null);
+    }
+  };
+
+  const handleImageRemove = () => {
+    setImage(null);
+    setImagePreview(null);
   };
 
 
@@ -362,14 +385,14 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
       </div>
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg p-6 relative overflow-auto max-h-full">
-            <button className="absolute top-2 right-2" onClick={onClose}>
-              <img src={closeIcon} alt="Close" className="h-6 w-6" />
+          <div className="bg-white rounded-lg p-8 relative overflow-auto max-h-full">
+            <button className="absolute top-4 right-4" onClick={onClose}>
+              <img src={closeIcon} alt="Close" className="h-5 w-5" />
             </button>
             <h2 className="text-2xl font-semibold mb-4">Add Measurement Chart</h2>
             <div className="flex flex-col mb-4">
               <label htmlFor="name" className="font-medium mb-2">
-                Type Name
+                Type Name:
               </label>
               <input
                 id="name"
@@ -381,7 +404,7 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
             </div>
             <div className="flex flex-col mb-4">
               <label htmlFor="sizes" className="font-medium mb-2">
-                Sizes
+                Sizes:
               </label>
               {sizes.map((size, index) => (
                 <div key={index} className="flex mb-2">
@@ -410,9 +433,35 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
                 Add Size Field
               </button>
             </div>
+
+            <div className="mt-4">
+                  <label htmlFor="imageUpload" className="block text-md font-medium text-gray-700">
+                    Upload Image:
+                  </label>
+                  <input
+                    type="file"
+                    id="imageUpload"
+                    className="mt-1 block w-full text-md text-gray-500"
+                    onChange={handleImageChange}
+                  />
+                  {imagePreview && (
+                    <div className="mt-2 relative">
+                      <img src={imagePreview} alt="Preview" className="h-32 w-32 object-cover" />
+                      <button
+                          type="button"
+                          onClick={handleImageRemove}
+                          className="absolute top-2 left-24 bg-red-600 text-white rounded-full px-2 pb-0.5 focus:outline-none"
+                        >
+                          &times;
+                        </button>
+                    </div>
+                  )}
+                </div>
+
+
             <button
               onClick={handleSubmit}
-              className="bg-blue-500 text-white px-4 py-2 rounded-md"
+              className="bg-blue-500 text-white px-4 py-2 mt-10 rounded-md"
             >
               Submit
             </button>
