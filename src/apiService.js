@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 
-const API_BASE_URL = 'http://167.71.231.139';
+const API_BASE_URL = 'https://quco.ysk.co.in/';
 
 const apiService = axios.create({
   baseURL: API_BASE_URL,

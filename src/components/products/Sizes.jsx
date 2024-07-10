@@ -17,9 +17,10 @@ const Sizes = ({ searchQuery, isModalOpen, onClose }) => {
   const [checkedIds, setCheckedIds] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(5);
-  const [sizes, setSizes] = useState([]);
+  const [sizes, setSizes] = useState([""]);
   const [inputValue, setInputValue] = useState("");
   const [singleSize, setSingleSize] = useState("");
+  const [typeName, setTypeName] = useState('');
 
   useEffect(() => {
     fetchAllSizes();
@@ -27,17 +28,71 @@ const Sizes = ({ searchQuery, isModalOpen, onClose }) => {
 
   const fetchAllSizes = async () => {
     try {
-      const response = await apiService.get("/sizes/getall");
-      console.log(response.data);
-      setData(response.data); // Assuming response.data contains an array of brands
+      const response = await apiService.get("/sizes/getall", {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.status === 200) {
+      setData(response.data);
+      }
     } catch (error) {
       console.error("Error fetching Sizes", error);
     }
   };
 
   const filteredData = data.filter((item) =>
-    item.sizes.toLowerCase().includes(searchQuery.toLowerCase())
+    item.type_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleAddSizeField = () => {
+    setSizes([...sizes, []]);
+  };
+
+  const handleRemoveSizeField = (index) => {
+    const newSizes = sizes.filter((_, i) => i !== index);
+    setSizes(newSizes);
+  };
+
+  const handleSizeChange = (index, value) => {
+    const newSizes = sizes.map((size, i) => (i === index ? value : size));
+    setSizes(newSizes);
+  };
+
+
+  // handle add new size
+  const handleAddSizes = async() => {
+    try {
+      const data = {
+        type_name: typeName,
+        sizes,
+      };
+      const response = await apiService.post('/sizes/create', data, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      console.log('====================================');
+      console.log(response.data);
+      console.log('====================================');
+    } catch (error) {
+      console.error('Error creating sizes:', error);
+    }
+
+
+    const newSizes = sizes
+      .map((size) => size.size.trim())
+      .filter((size) => size !== "");
+    if (newSizes.length > 0) {
+      setData([
+        ...data,
+        { id: data.length + 1, sizes: newSizes, status: "active" },
+      ]);
+      setSizes([{ size: "" }]);
+      onClose();
+    }
+  };
+
   // handle toggle button click
   const handleStatusToggle = async ({ id, isActive }) => {
     try {
@@ -73,10 +128,6 @@ const Sizes = ({ searchQuery, isModalOpen, onClose }) => {
       console.error(`Error saving Sizes with ID ${id}:`, error);
       // Handle error as needed
     }
-  };
-
-  const handleInputChangeType = (e) => {
-    setInputValue(e.target.value);
   };
 
   const handleInputChange = (e, index) => {
@@ -121,41 +172,8 @@ const Sizes = ({ searchQuery, isModalOpen, onClose }) => {
     setCurrentPage(1);
   };
 
-  const handleSizeChange = (index, event) => {
-    const newSizes = [...sizes];
-    newSizes[index].size = event.target.value;
-    setSizes(newSizes);
-  };
 
-  const handleAddSizeField = () => {
-    setSizes([...sizes, []]);
-  };
 
-  const handleRemoveSizeField = (index) => {
-    const newSizes = sizes.filter((_, i) => i !== index);
-    setSizes(newSizes);
-  };
-
-  const handleAddSizes = async() => {
-    try {
-      const newSizes = sizes.map(size => size.trim()).filter(size => size !== "");
-      console.log(newSizes);
-      const response = await apiService.post('/sizes/create',)
-    } catch (error) {
-      
-    }
-    const newSizes = sizes
-      .map((size) => size.size.trim())
-      .filter((size) => size !== "");
-    if (newSizes.length > 0) {
-      setData([
-        ...data,
-        { id: data.length + 1, sizes: newSizes, status: "active" },
-      ]);
-      setSizes([{ size: "" }]);
-      onClose();
-    }
-  };
 
   const startIndex = (currentPage - 1) * recordsPerPage;
   const endIndex = startIndex + recordsPerPage;
@@ -364,8 +382,8 @@ const Sizes = ({ searchQuery, isModalOpen, onClose }) => {
                   className="bg-gray-200 rounded w-80 py-3 px-4 text-gray-700 focus:outline-none focus:shadow-outline mt-5 text-lg text-center"
                   type="text"
                   placeholder="Enter Size Type"
-                  value={inputValue}
-                  onChange={handleInputChangeType}
+                  value={typeName}
+                  onChange={(e) => setTypeName(e.target.value)}
                 />
                 {sizes.map((size, index) => (
                   <div key={index} className="flex items-center my-2">
@@ -374,7 +392,7 @@ const Sizes = ({ searchQuery, isModalOpen, onClose }) => {
                       type="text"
                       placeholder={`Enter size ${index + 1}`}
                       value={size.size}
-                      onChange={(e) => handleSizeChange(index, e)}
+                      onChange={(e) => handleSizeChange(index, e.target.value)}
                     />
                     {sizes.length > 1 && (
                       <button

@@ -353,7 +353,7 @@ const AddProductModal = ({ show, onClose }) => {
       if (sizeInput.length > 0) {
         const response = await apiService.get("/sizes/getall");
         const filteredSizes = response.data.filter((b) =>
-          b.sizes.toLowerCase().startsWith(sizeInput.toLowerCase())
+          b.type_name.toLowerCase().startsWith(sizeInput.toLowerCase())
         );
         setSizeSuggestions(filteredSizes);
       } else {
@@ -366,7 +366,7 @@ const AddProductModal = ({ show, onClose }) => {
 
   const handleSizeChange = (e) => {
     const sizeInput = e.target.value;
-    setBrand(sizeInput);
+    setSizes(sizeInput);
     setSizeDropdown(true);
     fetchSizeSuggestions(sizeInput);
   };
@@ -442,7 +442,6 @@ const AddProductModal = ({ show, onClose }) => {
     setPrintDropdown(false);
   };
 
-  
   // fetch stitchDetails
   const fetchStitchSuggestions = async (stitchInput) => {
     try {
@@ -474,7 +473,6 @@ const AddProductModal = ({ show, onClose }) => {
     setStitchDetailDropdown(false);
   };
 
-  
   // fetch neck
   const fetchNeckSuggestions = async (neckInput) => {
     try {
@@ -506,7 +504,6 @@ const AddProductModal = ({ show, onClose }) => {
     setNeckDropdown(false);
   };
 
-  
   // fetch sleeve
   const fetchSleeveSuggestions = async (sleeveInput) => {
     try {
@@ -538,7 +535,6 @@ const AddProductModal = ({ show, onClose }) => {
     setSleeveDropdown(false);
   };
 
-  
   // fetch length
   const fetchLengthSuggestions = async (lengthInput) => {
     try {
@@ -570,14 +566,15 @@ const AddProductModal = ({ show, onClose }) => {
     setLengthDropdown(false);
   };
 
-  
   // fetch packingMethods
   const fetchPackingMethodSuggestions = async (packingMethodInput) => {
     try {
       if (packingMethodInput.length > 0) {
         const response = await apiService.get("/packingMethods/getall");
         const filteredPackingMethods = response.data.filter((b) =>
-          b.packingType.toLowerCase().startsWith(packingMethodInput.toLowerCase())
+          b.packingType
+            .toLowerCase()
+            .startsWith(packingMethodInput.toLowerCase())
         );
         setPackingSuggestions(filteredPackingMethods);
       } else {
@@ -602,7 +599,6 @@ const AddProductModal = ({ show, onClose }) => {
     setPackingDropdown(false);
   };
 
-  
   // fetch inner
   const fetchInnerSuggestions = async (innerInput) => {
     try {
@@ -634,14 +630,15 @@ const AddProductModal = ({ show, onClose }) => {
     setInnerDropdown(false);
   };
 
-  
   // fetch outerCorton
   const fetchOuterCortonSuggestions = async (outerCortonInput) => {
     try {
       if (outerCortonInput.length > 0) {
         const response = await apiService.get("/outerCortons/getall");
         const filteredOuterCortons = response.data.filter((b) =>
-          b.number_of_pcs.toLowerCase().startsWith(outerCortonInput.toLowerCase())
+          b.number_of_pcs
+            .toLowerCase()
+            .startsWith(outerCortonInput.toLowerCase())
         );
         setOuterCortonSuggestions(filteredOuterCortons);
       } else {
@@ -666,14 +663,13 @@ const AddProductModal = ({ show, onClose }) => {
     setOuterCortonDropdown(false);
   };
 
-  
   // fetch mesurementChart
   const fetchMesurementChartSuggestions = async (mesurementChartInput) => {
     try {
       if (mesurementChartInput.length > 0) {
         const response = await apiService.get("/mesurementCharts/getall");
         const filteredMesurementCharts = response.data.filter((b) =>
-          b.brandName.toLowerCase().startsWith(mesurementChartInput.toLowerCase())
+          b.name.toLowerCase().startsWith(mesurementChartInput.toLowerCase())
         );
         setMesurementSuggestions(filteredMesurementCharts);
       } else {
@@ -692,13 +688,12 @@ const AddProductModal = ({ show, onClose }) => {
   };
 
   const handleMesurementChartSelect = (mesurementChart) => {
-    setMeasurementChart(mesurementChart.brandName);
+    setMeasurementChart(mesurementChart.name);
     setSelectedMesurementId(mesurementChart.id);
     setMesurementSuggestions([]);
     setMesurementDropdown(false);
   };
 
-  
   // fetch categorie
   const fetchCategorieSuggestions = async (categorieInput) => {
     try {
@@ -729,7 +724,6 @@ const AddProductModal = ({ show, onClose }) => {
     setCategorieSuggestions([]);
     setCategorieDropdown(false);
   };
-
 
   const handleFileUpload = (e) => {
     const files = e.target.files;
@@ -866,8 +860,8 @@ const AddProductModal = ({ show, onClose }) => {
                   className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter Style No"
                 />
-                {styleDropdown && (
-                  <ul className="absolute left-0 mt-16 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                {styleDropdown && styleNo && (
+                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
                     {styleSuggestions.map((item) => (
                       <li
                         key={item.id}
@@ -893,8 +887,8 @@ const AddProductModal = ({ show, onClose }) => {
                   className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter Brand Name"
                 />
-                {brandDropdown && (
-                  <ul className="absolute left-0 mt-16 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                {brandDropdown && brand && (
+                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
                     {brandSuggestions.map((item) => (
                       <li
                         key={item.id}
@@ -919,8 +913,8 @@ const AddProductModal = ({ show, onClose }) => {
                   className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter Fabric"
                 />
-                {fabricDropdown && (
-                  <ul className="absolute left-0  mt-16 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                {fabricDropdown && fabric && (
+                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
                     {fabricSuggestions.map((item) => (
                       <li
                         key={item.id}
@@ -945,20 +939,20 @@ const AddProductModal = ({ show, onClose }) => {
                   className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter Fabric Finish"
                 />
+                {fabricFinishDropdown && fabricFinish && (
+                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
+                    {fabricFinishSuggestions.map((item) => (
+                      <li
+                        key={item.id}
+                        onClick={() => handleFabricFinishSelect(item)}
+                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                      >
+                        {item.fabricFinishName}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
-              {fabricFinishDropdown && (
-                <ul className="absolute left-0 mt-20 w-full bg-white border border-gray-300 rounded-md shadow-lg">
-                  {fabricFinishSuggestions.map((item) => (
-                    <li
-                      key={item.id}
-                      onClick={() => handleFabricFinishSelect(item)}
-                      className="cursor-pointer px-4 py-2 hover:bg-gray-100"
-                    >
-                      {item.fabricFinishName}
-                    </li>
-                  ))}
-                </ul>
-              )}
               <div className="flex flex-col gap-2 relative">
                 <label className="font-semibold" htmlFor="gsm">
                   GSM:
@@ -971,8 +965,8 @@ const AddProductModal = ({ show, onClose }) => {
                   className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter GSM"
                 />
-                {gsmDropdown && (
-                  <ul className="absolute left-0 mt-20 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                {gsmDropdown && gsm && (
+                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
                     {gsmSuggestions.map((item) => (
                       <li
                         key={item.id}
@@ -997,8 +991,8 @@ const AddProductModal = ({ show, onClose }) => {
                   className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter Knit Type"
                 />
-                {knitDropdown && (
-                  <ul className="absolute left-0 mt-20 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                {knitDropdown && knitType && (
+                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
                     {knitSuggestions.map((item) => (
                       <li
                         key={item.id}
@@ -1023,8 +1017,8 @@ const AddProductModal = ({ show, onClose }) => {
                   className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter Colors"
                 />
-                {colorDropdown && (
-                  <ul className="absolute left-0 mt-16 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                {colorDropdown && colors && (
+                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
                     {colorSuggestions.map((item) => (
                       <li
                         key={item.id}
@@ -1049,15 +1043,15 @@ const AddProductModal = ({ show, onClose }) => {
                   className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter Sizes"
                 />
-                {sizeDropdown && (
-                  <ul className="absolute left-0 mt-16 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                {sizeDropdown && sizes && (
+                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
                     {sizeSuggestions.map((item) => (
                       <li
                         key={item.id}
                         onClick={() => handleSizeSelect(item)}
                         className="cursor-pointer px-4 py-2 hover:bg-gray-100"
                       >
-                        {item.sizes}
+                        {item.type_name}
                       </li>
                     ))}
                   </ul>
@@ -1075,8 +1069,8 @@ const AddProductModal = ({ show, onClose }) => {
                   className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter Decorations"
                 />
-                {decorationDropdown && (
-                  <ul className="absolute left-0 mt-16 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                {decorationDropdown && decorations && (
+                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
                     {decorationSuggestions.map((item) => (
                       <li
                         key={item.id}
@@ -1089,7 +1083,7 @@ const AddProductModal = ({ show, onClose }) => {
                   </ul>
                 )}
               </div>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 relative">
                 <label className="font-semibold" htmlFor="printOrEmbName">
                   Print {"("}or{")"} Emb Name:
                 </label>
@@ -1098,11 +1092,11 @@ const AddProductModal = ({ show, onClose }) => {
                   id="printorEmbName"
                   value={printOrEmbName}
                   onChange={handlePrintChange}
-                  className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
+                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter Print (or) Emb Name"
                 />
-                {printDropdown && (
-                  <ul className="absolute left-0 mt-16 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                {printDropdown && printOrEmbName && (
+                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
                     {printSuggestions.map((item) => (
                       <li
                         key={item.id}
@@ -1123,12 +1117,12 @@ const AddProductModal = ({ show, onClose }) => {
                   type="text"
                   id="stitchDetails"
                   value={stitchDetails}
-                   onChange={handleStitchDetailChange}
+                  onChange={handleStitchDetailChange}
                   className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter Stitch Details"
                 />
-                   {stitchDetailDropdown && (
-                  <ul className="absolute left-0 mt-16 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                {stitchDetailDropdown && stitchDetails && (
+                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
                     {stitchDetailSuggestions.map((item) => (
                       <li
                         key={item.id}
@@ -1153,8 +1147,8 @@ const AddProductModal = ({ show, onClose }) => {
                   className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter Neck"
                 />
-                   {neckDropdown && (
-                  <ul className="absolute left-0 mt-16 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                {neckDropdown && neck && (
+                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
                     {neckSuggestions.map((item) => (
                       <li
                         key={item.id}
@@ -1179,8 +1173,8 @@ const AddProductModal = ({ show, onClose }) => {
                   className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter Sleeve"
                 />
-                   {sleeveDropdown && (
-                  <ul className="absolute left-0 mt-16 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                {sleeveDropdown && sleeve && (
+                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
                     {sleeveSuggestions.map((item) => (
                       <li
                         key={item.id}
@@ -1205,8 +1199,8 @@ const AddProductModal = ({ show, onClose }) => {
                   className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter Length"
                 />
-                   {lengthDropdown && (
-                  <ul className="absolute left-0 mt-16 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                {lengthDropdown && length && (
+                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
                     {lengthSuggestions.map((item) => (
                       <li
                         key={item.id}
@@ -1231,8 +1225,8 @@ const AddProductModal = ({ show, onClose }) => {
                   className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter Packing Method"
                 />
-                   {packingDropdown && (
-                  <ul className="absolute left-0 mt-16 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                {packingDropdown && packingMethod && (
+                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
                     {packingSuggestions.map((item) => (
                       <li
                         key={item.id}
@@ -1257,8 +1251,8 @@ const AddProductModal = ({ show, onClose }) => {
                   className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter No of pieces per inner"
                 />
-                   {innerDropdown && (
-                  <ul className="absolute left-0 mt-16 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                {innerDropdown && inner && (
+                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
                     {innerSuggestions.map((item) => (
                       <li
                         key={item.id}
@@ -1283,8 +1277,8 @@ const AddProductModal = ({ show, onClose }) => {
                   className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter No of pieces per outer carton"
                 />
-                   {outerCortonDropdown && (
-                  <ul className="absolute left-0 mt-16 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                {outerCortonDropdown && outerCorton && (
+                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
                     {outerCortonSuggestions.map((item) => (
                       <li
                         key={item.id}
@@ -1297,46 +1291,7 @@ const AddProductModal = ({ show, onClose }) => {
                   </ul>
                 )}
               </div>
-            
-              <div className="flex flex-col gap-2 relative">
-                <label className="font-semibold" htmlFor="measurementChart">
-                  Measurement Chart:
-                </label>
-                <input
-                  type="text"
-                  id="measurementChart"
-                  value={measurementChart}
-                  onChange={handleMesurementChartChange}
-                  className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
-                  placeholder="Enter Measurement Chart"
-                />
-                <label
-                  htmlFor="fileInput"
-                  className="cursor-pointer text-blue-500 underline"
-                >
-                  Upload Picture
-                </label>
-                <input
-                  type="file"
-                  id="fileInput"
-                  className="hidden"
-                  onChange={(e) => handleFileUpload(e)}
-                />
-                   {mesurementDropdown && (
-                  <ul className="absolute left-0 mt-16 w-full bg-white border border-gray-300 rounded-md shadow-lg">
-                    {mesurementSuggestions.map((item) => (
-                      <li
-                        key={item.id}
-                        onClick={() => handleMesurementChartSelect(item)}
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
-                      >
-                        {item.brandName}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-              
+
               <div className="flex flex-col gap-2 relative">
                 <label className="font-semibold" htmlFor="categorie">
                   Categoty:
@@ -1349,8 +1304,8 @@ const AddProductModal = ({ show, onClose }) => {
                   className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter Category Name"
                 />
-                {categorieDropdown && (
-                  <ul className="absolute left-0 mt-16 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                {categorieDropdown && categorie && (
+                  <ul className="absolute top-16 left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
                     {categorieSuggestions.map((item) => (
                       <li
                         key={item.id}
@@ -1358,6 +1313,45 @@ const AddProductModal = ({ show, onClose }) => {
                         className="cursor-pointer px-4 py-2 hover:bg-gray-100"
                       >
                         {item.categoryName}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-2 relative">
+                <label className="font-semibold" htmlFor="measurementChart">
+                  Measurement Chart:
+                </label>
+                <input
+                  type="text"
+                  id="measurementChart"
+                  value={measurementChart}
+                  onChange={handleMesurementChartChange}
+                  className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
+                  placeholder="Enter Measurement Chart"
+                />
+                {/* <label
+                  htmlFor="fileInput"
+                  className="cursor-pointer text-blue-500 underline"
+                >
+                  Upload Picture
+                </label>
+                <input
+                  type="file"
+                  id="fileInput"
+                  className="hidden"
+                  onChange={(e) => handleFileUpload(e)}
+                /> */}
+                {mesurementDropdown && measurementChart && (
+                  <ul className="absolute top-16 left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
+                    {mesurementSuggestions.map((item) => (
+                      <li
+                        key={item.id}
+                        onClick={() => handleMesurementChartSelect(item)}
+                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                      >
+                        {item.name}
                       </li>
                     ))}
                   </ul>
