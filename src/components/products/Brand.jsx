@@ -147,12 +147,30 @@ const Brand = ({ searchQuery, isModalOpen, onClose }) => {
         setSuccessMessage("Brand added successfully.");
         setErrorMessage("");
         fetchAllBrands();
+
+        // Clear messages after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
       }
     } catch (error) {
       if (error.response && error.response.status === 409) {
         setErrorMessage("Brand already exists.");
+
+        // Clear messages after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
       } else {
         setErrorMessage("Error adding brand.");
+
+        // Clear messages after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
       }
       setSuccessMessage("");
     }
