@@ -19,12 +19,12 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(5);
   const [name, setTypeName] = useState("");
+  const [category, setCategory] = useState(""); // New state for category
   const [addedStyles, setAddedStyles] = useState([]);
   const [isSecondModalOpen, setIsSecondModalOpen] = useState(false);
   const [sizes, setSizes] = useState([{ key: '', value: '' }]);
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-
 
   useEffect(() => {
     fetchAllMeasurements();
@@ -79,12 +79,12 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
       
       const formData = new FormData();
       formData.append("name", name);
+      formData.append("category", category); // Include category in the form data
       formData.append('sizes', JSON.stringify(formattedSizes));
       if (image) {
         formData.append("sample_size_file", image);
       }
 
-      // let formData = {"name":name,"sizes":varients}
       const response = await apiService.post(
         "/mesurementCharts/create",
         formData,
@@ -108,11 +108,11 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
   // handle toggle button click
   const handleStatusToggle = async ({ id, isActive }) => {
     try {
-      const response = await apiService.put(`/mesurementCharts/${id}`, {
+      const response = await apiService.put(`/mesurementCharts/isActive/${id}`, {
         isActive: !isActive,
       }, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
         },
       });
       if (response.status === 200) {
@@ -202,7 +202,6 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
     setImagePreview(null);
   };
 
-
   const startIndex = (currentPage - 1) * recordsPerPage;
   const endIndex = startIndex + recordsPerPage;
   const currentData = filteredData.slice(startIndex, endIndex);
@@ -224,6 +223,9 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
               </th>
               <th className="px-2 py-3 text-left text-md font-bold text-black uppercase w-1/4">
                 Sizes
+              </th>
+              <th className="px-2 py-3 text-left text-md font-bold text-black uppercase w-1/12">
+                Category
               </th>
               <th className="px-6 py-3 text-center text-md font-bold text-black uppercase w-1/12">
                 Status
@@ -253,41 +255,39 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
                   {startIndex + index + 1}
                 </td>
                 <td className="px-3 py-3 whitespace-nowrap text-md text-left text-black 2xl:w-[500px] xl:w-[450px] min-w-[200px]">
-                  {editIndex === startIndex + index ? (
+                  {editIndex === index ? (
                     <input
                       type="text"
                       value={row.name}
-                      onChange={(e) => handleInputChange(e, startIndex + index)}
-                      className="border border-gray-300 rounded-md px-2 py-2 text-left 2xl:w-[500px] xl:w-[450px] min-w-[200px]"
+                      onChange={(e) => handleInputChange(e, index)}
+                      className="w-full px-2 py-1 border rounded-md focus:outline-none focus:border-blue-500"
                     />
                   ) : (
                     row.name
                   )}
                 </td>
+                <td className="px-3 py-3 whitespace-nowrap text-md text-left text-black w-40">
+                  {row.sizes ? Object.keys(row.sizes).map((key) => (
+                    <span key={key}>{key}: {row.sizes[key]}, </span>
+                  )) : null}
+                </td>
                 <td className="px-3 py-3 whitespace-nowrap text-md text-left text-black 2xl:w-[500px] xl:w-[450px] min-w-[200px]">
-                  {editIndex === startIndex + index ? (
-                    Object.keys(row.sizes).map((key) => (
-                      <div key={key}>
-                        <span>
-                          {key}: {row.sizes[key]}
-                        </span>
-                      </div>
-                    ))
+                  {editIndex === index ? (
+                    <input
+                      type="text"
+                      value={row.category}
+                      onChange={(e) => handleInputChange(e, index)}
+                      className="w-full px-2 py-1 border rounded-md focus:outline-none focus:border-blue-500"
+                    />
                   ) : (
-                    <div>
-                      {Object.keys(row.sizes).map((key, i) => (
-                        <span key={i}>
-                          {key}: {row.sizes[key]},{" "}
-                        </span>
-                      ))}
-                    </div>
+                    row.category
                   )}
                 </td>
-                <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black flex-grow">
+                <td className="px-6 py-3 whitespace-nowrap text-md text-right text-black flex-grow">
                   <button
-                    onClick={() =>
-                      handleStatusToggle({ id: row.id, isActive: row.isActive })
-                    }
+                  onClick={() =>
+                    handleStatusToggle({ id: row.id, isActive: row.isActive })
+                  }
                     className="px-2 py-1 rounded-full"
                   >
                     <div className="flex space-x-2">
@@ -311,166 +311,95 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
                     </div>
                   </button>
                 </td>
-                <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-16">
-                  {editIndex === startIndex + index ? (
+                <td className="px-3 py-3 whitespace-nowrap text-md text-center text-black w-40">
+                  {editIndex === index ? (
                     <button
-                      onClick={() => handleUpdateClick(startIndex + index)}
-                      className="bg-green-200 border border-green-500 px-2 py-1 rounded-lg flex"
+                      onClick={() => handleUpdateClick(index)}
+                      className="text-green-500"
                     >
-                      <img src={tickIcon} alt="" className="mt-1 mr-2" />
-                      <span className="text-xs">Update</span>
+                      <img src={tickIcon} alt="Update" className="h-5 w-5" />
                     </button>
                   ) : (
                     <button
-                      onClick={() => handleEditClick(startIndex + index)}
-                      className="text-blue-500 text-center"
+                      onClick={() => handleEditClick(index)}
+                      className="text-blue-500"
                     >
-                      <img src={editIcon} alt="Edit" className="h-6 w-6" />
+                      <img src={editIcon} alt="Edit" className="h-5 w-5" />
                     </button>
                   )}
                 </td>
-                <td className="px-2 py-3 whitespace-nowrap w-12 text-center">
+                <td className="px-3 py-3 whitespace-nowrap text-md text-center text-black w-40">
                   <input
                     type="checkbox"
                     className="form-checkbox"
-                    checked={checkedIds.includes(row.id)}
                     onChange={() => handleCheckboxChange(row.id)}
+                    checked={checkedIds.includes(row.id)}
                   />
                 </td>
-                <td className="px-2 py-3 whitespace-nowrap text-xs text-center text-black">
-                  <button
-                    onClick={() => handleDelete(row.id)}
-                    className="text-red-500 w-5"
-                  >
-                    <img src={deleteIcon} alt="Delete" className="h-6 w-6" />
+                <td className="px-3 py-3 whitespace-nowrap text-md text-center text-black w-40">
+                  <button onClick={() => handleDelete(row.id)}>
+                    <img src={deleteIconRed} alt="Delete" className="h-5 w-5" />
                   </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-      </div>
-      <div className="flex justify-between items-center mt-4">
-        <div>
-          <span className="text-md text-black">
-            {recordsPerPage} records per page
-          </span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <select
-            value={recordsPerPage}
-            onChange={handleRecordsPerPageChange}
-            className="border border-gray-300 rounded-md px-3 py-2"
-          >
-            <option value={5}>Records per page: 5</option>
-            <option value={10}>Records per page: 10</option>
-            <option value={15}>Records per page: 15</option>
-          </select>
-          <button
-            onClick={() => handlePageChange("prev")}
-            className="px-2 py-1 text-md rounded-md"
-          >
-            <img src={leftArrowIcon} alt="Previous" />
-          </button>
-          <span className="text-md text-black">
-            {currentPage}/{Math.ceil(data.length / recordsPerPage)}
-          </span>
-          <button
-            onClick={() => handlePageChange("next")}
-            className="px-2 py-1 text-md rounded-md"
-          >
-            <img src={rightArrowIcon} alt="Next" />
-          </button>
-        </div>
-      </div>
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg p-8 relative overflow-auto max-h-full">
-            <button className="absolute top-4 right-4" onClick={onClose}>
-              <img src={closeIcon} alt="Close" className="h-5 w-5" />
-            </button>
-            <h2 className="text-2xl font-semibold mb-4">Add Measurement Chart</h2>
-            <div className="flex flex-col mb-4">
-              <label htmlFor="name" className="font-medium mb-2">
-                Type Name:
-              </label>
-              <input
-                id="name"
-                type="text"
-                value={name}
-                onChange={(e) => setTypeName(e.target.value)}
-                className="border border-gray-300 rounded-md px-2 py-1"
-              />
-            </div>
-            <div className="flex flex-col mb-4">
-              <label htmlFor="sizes" className="font-medium mb-2">
-                Sizes:
-              </label>
-              {sizes.map((size, index) => (
-                <div key={index} className="flex mb-2">
-                  <input
-                    type="text"
-                    name="key"
-                    value={size.key}
-                    onChange={(e) => handleSizeChange(index, e)}
-                    placeholder="Size Key"
-                    className="border border-gray-300 rounded-md px-2 py-1 mr-2"
-                  />
-                  <input
-                    type="text"
-                    name="value"
-                    value={size.value}
-                    onChange={(e) => handleSizeChange(index, e)}
-                    placeholder="Size Value"
-                    className="border border-gray-300 rounded-md px-2 py-1"
-                  />
-                  <button onClick={() => handleRemoveSizeField(index)} className="text-red-500 ml-2">
-                    Remove
-                  </button>
-                </div>
-              ))}
-              <button onClick={handleAddSizeField} className="text-blue-500 mt-2">
-                Add Size Field
-              </button>
-            </div>
 
-            <div className="mt-4">
-                  <label htmlFor="imageUpload" className="block text-md font-medium text-gray-700">
-                    Upload Image:
-                  </label>
-                  <input
-                    type="file"
-                    id="imageUpload"
-                    className="mt-1 block w-full text-md text-gray-500"
-                    onChange={handleImageChange}
-                  />
-                  {imagePreview && (
-                    <div className="mt-2 relative">
-                      <img src={imagePreview} alt="Preview" className="h-32 w-32 object-cover" />
-                      <button
-                          type="button"
-                          onClick={handleImageRemove}
-                          className="absolute top-2 left-24 bg-red-600 text-white rounded-full px-2 pb-0.5 focus:outline-none"
-                        >
-                          &times;
-                        </button>
-                    </div>
-                  )}
-                </div>
-
-
-            <button
-              onClick={handleSubmit}
-              className="bg-blue-500 text-white px-4 py-2 mt-10 rounded-md"
+        <div className="pagination flex justify-between items-center px-4 py-3">
+          <div>
+            <label htmlFor="recordsPerPage" className="text-md text-black">
+              Records per page:
+            </label>
+            <select
+              id="recordsPerPage"
+              value={recordsPerPage}
+              onChange={handleRecordsPerPageChange}
+              className="mx-2 border rounded-md focus:outline-none focus:border-blue-500"
             >
-              Submit
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+            </select>
+          </div>
+
+          <div className="flex items-center">
+            <button
+              onClick={() => handlePageChange("prev")}
+              className="mx-1 p-1 border rounded-md focus:outline-none focus:border-blue-500"
+            >
+              <img src={leftArrowIcon} alt="Previous" className="h-5 w-5" />
+            </button>
+            <span className="text-md text-black">{`Page ${currentPage} of ${Math.ceil(
+              data.length / recordsPerPage
+            )}`}</span>
+            <button
+              onClick={() => handlePageChange("next")}
+              className="mx-1 p-1 border rounded-md focus:outline-none focus:border-blue-500"
+            >
+              <img src={rightArrowIcon} alt="Next" className="h-5 w-5" />
             </button>
           </div>
         </div>
-      )}
+      </div>
 
-      {isSecondModalOpen && (
-        <MesasurementModal onClose={() => setIsSecondModalOpen(false)} />
+      {isModalOpen && (
+        <MesasurementModal
+          isOpen={isModalOpen}
+          onClose={onClose}
+          handleSubmit={handleSubmit}
+          setTypeName={setTypeName}
+          name={name}
+          setCategory={setCategory} // Pass setCategory to the modal
+          category={category} // Pass category to the modal
+          handleAddSizeField={handleAddSizeField}
+          handleSizeChange={handleSizeChange}
+          handleRemoveSizeField={handleRemoveSizeField}
+          sizes={sizes}
+          handleImageChange={handleImageChange}
+          imagePreview={imagePreview}
+          handleImageRemove={handleImageRemove}
+        />
       )}
     </div>
   );

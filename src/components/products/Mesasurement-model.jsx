@@ -1,54 +1,149 @@
-import React, { useState } from 'react';
-import closeIcon from "../../assets/close-modal-icon.svg";
-import MesasurementSuccessModal from './Mesasurement-sucess-model';
+import React from 'react';
+import closeIcon from '../../assets/close-modal-icon.svg';
 
-const MesasurementModal = ({ onClose }) => {
-  const [isThirdModalOpen, setIsThirdModalOpen] = useState(false);
+const MesasurementModal = ({
+  isOpen,
+  onClose,
+  handleSubmit,
+  setTypeName,
+  name,
+  setCategory, // Add setCategory
+  category, // Add category
+  handleAddSizeField,
+  handleSizeChange,
+  handleRemoveSizeField,
+  sizes,
+  handleImageChange,
+  imagePreview,
+  handleImageRemove
+}) => {
+  if (!isOpen) return null;
 
   return (
-    <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center">
-        <div className="fixed inset-0 bg-black opacity-50" onClick={onClose}></div>
-        <div className="relative bg-white rounded-lg shadow-lg w-full h-screen max-h-[50vh] max-w-[30vw] overflow-y-auto lg:overflow-hidden">
-          <div>
-            <div className="flex justify-center mt-5">
-              <h2 className="text-lg font-bold">Measurement Chart (T shirt)</h2>
-              <button className="absolute right-5 cursor-pointer" onClick={onClose}>
-                <img src={closeIcon} alt="Close" className="mt-2" />
+    <div className="fixed inset-0 flex items-center justify-center z-50">
+      <div className="absolute inset-0 bg-black opacity-50"></div>
+      <div className="bg-white p-6 rounded-lg z-10 w-[600px]">
+        <div className="flex justify-end">
+          <button onClick={onClose}>
+            <img src={closeIcon} alt="Close" className="h-6 w-6" />
+          </button>
+        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label htmlFor="name" className="block text-md font-medium text-gray-700">
+              Measurement Chart
+            </label>
+            <input
+              type="text"
+              id="name"
+              value={name}
+              onChange={(e) => setTypeName(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="category" className="block text-md font-medium text-gray-700">
+              Category
+            </label>
+            <select
+              id="category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+              required
+            >
+              <option value="">Select Category</option>
+              <option value="Chest">Chest Diameter</option>
+              <option value="Waist">Waist Diameter</option>
+            </select>
+          </div>
+
+          {sizes.map((size, index) => (
+            <div key={index} className="mb-4 flex">
+              <div className="mr-2 w-full">
+                <label htmlFor={`key-${index}`} className="block text-md font-medium text-gray-700">
+                  Size Key
+                </label>
+                <input
+                  type="text"
+                  id={`key-${index}`}
+                  name="key"
+                  value={size.key}
+                  onChange={(e) => handleSizeChange(index, e)}
+                  className="mt-1 block w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+                  required
+                />
+              </div>
+              <div className="ml-2 w-full">
+                <label htmlFor={`value-${index}`} className="block text-md font-medium text-gray-700">
+                  Size Value
+                </label>
+                <input
+                  type="text"
+                  id={`value-${index}`}
+                  name="value"
+                  value={size.value}
+                  onChange={(e) => handleSizeChange(index, e)}
+                  className="mt-1 block w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+                  required
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => handleRemoveSizeField(index)}
+                className="ml-2 mt-7 px-2 py-1 border rounded-md bg-red-500 text-white"
+              >
+                X
               </button>
             </div>
-            <hr className="w-full mt-3" />
+          ))}
+
+          <button
+            type="button"
+            onClick={handleAddSizeField}
+            className="mb-4 px-4 py-2 border rounded-md bg-blue-500 text-white"
+          >
+            Add Size
+          </button>
+
+          <div className="mb-4">
+            <label className="block text-md font-medium text-gray-700">
+              Upload Measurement Chart:
+            </label>
+            {imagePreview ? (
+              <div className="flex items-center mt-5">
+                <img src={imagePreview} alt="Preview" className="h-32 w-28 mr-2" />
+                <button
+                  type="button"
+                  onClick={handleImageRemove}
+                  className="px-4 py-2 border rounded-md bg-red-500 text-white"
+                >
+                  Remove
+                </button>
+              </div>
+            ) : (
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="mt-1 block w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+              />
+            )}
           </div>
-          <div className="mt-4 text-center">
-            <label className="block text-gray-400 text-lg font-bold mb-2">Enter short title</label>
-            <div className="text-center">
-              <input className="border rounded w-80 py-3 px-3 text-gray-700 bg-gray-200 leading-tight focus:outline-none focus:shadow-outline" type="text" />
-            </div>
-            <p className="mt-3 text-lg">Chest (in)</p>
-            <div className="mt-4">
-              <button className="bg-gray-200 font-bold w-20 py-1 rounded-lg">S</button>
-              <button className="bg-gray-200 font-bold w-20 py-1 rounded-lg ml-3">38</button>
-            </div>
-            <div className="mt-4">
-              <button className="bg-gray-200 font-bold w-20 py-1 rounded-lg">M</button>
-              <button className="bg-gray-200 font-bold w-20 py-1 rounded-lg ml-3">40</button>
-            </div>
-            <div className="mt-4">
-              <button className="bg-gray-200 font-bold w-20 py-1 rounded-lg">L</button>
-              <button className="bg-gray-200 font-bold w-20 py-1 rounded-lg ml-3">42</button>
-            </div>
-            <p className="underline text-xl mt-4 text-sky-600">Add field</p>
+
+          <div className="flex justify-end">
             <button
-              className="bg-sky-600 w-80 py-3 text-white rounded-lg font-bold text-lg mt-5"
-              onClick={() => setIsThirdModalOpen(true)}
+              type="submit"
+              className="px-4 py-2 border rounded-md bg-green-500 text-white"
             >
-              Update files
+              Submit
             </button>
           </div>
-        </div>
+        </form>
       </div>
-      {isThirdModalOpen && <MesasurementSuccessModal onClose={() => setIsThirdModalOpen(false)} />}
-    </>
+    </div>
   );
 };
 
