@@ -227,7 +227,7 @@ const AddProducts = ({ searchQuery }) => {
                       </div>
                     </td>
                     <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black flex-grow">
-                      {row.styleNo}
+                      {row.Style.style_no}
                     </td>
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">
                       {row.product}

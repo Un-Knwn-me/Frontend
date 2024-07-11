@@ -20,6 +20,8 @@ const Brand = ({ searchQuery, isModalOpen, onClose }) => {
   const [inputValue, setInputValue] = useState("");
   const [addedBrands, setAddedBrands] = useState([]);
   const [singleBrands, setSingleBrands] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     fetchAllBrands();
@@ -142,10 +144,17 @@ const Brand = ({ searchQuery, isModalOpen, onClose }) => {
 
       if (response.status === 201) {
         setSingleBrands("");
+        setSuccessMessage("Brand added successfully.");
+        setErrorMessage("");
         fetchAllBrands();
       }
     } catch (error) {
-      console.error("Error adding brand:", error);
+      if (error.response && error.response.status === 409) {
+        setErrorMessage("Brand already exists.");
+      } else {
+        setErrorMessage("Error adding brand.");
+      }
+      setSuccessMessage("");
     }
   };
 
@@ -362,9 +371,6 @@ const Brand = ({ searchQuery, isModalOpen, onClose }) => {
                 <hr className="w-full mt-3" />
               </div>
               <div className="flex flex-col items-center">
-                {/* <p className="text-gray-400 font-bold mt-10">
-                  *For multiple brand feed use enter after each values"
-                </p> */}
                 <input
                   className="bg-gray-200 rounded w-80 py-3 px-4 text-gray-700 focus:outline-none focus:shadow-outline mt-5 text-lg text-center"
                   type="text"
@@ -372,6 +378,16 @@ const Brand = ({ searchQuery, isModalOpen, onClose }) => {
                   value={singleBrands}
                   onChange={(e) => setSingleBrands(e.target.value)}
                 />
+                {successMessage && (
+              <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 my-4">
+                <p>{successMessage}</p>
+              </div>
+            )}
+            {errorMessage && (
+              <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 my-4">
+                <p>{errorMessage}</p>
+              </div>
+            )}
                 <button
                   className="bg-sky-600 w-80 py-3 text-white rounded-lg font-bold text-lg mt-3"
                   onClick={() => handleSingleBrand()}
