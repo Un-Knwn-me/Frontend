@@ -11,16 +11,7 @@ import apiService from "../../../apiService";
 // import UploadMeasurementChartModal from "./UploadMeasurementChartModal";
 
 const AddProducts = ({ searchQuery }) => {
-  const [initialData, setInitialData] = useState([
-    { id: 1, styleNo: 'A123', product: 'Shirt', brand: 'BrandA', fabric: 'Cotton', color: 'Red', size: 'M', status: 'active' },
-    { id: 2, styleNo: 'B456', product: 'Pants', brand: 'BrandB', fabric: 'Denim', color: 'Blue', size: 'L', status: 'inactive' },
-    { id: 3, styleNo: 'C789', product: 'Jacket', brand: 'BrandC', fabric: 'Leather', color: 'Black', size: 'XL', status: 'active' },
-    { id: 4, styleNo: 'D012', product: 'Shirt', brand: 'BrandA', fabric: 'Cotton', color: 'Red', size: 'M', status: 'active' },
-    { id: 5, styleNo: 'E345', product: 'Pants', brand: 'BrandB', fabric: 'Denim', color: 'Blue', size: 'L', status: 'inactive' },
-    { id: 6, styleNo: 'F678', product: 'Jacket', brand: 'BrandC', fabric: 'Leather', color: 'Black', size: 'XL', status: 'active' },
-    // Add more unique items as needed
-  ]);
-  // const [initialData, setInitialData] = useState([]);
+  const [initialData, setInitialData] = useState([]);
   const [filteredData, setFilteredData] = useState(initialData);
   const [editIndex, setEditIndex] = useState(null);
   const [checkedIds, setCheckedIds] = useState([]);
@@ -34,7 +25,11 @@ const AddProducts = ({ searchQuery }) => {
   // Function to fetch all products
   const getAllProducts = async () => {
     try {
-      const response = await apiService.get(`/products/getall`);
+      const response = await apiService.get(`/products/getall`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       setInitialData(response.data);
       setFilteredData(response.data);
     } catch (error) {
