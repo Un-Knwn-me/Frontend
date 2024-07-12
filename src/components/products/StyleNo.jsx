@@ -25,6 +25,8 @@ const StyleNo = ({ searchQuery, isModalOpen, onClose }) => {
   const [singleStyle, setSingleStyle] = useState("");
   const [oneShortDescreption, setOneShortDescreption] = useState("");
   const [oneLongDescription, setOneLongDescription] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     fetchAllStyles();
@@ -58,13 +60,38 @@ const StyleNo = ({ searchQuery, isModalOpen, onClose }) => {
       });
 
       if (response.status === 201) {
-        fetchAllStyles();
         setSingleStyle("");
         setOneShortDescreption("");
         setOneLongDescription("");
+        setSuccessMessage("Style added successfully.");
+        setErrorMessage("");
+        fetchAllStyles();
+
+         // Clear messages after 5 seconds
+         setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
       }
     } catch (error) {
-      console.error("Error adding Style:", error);
+      if (error.response && error.response.status === 409) {
+        setErrorMessage("Style already exists.");
+
+        // Clear messages after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
+      } else {
+        setErrorMessage("Error adding style.");
+
+        // Clear messages after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
+      }
+      setSuccessMessage("");
     }
   };
 
@@ -427,6 +454,16 @@ const StyleNo = ({ searchQuery, isModalOpen, onClose }) => {
                   value={oneLongDescription}
                   onChange={(e) => setOneLongDescription(e.target.value)}
                 />
+                {successMessage && (
+              <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 my-4">
+                <p>{successMessage}</p>
+              </div>
+            )}
+            {errorMessage && (
+              <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 my-4">
+                <p>{errorMessage}</p>
+              </div>
+            )}
                 <button
                   className="bg-sky-600 w-80 py-3 text-white rounded-lg font-bold text-lg mt-3"
                   onClick={() => handleSingleStyle()}

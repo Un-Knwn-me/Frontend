@@ -20,6 +20,8 @@ const PiecesPerInner = ({ searchQuery, isModalOpen, onClose }) => {
   const [inputValue, setInputValue] = useState("");
   const [addedStyles, setAddedStyles] = useState([]);
   const [singlePiecesPerInner, setSinglePiecesPerInner] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     fetchAllPiecesPerInner();

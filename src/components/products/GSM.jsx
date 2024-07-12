@@ -20,6 +20,8 @@ const GSM = ({ searchQuery, isModalOpen, onClose }) => {
   const [inputValue, setInputValue] = useState("");
   const [addedgsms, setAddedgsms] = useState([]);
   const [singleGsms, setSingleGsms] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     fetchAllgsms();
@@ -139,10 +141,35 @@ const GSM = ({ searchQuery, isModalOpen, onClose }) => {
 
       if (response.status === 201) {
         setSingleGsms("");
+        setSuccessMessage("GSM added successfully.");
+        setErrorMessage("");
         fetchAllgsms();
+
+         // Clear messages after 5 seconds
+         setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
       }
     } catch (error) {
-      console.error("Error adding gsm:", error);
+      if (error.response && error.response.status === 409) {
+        setErrorMessage("GSM already exists.");
+
+        // Clear messages after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
+      } else {
+        setErrorMessage("Error adding GSM.");
+
+        // Clear messages after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
+      }
+      setSuccessMessage("");
     }
   };
 
@@ -365,6 +392,16 @@ const GSM = ({ searchQuery, isModalOpen, onClose }) => {
                   value={singleGsms}
                   onChange={(e) => setSingleGsms(e.target.value)}
                 />
+                {successMessage && (
+              <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 my-4">
+                <p>{successMessage}</p>
+              </div>
+            )}
+            {errorMessage && (
+              <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 my-4">
+                <p>{errorMessage}</p>
+              </div>
+            )}
                 <button
                   className="bg-sky-600 w-80 py-3 text-white rounded-lg font-bold text-lg mt-3"
                   onClick={() => handleSingleGsm()}

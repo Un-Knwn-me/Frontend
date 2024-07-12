@@ -24,7 +24,9 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [isSecondModalOpen, setIsSecondModalOpen] = useState(false);
-  const [currentEditId, setCurrentEditId] = useState(null); // State to store the ID of the item being edited
+  const [currentEditId, setCurrentEditId] = useState(null); 
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     fetchAllMeasurements();
@@ -162,14 +164,43 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
       );
       console.log(response);
 
-      if (response.status === 200) {
+      if (response.status === 201) {
+        setTypeName("");
+        setCategory("");
+        setSizes([{ key: '', value: '' }]);
+        handleImageRemove();
+        setSuccessMessage("Measurement Chart added successfully.");
+        setErrorMessage("");
         fetchAllMeasurements();
         setIsSecondModalOpen(false);
         setEditIndex(null);
         setCurrentEditId(null);
+
+         // Clear messages after 5 seconds
+         setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
       }
     } catch (error) {
-      console.error("Error updating measurement chart:", error);
+      if (error.response && error.response.status === 409) {
+        setErrorMessage("Measurement chart already exists.");
+
+        // Clear messages after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
+      } else {
+        setErrorMessage("Error adding measurement chart.");
+
+        // Clear messages after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
+      }
+      setSuccessMessage("");
     }
   };
 
@@ -432,6 +463,8 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
           handleImageChange={handleImageChange}
           imagePreview={imagePreview}
           handleImageRemove={handleImageRemove}
+          successMessage={successMessage}
+          errorMessage={errorMessage}
         />
       )}
     </div>

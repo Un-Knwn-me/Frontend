@@ -22,6 +22,7 @@ const ProductTypes = ({ searchQuery, isModalOpen, onClose }) => {
   const [singleProductType, setSingleProductType] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  
 
   useEffect(() => {
     fetchAllProductTypes();

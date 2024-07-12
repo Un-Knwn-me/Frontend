@@ -20,6 +20,8 @@ const KnitType = ({ searchQuery, isModalOpen, onClose }) => {
   const [inputValue, setInputValue] = useState("");
   const [addedStyles, setAddedStyles] = useState([]);
   const [singleKints, setSingleKints] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     fetchAllKints();
@@ -146,10 +148,35 @@ const KnitType = ({ searchQuery, isModalOpen, onClose }) => {
 
       if (response.status === 201) {
         setSingleKints("");
+        setSuccessMessage("Knit Type added successfully.");
+        setErrorMessage("");
         fetchAllKints();
+
+         // Clear messages after 5 seconds
+         setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
       }
     } catch (error) {
-      console.error("Error adding knitType:", error);
+      if (error.response && error.response.status === 409) {
+        setErrorMessage("Knit type already exists.");
+
+        // Clear messages after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
+      } else {
+        setErrorMessage("Error adding knit type.");
+
+        // Clear messages after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
+      }
+      setSuccessMessage("");
     }
   };
 
@@ -367,6 +394,16 @@ const KnitType = ({ searchQuery, isModalOpen, onClose }) => {
                   value={singleKints}
                   onChange={(e) => setSingleKints(e.target.value)}
                 />
+                {successMessage && (
+              <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 my-4">
+                <p>{successMessage}</p>
+              </div>
+            )}
+            {errorMessage && (
+              <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 my-4">
+                <p>{errorMessage}</p>
+              </div>
+            )}
                 <button
                   className="bg-sky-600 w-80 py-3 text-white rounded-lg font-bold text-lg mt-3"
                   onClick={() => handleSingleKnit()}

@@ -21,6 +21,8 @@ const Sizes = ({ searchQuery, isModalOpen, onClose }) => {
   const [inputValue, setInputValue] = useState("");
   const [singleSize, setSingleSize] = useState("");
   const [typeName, setTypeName] = useState('');
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     fetchAllSizes();
@@ -73,10 +75,37 @@ const Sizes = ({ searchQuery, isModalOpen, onClose }) => {
         },
       })
       if (response.status === 201) {
+        setTypeName("");
+        setSizes([""]);
+        setSuccessMessage("Size added successfully.");
+        setErrorMessage("");
         fetchAllSizes();
+
+         // Clear messages after 5 seconds
+         setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
       }
     } catch (error) {
-      console.error('Error creating sizes:', error);
+      if (error.response && error.response.status === 409) {
+        setErrorMessage("Size already exists.");
+
+        // Clear messages after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
+      } else {
+        setErrorMessage("Error adding size.");
+
+        // Clear messages after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
+      }
+      setSuccessMessage("");
     }
 
 
@@ -416,6 +445,18 @@ const Sizes = ({ searchQuery, isModalOpen, onClose }) => {
                     )}
                   </div>
                 ))}
+                <div>
+                {successMessage && (
+              <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 my-4">
+                <p>{successMessage}</p>
+              </div>
+            )}
+            {errorMessage && (
+              <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 my-4">
+                <p>{errorMessage}</p>
+              </div>
+            )}
+            </div>
                 <button
                   className="text-blue-600 px-2 py-2 font-bold text-md mt-3"
                   onClick={handleAddSizeField}

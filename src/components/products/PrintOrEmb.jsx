@@ -17,7 +17,8 @@ const PrintOrEmb = ({ searchQuery, isModalOpen, onClose }) => {
   const [checkedIds, setCheckedIds] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(5);
-  const [inputValue, setInputValue] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [singlePrints, setSinglePrints] = useState("");
 
   useEffect(() => {
@@ -140,10 +141,35 @@ const PrintOrEmb = ({ searchQuery, isModalOpen, onClose }) => {
 
       if (response.status === 201) {
         setSinglePrints("");
+        setSuccessMessage("Print or Emb added successfully.");
+        setErrorMessage("");
         fetchAllPrints();
+
+         // Clear messages after 5 seconds
+         setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
       }
     } catch (error) {
-      console.error("Error adding Print or Emb:", error);
+      if (error.response && error.response.status === 409) {
+        setErrorMessage("Print & Emb already exists.");
+
+        // Clear messages after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
+      } else {
+        setErrorMessage("Error adding print & emb.");
+
+        // Clear messages after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
+      }
+      setSuccessMessage("");
     }
   };
 
@@ -349,6 +375,16 @@ const PrintOrEmb = ({ searchQuery, isModalOpen, onClose }) => {
                   value={singlePrints}
                   onChange={(e) => setSinglePrints(e.target.value)}
                 />
+                {successMessage && (
+              <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 my-4">
+                <p>{successMessage}</p>
+              </div>
+            )}
+            {errorMessage && (
+              <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 my-4">
+                <p>{errorMessage}</p>
+              </div>
+            )}
                 <button
                   className="bg-sky-600 w-80 py-3 text-white rounded-lg font-bold text-lg mt-3"
                   onClick={() => handleSinglePrint()}

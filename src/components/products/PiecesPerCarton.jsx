@@ -20,6 +20,8 @@ const PiecesPerOuterCarton = ({ searchQuery, isModalOpen, onClose }) => {
   const [inputValue, setInputValue] = useState("");
   const [addedStyles, setAddedStyles] = useState([]);
   const [singleCarton, setSingleCarton] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     fetchAllCarton();
