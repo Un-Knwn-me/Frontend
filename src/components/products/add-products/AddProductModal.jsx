@@ -743,7 +743,7 @@ const AddProductModal = ({ show, onClose }) => {
     formData.append("reference_number", referenceNo);
     formData.append("style_id", selectedStyleId);
     formData.append("category_id", selectedCategorieId);
-    formData.append("product_id", selectedProductTypesId);
+    formData.append("productType_id", selectedProductTypesId);
     formData.append("brand_id", selectedBrandId);
     formData.append("fabric_id", selectedFabricId);
     formData.append("fabric_finish_id", selectedFabricFinishId);
