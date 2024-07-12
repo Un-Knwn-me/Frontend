@@ -294,6 +294,9 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
                 Measurement Chart
               </th>
               <th className="px-2 py-3 text-left text-md font-bold text-black uppercase w-1/4">
+                Chart name
+              </th>
+              <th className="px-2 py-3 text-left text-md font-bold text-black uppercase w-1/4">
                 Sizes
               </th>
               <th className="px-2 py-3 text-left text-md font-bold text-black uppercase w-1/12">
@@ -326,6 +329,14 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
                 <td className="px-3 py-3 whitespace-nowrap text-md text-center text-black w-40">
                   {startIndex + index + 1}
                 </td>
+                <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">
+                      <div className="flex justify-center items-center">
+                        <img
+                          src={row.sample_size_file}
+                          alt="Product"
+                        />
+                      </div>
+                    </td>
                 <td className="px-3 py-3 whitespace-nowrap text-md text-left text-black 2xl:w-[500px] xl:w-[450px] min-w-[200px]">
                   {row.name}
                 </td>
