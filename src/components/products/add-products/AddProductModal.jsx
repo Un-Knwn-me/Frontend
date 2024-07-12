@@ -3,6 +3,7 @@ import closeIcon from "../../../assets/close-modal-icon.svg";
 import { Uploader } from "uploader"; // Installed by "react-uploader".
 import { UploadButton } from "react-uploader";
 import apiService from "../../../apiService";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
 const AddProductModal = ({ show, onClose }) => {
   const [styleNo, setStyleNo] = useState("");
@@ -722,20 +723,45 @@ const AddProductModal = ({ show, onClose }) => {
       alert("You can only upload up to 13 images.");
       return;
     }
-  
+
     setImages([...images, ...files]);
-  
+
     const newPreviews = files.map((file) => URL.createObjectURL(file));
     setPreviews([...previews, ...newPreviews]);
   };
-  
+
   const removeImage = (index) => {
     const newImages = images.filter((_, i) => i !== index);
     setImages(newImages);
-  
+
     const newPreviews = previews.filter((_, i) => i !== index);
     setPreviews(newPreviews);
   };
+
+  const handleSelectPrimary = (index) => {
+    const newImages = [...images];
+    const primaryImage = newImages.splice(index, 1);
+    setImages([primaryImage[0], ...newImages]);
+
+    const newPreviews = [...previews];
+    const primaryPreview = newPreviews.splice(index, 1);
+    setPreviews([primaryPreview[0], ...newPreviews]);
+  };
+
+  const handleDragEnd = (result) => {
+    if (!result.destination) return;
+
+    const newImages = Array.from(images);
+    const [movedImage] = newImages.splice(result.source.index, 1);
+    newImages.splice(result.destination.index, 0, movedImage);
+    setImages(newImages);
+
+    const newPreviews = Array.from(previews);
+    const [movedPreview] = newPreviews.splice(result.source.index, 1);
+    newPreviews.splice(result.destination.index, 0, movedPreview);
+    setPreviews(newPreviews);
+  };
+
   
   const handleSubmit = async () => {
     setLoading(true);
@@ -804,47 +830,75 @@ const AddProductModal = ({ show, onClose }) => {
           </div>
           <hr className="my-2" />
           <div className="px-40">
-            <div className="flex flex-col gap-3 mt-10">
-              <div className="flex gap-4">
-                <h1 className="font-bold">Product Images</h1>
-                <span className="text-sm text-gray-400 mt-1 relative px-2">
-                  <span className="absolute left-0 top-0 text-gray-600">*</span>
-                  Choose up to 13 images
-                </span>
-              </div>
 
-              <div className="min-h-40 bg-gray-100 flex items-center justify-center">
-                <div className="container mx-auto px-4 py-4">
-                  <div className="mb-4">
-                    <input
-                      type="file"
-                      multiple
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      className="block w-full text-sm text-gray-500 file:mr-2 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
-                    {previews.map((preview, index) => (
-                      <div key={index} className="relative">
-                        <img
-                          src={preview}
-                          alt={`Preview ${index}`}
-                          className="w-full h-32 object-cover rounded-lg shadow-md"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => removeImage(index)}
-                          className="absolute top-2 right-2 bg-red-600 text-white rounded-full px-1.5 focus:outline-none"
+            <div className="flex flex-col gap-3 mt-10">
+      <div className="flex gap-4">
+        <h1 className="font-bold">Product Images</h1>
+        <span className="text-sm text-gray-400 mt-1 relative px-2">
+          <span className="absolute left-0 top-0 text-gray-600">*</span>
+          Choose up to 13 images
+        </span>
+      </div>
+
+      <div className="min-h-40 bg-gray-100 flex items-center justify-center">
+        <div className="container mx-auto px-4 py-4">
+          <div className="mb-4">
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={handleImageChange}
+              className="block w-full text-sm text-gray-500 file:mr-2 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
+            />
+          </div>
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <Droppable droppableId="images" direction="horizontal">
+              {(provided) => (
+                <div
+                  className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4"
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                >
+                  {previews.map((preview, index) => (
+                    <Draggable key={index} draggableId={index.toString()} index={index}>
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          className="relative"
                         >
-                          &times;
-                        </button>
-                      </div>
-                    ))}
-                  </div>
+                          <img
+                            src={preview}
+                            alt={`Preview ${index}`}
+                            className={`w-full h-32 object-cover rounded-lg shadow-md ${index === 0 ? 'border-4 border-blue-500' : ''}`}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeImage(index)}
+                            className="absolute top-2 right-2 bg-red-600 text-white rounded-full px-1 focus:outline"
+                          >
+                            &times;
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleSelectPrimary(index)}
+                            className="absolute bottom-0 left-5 bg-blue-600 text-white text-xs rounded-full px-1 focus:outline-none"
+                          >
+                            Set Primary
+                          </button>
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
                 </div>
-              </div>
-            </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </div>
+      </div>
+    </div>
             <div className="mt-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               <div className="flex flex-col gap-2 relative">
                 <label className="font-semibold" htmlFor="styleNo">
