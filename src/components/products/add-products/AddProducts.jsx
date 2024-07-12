@@ -215,7 +215,7 @@ const AddProducts = ({ searchQuery }) => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {currentData.map((row, index) => (
                   <tr key={row.id} style={{ maxHeight: "50px" }}>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-12">
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-10">
                       {startIndex + index + 1}
                     </td>
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">
@@ -226,34 +226,23 @@ const AddProducts = ({ searchQuery }) => {
                         />
                       </div>
                     </td>
-                    <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black flex-grow">
+                    <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black w-32">
                       {row.Style.style_no}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">
-                      {row.product}
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-32">
+                      {row.MeasurementChart.category}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-40">
-                      {editIndex === startIndex + index ? (
-                        <input
-                          type="text"
-                          value={row.brand}
-                          onChange={(e) =>
-                            handleInputChange(e, startIndex + index)
-                          }
-                          className="border border-gray-300 rounded-md w-28 px-2 py-2"
-                        />
-                      ) : (
-                        row.brand
-                      )}
+                    <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black w-32">
+                      {row.Brand.brandName}
                     </td>
-                    <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black flex-grow">
-                      {row.fabric}
+                    <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black w-32">
+                      {row.Fabric.fabricName}
                     </td>
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">
-                      {row.color}
+                      {row.Color.colorName}
                     </td>
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">
-                      {row.size}
+                      {row.Size.sizes.join(", ")}
                     </td>
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-16">
                       {editIndex === startIndex + index ? (
@@ -267,7 +256,7 @@ const AddProducts = ({ searchQuery }) => {
                       ) : (
                         <button
                           onClick={() => handleEditClick(row.id)}
-                          className="text-blue-500 text-center"
+                          className="text-blue-500 text-center w-16"
                         >
                           <img src={editIcon} alt="Edit" className="h-6 w-6" />
                         </button>
@@ -288,6 +277,14 @@ const AddProducts = ({ searchQuery }) => {
                         }}
                       />
                     </td>
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-8">
+                  <button
+                    onClick={() => handleDelete(row.id)}
+                    className="text-red-500"
+                  >
+                    <img src={deleteIcon} alt="Delete" className="h-5 w-5" />
+                  </button>
+                </td>
                   </tr>
                 ))}
               </tbody>

@@ -22,7 +22,7 @@ const MesasurementModal = ({
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="absolute inset-0 bg-black opacity-50"></div>
-      <div className="bg-white p-6 rounded-lg z-10 w-[600px]">
+      <div className="bg-white p-6 rounded-lg z-10 w-[600px] max-h-[90vh] overflow-y-auto">
         <div className="flex justify-end">
           <button onClick={onClose}>
             <img src={closeIcon} alt="Close" className="h-6 w-6" />

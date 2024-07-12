@@ -10,41 +10,40 @@ import closeIcon from "../../assets/close-modal-icon.svg";
 import excelIcon from "../../assets/excel-icon.svg";
 import apiService from "../../apiService";
 
-const Brand = ({ searchQuery, isModalOpen, onClose }) => {
+const ProductTypes = ({ searchQuery, isModalOpen, onClose }) => {
   const [data, setData] = useState([]);
-  const [editedBrandName, setEditedBrandName] = useState("");
+  const [editedProductTypeName, setEditedProductTypeName] = useState("");
   const [editIndex, setEditIndex] = useState(null);
   const [checkedIds, setCheckedIds] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(5);
   const [inputValue, setInputValue] = useState("");
-  const [addedBrands, setAddedBrands] = useState([]);
-  const [singleBrands, setSingleBrands] = useState("");
+  const [addedProductTypes, setAddedProductTypes] = useState([]);
+  const [singleProductType, setSingleProductType] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    fetchAllBrands();
+    fetchAllProductTypes();
   }, []);
 
-  const fetchAllBrands = async () => {
+  const fetchAllProductTypes = async () => {
     try {
-      const response = await apiService.get("/brands/getall", {
+      const response = await apiService.get("/productTypes/getall", {
         headers: {
           'Content-Type': 'application/json',
         },
       });
       console.log(response.data);
-      setData(response.data); // Assuming response.data contains an array of brands
+      setData(response.data); // Assuming response.data contains an array of product types
     } catch (error) {
-      console.error("Error fetching brands:", error);
+      console.error("Error fetching product types:", error);
     }
   };
 
-  // handle toggle button click
   const handleStatusToggle = async ({ id, isActive }) => {
     try {
-      const response = await apiService.put(`/brands/${id}`, {
+      const response = await apiService.put(`/productTypes/${id}`, {
         isActive: !isActive,
       }, {
         headers: {
@@ -52,43 +51,37 @@ const Brand = ({ searchQuery, isModalOpen, onClose }) => {
         },
       });
       if (response.status === 200) {
-        fetchAllBrands();
+        fetchAllProductTypes();
       }
     } catch (error) {
-      console.error(`Error toggling status for brand with ID ${id}:`, error);
-      // Handle error as needed
+      console.error(`Error toggling status for product type with ID ${id}:`, error);
     }
   };
-  
 
-  // handle edit button click
-  const handleEditClick = ({ id, brandName }) => {
+  const handleEditClick = ({ id, product }) => {
     setEditIndex(id);
-    setEditedBrandName(brandName);
+    setEditedProductTypeName(product);
   };
 
-  // handle input change
   const handleInputChange = (e) => {
-    setEditedBrandName(e.target.value);
+    setEditedProductTypeName(e.target.value);
   };
 
-  // handle save button click
   const handleSaveClick = async (index, id) => {
     try {
-      const response = await apiService.put(`/brands/${id}`, {
-        brandName: editedBrandName,
+      const response = await apiService.put(`/productTypes/${id}`, {
+        product: editedProductTypeName,
       }, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
       if (response.status === 200) {
-        fetchAllBrands();
+        fetchAllProductTypes();
         setEditIndex(null);
       }
     } catch (error) {
-      console.error(`Error saving brand with ID ${id}:`, error);
-      // Handle error as needed
+      console.error(`Error saving product type with ID ${id}:`, error);
     }
   };
 
@@ -98,21 +91,19 @@ const Brand = ({ searchQuery, isModalOpen, onClose }) => {
     );
   };
 
-  // handle delete button click
   const handleDelete = async (id) => {
     try {
-      const response = await apiService.delete(`/brands/${id}`, {
+      const response = await apiService.delete(`/productTypes/${id}`, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
       console.log(response);
       if (response.status === 202) {
-        fetchAllBrands();
+        fetchAllProductTypes();
       }
     } catch (error) {
-      console.error("Error deleting brands:", error);
-      // Handle error as needed
+      console.error("Error deleting product types:", error);
     }
   };
 
@@ -132,10 +123,10 @@ const Brand = ({ searchQuery, isModalOpen, onClose }) => {
     setCurrentPage(1);
   };
 
-  const handleSingleBrand = async () => {
+  const handleSingleProductType = async () => {
     try {
-      const response = await apiService.post("/brands/create", {
-        brandName: singleBrands,
+      const response = await apiService.post("/productTypes/create", {
+        product: singleProductType,
       }, {
         headers: {
           'Content-Type': 'application/json',
@@ -143,12 +134,11 @@ const Brand = ({ searchQuery, isModalOpen, onClose }) => {
       });
 
       if (response.status === 201) {
-        setSingleBrands("");
-        setSuccessMessage("Brand added successfully.");
+        setSingleProductType("");
+        setSuccessMessage("Product type added successfully.");
         setErrorMessage("");
-        fetchAllBrands();
+        fetchAllProductTypes();
 
-        // Clear messages after 5 seconds
         setTimeout(() => {
           setSuccessMessage("");
           setErrorMessage("");
@@ -156,17 +146,15 @@ const Brand = ({ searchQuery, isModalOpen, onClose }) => {
       }
     } catch (error) {
       if (error.response && error.response.status === 409) {
-        setErrorMessage("Brand already exists.");
+        setErrorMessage("Product type already exists.");
 
-        // Clear messages after 5 seconds
         setTimeout(() => {
           setSuccessMessage("");
           setErrorMessage("");
         }, 5000);
       } else {
-        setErrorMessage("Error adding brand.");
+        setErrorMessage("Error adding product type.");
 
-        // Clear messages after 5 seconds
         setTimeout(() => {
           setSuccessMessage("");
           setErrorMessage("");
@@ -176,32 +164,32 @@ const Brand = ({ searchQuery, isModalOpen, onClose }) => {
     }
   };
 
-  const handleAddBrand = async () => {
+  const handleAddProductType = async () => {
     try {
       if (inputValue.trim() !== "") {
-        await apiService.post("/brands/create", { Brand: inputValue.trim() }, {
+        await apiService.post("/productTypes/create", { product: inputValue.trim() }, {
           headers: {
             'Content-Type': 'application/json',
           },
         });
-        setAddedBrands([...addedBrands, inputValue.trim()]); 
+        setAddedProductTypes([...addedProductTypes, inputValue.trim()]);
         setInputValue("");
       }
     } catch (error) {
-      console.error("Error adding brand:", error);
-      // Handle error as needed
+      console.error("Error adding product type:", error);
     }
   };
-  const handleRemoveBrand = (index) => {
-    const newAddedBrands = [...addedBrands];
-    newAddedBrands.splice(index, 1);
-    setAddedBrands(newAddedBrands);
+
+  const handleRemoveProductType = (index) => {
+    const newAddedProductTypes = [...addedProductTypes];
+    newAddedProductTypes.splice(index, 1);
+    setAddedProductTypes(newAddedProductTypes);
   };
 
   const filteredData = data.filter(
     (item) =>
-      item.brandName &&
-      item.brandName.toLowerCase().includes(searchQuery.toLowerCase())
+      item.product &&
+      item.product.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const startIndex = (currentPage - 1) * recordsPerPage;
@@ -218,7 +206,7 @@ const Brand = ({ searchQuery, isModalOpen, onClose }) => {
                 Si No
               </th>
               <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-40">
-                Reference No
+                Product Type
               </th>
               <th className="px-6 py-3 text-center text-md font-bold text-black uppercase flex-grow">
                 Status
@@ -255,12 +243,12 @@ const Brand = ({ searchQuery, isModalOpen, onClose }) => {
                   {editIndex === row.id ? (
                     <input
                       type="text"
-                      value={editedBrandName}
+                      value={editedProductTypeName}
                       onChange={handleInputChange}
                       className="border border-gray-300 rounded-md w-28 px-2 py-2"
                     />
                   ) : (
-                    row.brandName
+                    row.product
                   )}
                 </td>
                 <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black flex-grow">
@@ -305,7 +293,7 @@ const Brand = ({ searchQuery, isModalOpen, onClose }) => {
                       onClick={() =>
                         handleEditClick({
                           id: row.id,
-                          brandName: row.brandName,
+                          product: row.product,
                         })
                       }
                       className="text-blue-500 text-center"
@@ -378,7 +366,7 @@ const Brand = ({ searchQuery, isModalOpen, onClose }) => {
             <div className="p-5 flex flex-col">
               <div>
                 <div className="flex justify-center">
-                  <h2 className="text-2xl font-bold">Add Brand</h2>
+                  <h2 className="text-2xl font-bold">Add Product Type</h2>
                   <button
                     className="absolute right-5 cursor-pointer"
                     onClick={onClose}
@@ -392,25 +380,25 @@ const Brand = ({ searchQuery, isModalOpen, onClose }) => {
                 <input
                   className="bg-gray-200 rounded w-80 py-3 px-4 text-gray-700 focus:outline-none focus:shadow-outline mt-5 text-lg text-center"
                   type="text"
-                  placeholder="Enter brand name"
-                  value={singleBrands}
-                  onChange={(e) => setSingleBrands(e.target.value)}
+                  placeholder="Enter product type"
+                  value={singleProductType}
+                  onChange={(e) => setSingleProductType(e.target.value)}
                 />
                 {successMessage && (
-              <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 my-4">
-                <p>{successMessage}</p>
-              </div>
-            )}
-            {errorMessage && (
-              <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 my-4">
-                <p>{errorMessage}</p>
-              </div>
-            )}
+                  <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 my-4">
+                    <p>{successMessage}</p>
+                  </div>
+                )}
+                {errorMessage && (
+                  <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 my-4">
+                    <p>{errorMessage}</p>
+                  </div>
+                )}
                 <button
                   className="bg-sky-600 w-80 py-3 text-white rounded-lg font-bold text-lg mt-3"
-                  onClick={() => handleSingleBrand()}
+                  onClick={() => handleSingleProductType()}
                 >
-                  Update
+                  Add
                 </button>
                 <div className="text-center mt-4">
                   <p className="flex">
@@ -432,4 +420,4 @@ const Brand = ({ searchQuery, isModalOpen, onClose }) => {
   );
 };
 
-export default Brand;
+export default ProductTypes;

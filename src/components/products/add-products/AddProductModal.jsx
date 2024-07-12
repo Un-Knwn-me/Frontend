@@ -23,9 +23,10 @@ const AddProductModal = ({ show, onClose }) => {
   const [measurementChart, setMeasurementChart] = useState("");
   const [selectedMeasurementImage, setSelectedMeasurementImage] = useState(null);
   const [packingMethod, setPackingMethod] = useState("");
-  const [inner, setInner] = useState("");
-  const [outerCorton, setOuterCorton] = useState("");
   const [categorie, setCategorie] = useState("");
+  const [productTypes, setProductTypes] = useState("");
+  const [innerPcs, setInnerPcs] = useState(null);
+  const [outerCorton, setOuterCorton] = useState(null);
 
   //suggestion brand states
   const [brandDropdown, setBrandDropdown] = useState(false);
@@ -102,26 +103,21 @@ const AddProductModal = ({ show, onClose }) => {
   const [packingSuggestions, setPackingSuggestions] = useState([]);
   const [selectedPackingId, setSelectedPackingId] = useState(null);
 
-  //suggestion inner states
-  const [innerDropdown, setInnerDropdown] = useState(false);
-  const [innerSuggestions, setInnerSuggestions] = useState([]);
-  const [selectedInnerId, setSelectedInnerId] = useState(null);
-
-  //suggestion outerCorton states
-  const [outerCortonDropdown, setOuterCortonDropdown] = useState(false);
-  const [outerCortonSuggestions, setOuterCortonSuggestions] = useState([]);
-  const [selectedOuterCortonId, setSelectedOuterCortonId] = useState(null);
-  const [selectedMesurement, setSelectedMesurement] = useState(null);
-
   //suggestion mesurement states
   const [mesurementDropdown, setMesurementDropdown] = useState(false);
   const [mesurementSuggestions, setMesurementSuggestions] = useState([]);
   const [selectedMesurementId, setSelectedMesurementId] = useState(null);
+  const [selectedMesurement, setSelectedMesurement] = useState(null);
 
   //suggestion categorie states
   const [categorieDropdown, setCategorieDropdown] = useState(false);
   const [categorieSuggestions, setCategorieSuggestions] = useState([]);
   const [selectedCategorieId, setSelectedCategorieId] = useState(null);
+
+    //suggestion productTypes states
+    const [productTypesDropdown, setProductTypesDropdown] = useState(false);
+    const [productTypesSuggestions, setProductTypesSuggestions] = useState([]);
+    const [selectedProductTypesId, setSelectedProductTypesId] = useState(null);
 
   const [images, setImages] = useState([]);
   const [previews, setPreviews] = useState([]);
@@ -600,74 +596,6 @@ const AddProductModal = ({ show, onClose }) => {
     setPackingDropdown(false);
   };
 
-  // fetch inner
-  const fetchInnerSuggestions = async (innerInput) => {
-    try {
-      if (innerInput.length > 0) {
-        const response = await apiService.get("/innerPcs/getall");
-        const filteredInners = response.data.filter((b) =>
-          b.number_of_pcs
-            .toString()
-            .toLowerCase()
-            .startsWith(innerInput.toLowerCase())
-        );
-        setInnerSuggestions(filteredInners);
-      } else {
-        setInnerSuggestions([]);
-      }
-    } catch (error) {
-      console.error("Error fetching inner:", error);
-    }
-  };
-
-  const handleInnerChange = (e) => {
-    const innerInput = e.target.value;
-    setInner(innerInput);
-    setInnerDropdown(true);
-    fetchInnerSuggestions(innerInput);
-  };
-
-  const handleInnerSelect = (inner) => {
-    setInner(inner.number_of_pcs);
-    setSelectedInnerId(inner.id);
-    setInnerSuggestions([]);
-    setInnerDropdown(false);
-  };
-
-  // fetch outerCorton
-  const fetchOuterCortonSuggestions = async (outerCortonInput) => {
-    try {
-      if (outerCortonInput.length > 0) {
-        const response = await apiService.get("/outerCortons/getall");
-        const filteredOuterCortons = response.data.filter((b) =>
-          b.number_of_pcs
-            .toString()
-            .toLowerCase()
-            .startsWith(outerCortonInput.toLowerCase())
-        );
-        setOuterCortonSuggestions(filteredOuterCortons);
-      } else {
-        setOuterCortonSuggestions([]);
-      }
-    } catch (error) {
-      console.error("Error fetching outerCorton:", error);
-    }
-  };
-
-  const handleOuterCortonChange = (e) => {
-    const outerCortonInput = e.target.value;
-    setOuterCorton(outerCortonInput);
-    setOuterCortonDropdown(true);
-    fetchOuterCortonSuggestions(outerCortonInput);
-  };
-
-  const handleOuterCortonSelect = (outerCorton) => {
-    setOuterCorton(outerCorton.number_of_pcs);
-    setSelectedOuterCortonId(outerCorton.id);
-    setOuterCortonSuggestions([]);
-    setOuterCortonDropdown(false);
-  };
-
   // fetch mesurementChart
   const fetchMesurementChartSuggestions = async (mesurementChartInput) => {
     try {
@@ -732,6 +660,37 @@ const AddProductModal = ({ show, onClose }) => {
     setCategorieDropdown(false);
   };
 
+   // fetch product types
+   const fetchProductTypesSuggestions = async (productTypesInput) => {
+    try {
+      if (productTypesInput.length > 0) {
+        const response = await apiService.get("/productTypes/getall");
+        const filteredProductTypes = response.data.filter((b) =>
+          b.product.toLowerCase().startsWith(productTypesInput.toLowerCase())
+        );
+        setProductTypesSuggestions(filteredProductTypes);
+      } else {
+        setProductTypesSuggestions([]);
+      }
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+
+  const handleProductTypesChange = (e) => {
+    const productTypesInput = e.target.value;
+    setProductTypes(productTypesInput);
+    setProductTypesDropdown(true);
+    fetchProductTypesSuggestions(productTypesInput);
+  };
+
+  const handleProductTypesSelect = (productTypes) => {
+    setProductTypes(productTypes.product);
+    setSelectedProductTypesId(productTypes.id);
+    setProductTypesSuggestions([]);
+    setProductTypesDropdown(false);
+  };
+
   const handleFileUpload = (e) => {
     const files = e.target.files;
     console.log(files);
@@ -784,6 +743,7 @@ const AddProductModal = ({ show, onClose }) => {
     formData.append("reference_number", referenceNo);
     formData.append("style_id", selectedStyleId);
     formData.append("category_id", selectedCategorieId);
+    formData.append("product_id", selectedProductTypesId);
     formData.append("brand_id", selectedBrandId);
     formData.append("fabric_id", selectedFabricId);
     formData.append("fabric_finish_id", selectedFabricFinishId);
@@ -798,8 +758,8 @@ const AddProductModal = ({ show, onClose }) => {
     formData.append("sleeve_id", selectedSleeveId);
     formData.append("length_id", selectedLengthId);
     formData.append("packing_method_id", selectedPackingId);
-    formData.append("inner_pcs_id", selectedInnerId);
-    formData.append("outer_carton_pcs_id", selectedOuterCortonId);
+    formData.append("inner_pcs", innerPcs);
+    formData.append("outer_carton_pcs", outerCorton);
     formData.append("measurement_chart_id", selectedMesurementId);
     formData.append("is_Stocked", false);
     images.forEach((image, index) => {
@@ -854,28 +814,6 @@ const AddProductModal = ({ show, onClose }) => {
                   Choose up to 13 images
                 </span>
               </div>
-
-              {/* <div className="flex flex-wrap gap-4">
-                <UploadButton
-                  uploader={uploader}
-                  options={options}
-                  onComplete={(files) => {
-                    if (files.length > 13) {
-                      alert("You can only upload up to 13 images.");
-                    } else {
-                      setImages(
-                        files.map((file) => ({
-                          fileUrl: file.fileUrl,
-                        }))
-                      );
-                    }
-                  }}
-                >
-                  {({ onClick }) => (
-                    <button onClick={onClick}>Upload a file...</button>
-                  )}
-                </UploadButton>
-              </div> */}
 
               <div className="min-h-40 bg-gray-100 flex items-center justify-center">
                 <div className="container mx-auto px-4 py-4">
@@ -1320,52 +1258,26 @@ const AddProductModal = ({ show, onClose }) => {
                   No of pieces per inner:
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   id="piecesPerInner"
-                  value={inner}
-                  onChange={handleInnerChange}
+                  value={innerPcs}
+                  onChange={(e) => setInnerPcs(e.target.value)}
                   className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter No of pieces per inner"
                 />
-                {innerDropdown && inner && (
-                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
-                    {innerSuggestions.map((item) => (
-                      <li
-                        key={item.id}
-                        onClick={() => handleInnerSelect(item)}
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
-                      >
-                        {item.number_of_pcs}
-                      </li>
-                    ))}
-                  </ul>
-                )}
               </div>
               <div className="flex flex-col gap-2 relative">
                 <label className="font-semibold" htmlFor="piecesPerOuterCarton">
                   No of pieces per outer carton:
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   id="piecesPerOuterCarton"
                   value={outerCorton}
-                  onChange={handleOuterCortonChange}
+                  onChange={(e) => setOuterCorton(e.target.value)}
                   className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter No of pieces per outer carton"
                 />
-                {outerCortonDropdown && outerCorton && (
-                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
-                    {outerCortonSuggestions.map((item) => (
-                      <li
-                        key={item.id}
-                        onClick={() => handleOuterCortonSelect(item)}
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
-                      >
-                        {item.number_of_pcs}
-                      </li>
-                    ))}
-                  </ul>
-                )}
               </div>
 
               <div className="flex flex-col gap-2 relative">
@@ -1389,6 +1301,33 @@ const AddProductModal = ({ show, onClose }) => {
                         className="cursor-pointer px-4 py-2 hover:bg-gray-100"
                       >
                         {item.categoryName}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-2 relative">
+                <label className="font-semibold" htmlFor="categorie">
+                  Product Type:
+                </label>
+                <input
+                  type="text"
+                  id="categorie"
+                  value={productTypes}
+                  onChange={handleProductTypesChange}
+                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  placeholder="Enter Category Name"
+                />
+                {productTypesDropdown && productTypes && (
+                  <ul className="absolute top-16 left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
+                    {productTypesSuggestions.map((item) => (
+                      <li
+                        key={item.id}
+                        onClick={() => handleProductTypesSelect(item)}
+                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                      >
+                        {item.product}
                       </li>
                     ))}
                   </ul>

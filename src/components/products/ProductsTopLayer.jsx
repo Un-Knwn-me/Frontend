@@ -11,21 +11,17 @@ import Colors from "./Colors";
 import Sizes from "./Sizes";
 import Decorations from "./Decorations";
 import PrintOrEmb from "./PrintOrEmb";
-
 import StitchDetails from "./StitchDetails";
-
 import Neck from "./Neck";
-import Storms from "./Storms";
 import Length from "./Length";
 import MeasurementChart from "./MeasurementChart";
 import PackingMethod from "./PackingMethod";
-import PiecesPerInner from "./PiecesPerInner";
-import PiecesPerCarton from "./PiecesPerCarton";
 import Sleeve from "./Sleeve";
 import searchIcon from "../../assets/search-icon.svg";
 import addIcon from "../../assets/add-icon.svg";
 import noDataImage from "../../assets/no-data1.png";
 import Category from "./Category";
+import ProductTypes from "./ProductTypes";
 
 const ProductsTopLayer = ({
   showDropdown = true,
@@ -39,61 +35,48 @@ const ProductsTopLayer = ({
 
   const presets = [
     { id: "pr1", value: "1", label: "Style No", component: StyleNo },
-
-    { id: "pr2", value: "2", label: "Brand", component: Brand },
-    { id: "pr3", value: "3", label: "Fabric", component: Fabric },
-    { id: "pr4", value: "4", label: "Fabric Finish", component: FabricFinish },
-    { id: "pr5", value: "5", label: "GSM", component: GSM },
-    { id: "pr6", value: "6", label: "Knit type", component: KnitType },
-    { id: "pr7", value: "7", label: "Colors", component: Colors },
-    { id: "pr8", value: "8", label: "Sizes", component: Sizes },
-    { id: "pr9", value: "9", label: "Decorations", component: Decorations },
+    { id: "pr2", value: "2", label: "Category", component: Category,},
+    { id: "pr3", value: "3", label: "Brand", component: Brand },
+    { id: "pr4", value: "4", label: "Fabric", component: Fabric },
+    { id: "pr5", value: "5", label: "Fabric Finish", component: FabricFinish },
+    { id: "pr6", value: "6", label: "GSM", component: GSM },
+    { id: "pr7", value: "7", label: "Knit type", component: KnitType },
+    { id: "pr8", value: "8", label: "Colors", component: Colors },
+    { id: "pr9", value: "9", label: "Sizes", component: Sizes },
+    { id: "pr10", value: "10", label: "Decorations", component: Decorations },
     {
-      id: "pr10",
-      value: "10",
+      id: "pr11",
+      value: "11",
       label: "Print or Emb name",
       component: PrintOrEmb,
     },
 
     {
-      id: "pr11",
-      value: "11",
+      id: "pr12",
+      value: "12",
       label: "Stitch details",
       component: StitchDetails,
     },
-
-    { id: "pr12", value: "12", label: "Neck", component: Neck },
-    { id: "pr13", value: "13", label: "Sleeve", component: Sleeve },
-    { id: "pr14", value: "14", label: "Length", component: Length },
+    { id: "pr13", value: "13", label: "Neck", component: Neck },
+    { id: "pr14", value: "14", label: "Sleeve", component: Sleeve },
+    { id: "pr15", value: "15", label: "Length", component: Length },
     {
-      id: "pr15",
-      value: "15",
+      id: "pr16",
+      value: "16",
       label: "Measurement chart",
       component: MeasurementChart,
     },
     {
-      id: "pr16",
-      value: "16",
+      id: "pr17",
+      value: "17",
       label: "Packing method",
       component: PackingMethod,
     },
     {
-      id: "pr17",
-      value: "17",
-      label: "No of pieces per inner",
-      component: PiecesPerInner,
-    },
-    {
       id: "pr18",
       value: "18",
-      label: "No of pieces per outer carton",
-      component: PiecesPerCarton,
-    },
-    {
-      id: "pr19",
-      value: "19",
-      label: "Category",
-      component: Category,
+      label: "ProductTypes",
+      component: ProductTypes,
     },
   ];
 
