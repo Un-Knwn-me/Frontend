@@ -290,10 +290,10 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
               <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-1/12">
                 Si No
               </th>
-              <th className="px-2 py-3 text-left text-md font-bold text-black uppercase w-1/4">
+              <th className="px-2 py-3 text-left text-md font-bold text-black uppercase w-2/12">
                 Measurement Chart
               </th>
-              <th className="px-2 py-3 text-left text-md font-bold text-black uppercase w-1/4">
+              <th className="px-2 py-3 text-left text-md font-bold text-black uppercase w-1/12">
                 Chart name
               </th>
               <th className="px-2 py-3 text-left text-md font-bold text-black uppercase w-1/4">
@@ -316,7 +316,7 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
                   checked={checkedIds.length === data.length}
                 />
               </th>
-              <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-8">
+              <th className="px-2 py-3 text-center text-md font-bold text-black uppercase">
                 <button onClick={handleDelete} className="text-red-500">
                   <img src={deleteIcon} alt="Delete" className="h-5 w-5" />
                 </button>
@@ -326,26 +326,27 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
           <tbody className="bg-white divide-y divide-gray-200">
             {currentData.map((row, index) => (
               <tr key={row.id} style={{ maxHeight: "50px" }}>
-                <td className="px-3 py-3 whitespace-nowrap text-md text-center text-black w-40">
+                <td className="px-3 py-3 whitespace-nowrap text-md text-center text-black">
                   {startIndex + index + 1}
                 </td>
-                <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">
-                      <div className="flex justify-center items-center">
+                <td className="px-2 py-3 whitespace-nowrap text-md text-left text-black">
+                      <div className="flex justify-left items-center">
                         <img
                           src={row.sample_size_file}
                           alt="Product"
+                          className="h-32"
                         />
                       </div>
                     </td>
-                <td className="px-3 py-3 whitespace-nowrap text-md text-left text-black 2xl:w-[500px] xl:w-[450px] min-w-[200px]">
+                <td className="px-3 py-3 whitespace-nowrap text-md text-left text-black">
                   {row.name}
                 </td>
-                <td className="px-3 py-3 whitespace-nowrap text-md text-left text-black w-40">
+                <td className="px-3 py-3 whitespace-nowrap text-md text-left text-black">
                   {row.sizes ? Object.keys(row.sizes).map((key) => (
                     <span key={key}>{key}: {row.sizes[key]}, </span>
                   )) : null}
                 </td>
-                <td className="px-3 py-3 whitespace-nowrap text-md text-left text-black 2xl:w-[500px] xl:w-[450px] min-w-[200px]">
+                <td className="px-3 py-3 whitespace-nowrap text-md text-left text-black">
                   {row.category}
                 </td>
                 <td className="px-6 py-3 whitespace-nowrap text-md text-right text-black flex-grow">
@@ -376,7 +377,7 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
                     </div>
                   </button>
                 </td>
-                <td className="px-3 py-3 whitespace-nowrap text-md text-center text-black w-40">
+                <td className="px-3 py-3 whitespace-nowrap text-md text-center text-black w-32">
                   <button
                     onClick={() => handleEditClick(index)}
                     className="text-blue-500"
@@ -384,7 +385,7 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
                     <img src={editIcon} alt="Edit" className="h-5 w-5" />
                   </button>
                 </td>
-                <td className="px-3 py-3 whitespace-nowrap text-md text-center text-black w-40">
+                <td className="px-3 py-3 whitespace-nowrap text-md text-center text-black w-32">
                   <input
                     type="checkbox"
                     className="form-checkbox"
@@ -392,7 +393,7 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
                     checked={checkedIds.includes(row.id)}
                   />
                 </td>
-                <td className="px-3 py-3 whitespace-nowrap text-md text-center text-black w-40">
+                <td className="px-3 py-3 whitespace-nowrap text-md text-center text-black w-32">
                   <button onClick={() => handleDelete(row.id)}>
                     <img src={deleteIconRed} alt="Delete" className="h-5 w-5" />
                   </button>
