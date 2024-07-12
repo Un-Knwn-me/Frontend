@@ -722,21 +722,21 @@ const AddProductModal = ({ show, onClose }) => {
       alert("You can only upload up to 13 images.");
       return;
     }
-
+  
     setImages([...images, ...files]);
-
+  
     const newPreviews = files.map((file) => URL.createObjectURL(file));
     setPreviews([...previews, ...newPreviews]);
   };
-
+  
   const removeImage = (index) => {
     const newImages = images.filter((_, i) => i !== index);
     setImages(newImages);
-
+  
     const newPreviews = previews.filter((_, i) => i !== index);
     setPreviews(newPreviews);
   };
-
+  
   const handleSubmit = async () => {
     setLoading(true);
     const formData = new FormData();
@@ -762,10 +762,10 @@ const AddProductModal = ({ show, onClose }) => {
     formData.append("outer_carton_pcs", outerCorton);
     formData.append("measurement_chart_id", selectedMesurementId);
     formData.append("is_Stocked", false);
-    images.forEach((image, index) => {
-      formData.append(`images[${index}]`, image);
+    images.forEach((image) => {
+      formData.append("images", image);  // Updated field name
     });
-
+  
     try {
       const response = await apiService.post("/products/create", formData, {
         headers: {
@@ -773,16 +773,14 @@ const AddProductModal = ({ show, onClose }) => {
         },
       });
       console.log(response.data);
-      // Handle success, e.g., close modal, show success message, etc.
       setLoading(false);
       onClose();
     } catch (error) {
       console.error("Error creating product:", error);
-      // Handle error, e.g., show error message, etc.
       setLoading(false);
     }
   };
-
+  
   if (!show) return null;
 
   return (
