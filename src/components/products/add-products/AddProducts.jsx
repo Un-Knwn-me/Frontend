@@ -221,8 +221,9 @@ const AddProducts = ({ searchQuery }) => {
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">
                       <div className="flex justify-center items-center">
                         <img
-                          src={`https://via.placeholder.com/50`}
+                          src={row.images[0]}
                           alt="Product"
+                          className="h-28"
                         />
                       </div>
                     </td>
@@ -230,7 +231,7 @@ const AddProducts = ({ searchQuery }) => {
                       {row.Style.style_no}
                     </td>
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-32">
-                      {row.MeasurementChart.category}
+                      {row.ProductType.product}
                     </td>
                     <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black w-32">
                       {row.Brand.brandName}

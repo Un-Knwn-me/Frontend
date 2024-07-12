@@ -277,7 +277,7 @@ const StockIn = ({ searchQuery }) => {
       </div>
       <EditStockInModal showModal={showModal} close={handleCloseModal} />
       {/* <SuccessAlert show={showModal} onClose={handleCloseModal} /> */}
-      {/* <AddStockModal show={showAddModal} onClose={handleAddModalClose}  /> */}
+      <AddStockModal show={showAddModal} onClose={handleAddModalClose}  />
     </>
   );
 };
