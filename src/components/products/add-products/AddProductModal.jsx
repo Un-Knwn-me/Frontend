@@ -875,7 +875,7 @@ const AddProductModal = ({ show, onClose }) => {
                             className={`w-full h-32 object-cover rounded-lg shadow-md ${index === 0 ? 'border-4 border-blue-500' : ''}`}
                           />
                           {index === 0 && (
-                            <span className="absolute bottom-1 left-1/2 transform -translate-x-1/2 bg-gray-600 text-white rounded-full px-2 py-1 text-xs">
+                            <span className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white rounded-lg px-2 py-1 text-xs">
                               Primary
                             </span>
                           )}
