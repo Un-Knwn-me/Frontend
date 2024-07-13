@@ -831,7 +831,7 @@ const AddProductModal = ({ show, onClose }) => {
           <hr className="my-2" />
           <div className="px-40">
 
-            <div className="flex flex-col gap-3 mt-10">
+          <div className="flex flex-col gap-3 mt-10">
       <div className="flex gap-4">
         <h1 className="font-bold">Product Images</h1>
         <span className="text-sm text-gray-400 mt-1 relative px-2">
@@ -866,26 +866,28 @@ const AddProductModal = ({ show, onClose }) => {
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
-                          className="relative"
+                          className="relative cursor-pointer"
+                          onClick={() => handleSelectPrimary(index)}
                         >
                           <img
                             src={preview}
                             alt={`Preview ${index}`}
                             className={`w-full h-32 object-cover rounded-lg shadow-md ${index === 0 ? 'border-4 border-blue-500' : ''}`}
                           />
+                          {index === 0 && (
+                            <span className="absolute bottom-1 left-1/2 transform -translate-x-1/2 bg-gray-600 text-white rounded-full px-2 py-1 text-xs">
+                              Primary
+                            </span>
+                          )}
                           <button
                             type="button"
-                            onClick={() => removeImage(index)}
-                            className="absolute top-2 right-2 bg-red-600 text-white rounded-full px-1 focus:outline"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeImage(index);
+                            }}
+                            className="absolute top-2 right-2 bg-red-600 text-white rounded-full px-1.5 focus:outline-none"
                           >
                             &times;
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleSelectPrimary(index)}
-                            className="absolute bottom-0 left-5 bg-blue-600 text-white text-xs rounded-full px-1 focus:outline-none"
-                          >
-                            Set Primary
                           </button>
                         </div>
                       )}
