@@ -6,16 +6,6 @@ import downloadExcelTemplateIcon from "../../../assets/download-excel-template-i
 import apiService from "../../../apiService";
 
 const AddStockModal = ({ show, onClose }) => {
-  const [stockData, setStockData] = useState({
-    styleNo: "",
-    referenceNo: "",
-    date: "",
-    size: "",
-    quantity: "",
-    description: "",
-    imageUrl: "",
-  });
-  const [data, setData] = useState({});
   const [referenceNumber, setReferenceNumber] = useState("");
   const [referenceDropdown, setReferenceDropdown] = useState(false);
   const [referenceSuggestions, setReferenceSuggestions] = useState([]);
@@ -25,20 +15,7 @@ const AddStockModal = ({ show, onClose }) => {
   const [sizes, setSizes] = useState([]);
   const [imageUrl, setImageUrl] = useState('');
 
-  const fetchAllProducts = async () => {
-    try {
-      const response = await apiService.get(`/products/get/${referenceNumber}`, { 
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      console.log(response.data);
-      setData(response.data); // Assuming response.data contains an array of brands
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
-
+// get product by reference number
   const fetchReferenceSuggestions = async (referenceInput) => {
     try {
       if (referenceInput.length > 0) {
@@ -55,7 +32,6 @@ const AddStockModal = ({ show, onClose }) => {
       console.error("Error fetching Product:", error);
     }
   };
-
 
   const handleInputChange = (e) => {
     const referenceInput = e.target.value;
@@ -84,11 +60,6 @@ const AddStockModal = ({ show, onClose }) => {
     setImageUrl(e.images[0]);
   };
 
-  const handleReferenceNoChange = (event) => {
-    setReferenceNumber(event.target.value);
-    fetchAllProducts()
-  };
-
   if (!show) return null;
 
   return (
@@ -102,7 +73,7 @@ const AddStockModal = ({ show, onClose }) => {
           <div className="flex items-center gap-3">
             <h2 className="text-2xl font-medium">CREATE STOCK INWARD</h2>
           </div>
-          <p className="text-2xl font-medium">Date: {stockData.date}</p>
+          <p className="text-2xl font-medium">Date:</p>
           <button className="text-black absolute right-5" onClick={onClose}>
             <img src={closeIcon} alt="Close" />
           </button>

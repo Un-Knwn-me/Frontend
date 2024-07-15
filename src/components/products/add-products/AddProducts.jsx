@@ -132,6 +132,7 @@ const AddProducts = ({ searchQuery }) => {
 
   const handleAddModalClose = () => {
     setShowAddModal(false);
+    getAllProducts();
   };
 
   const startIndex = (currentPage - 1) * recordsPerPage;

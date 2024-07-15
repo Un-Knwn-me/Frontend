@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import closeIcon from "../../../assets/close-modal-icon.svg";
-import { Uploader } from "uploader"; // Installed by "react-uploader".
-import { UploadButton } from "react-uploader";
 import apiService from "../../../apiService";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
@@ -27,7 +25,7 @@ const AddProductModal = ({ show, onClose }) => {
   const [categorie, setCategorie] = useState("");
   const [productTypes, setProductTypes] = useState("");
   const [innerPcs, setInnerPcs] = useState(null);
-  const [outerCorton, setOuterCorton] = useState(null);
+  // const [outerCorton, setOuterCorton] = useState(null);
 
   //suggestion brand states
   const [brandDropdown, setBrandDropdown] = useState(false);
@@ -692,30 +690,6 @@ const AddProductModal = ({ show, onClose }) => {
     setProductTypesDropdown(false);
   };
 
-  const handleFileUpload = (e) => {
-    const files = e.target.files;
-    console.log(files);
-    // Ensure the total number of files doesn't exceed 13
-    if (files.length + images.length > 13) {
-      alert("You can only upload up to 13 images.");
-      return;
-    }
-
-    // Convert FileList to Array and update state
-    const newImages = [...images];
-    for (let i = 0; i < files.length; i++) {
-      newImages.push(files[i]);
-    }
-    setImages(newImages);
-  };
-
-  const uploader = Uploader({
-    apiKey: "free", // Get production API keys from Bytescale
-  });
-
-  // Configuration options: https://www.bytescale.com/docs/upload-widget/frameworks/react#customize
-  const options = { multi: true };
-
   // Image uploader
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
@@ -765,6 +739,14 @@ const AddProductModal = ({ show, onClose }) => {
   
   const handleSubmit = async () => {
     setLoading(true);
+
+     // Ensure primary image is first
+     const updatedImages = [...images];
+     if (updatedImages[0] !== images[0]) {
+       const primaryImage = updatedImages.splice(images.indexOf(images[0]), 1);
+       updatedImages.unshift(primaryImage[0]);
+     }
+
     const formData = new FormData();
     formData.append("reference_number", referenceNo);
     formData.append("style_id", selectedStyleId);
@@ -785,11 +767,11 @@ const AddProductModal = ({ show, onClose }) => {
     formData.append("length_id", selectedLengthId);
     formData.append("packing_method_id", selectedPackingId);
     formData.append("inner_pcs", innerPcs);
-    formData.append("outer_carton_pcs", outerCorton);
+    // formData.append("outer_carton_pcs", outerCorton);
     formData.append("measurement_chart_id", selectedMesurementId);
     formData.append("is_Stocked", false);
     images.forEach((image) => {
-      formData.append("images", image);  // Updated field name
+      formData.append("images", image); 
     });
   
     try {
@@ -799,8 +781,10 @@ const AddProductModal = ({ show, onClose }) => {
         },
       });
       console.log(response.data);
-      setLoading(false);
-      onClose();
+      if (response.status === 201) {
+        setLoading(false);
+        onClose();
+      }
     } catch (error) {
       console.error("Error creating product:", error);
       setLoading(false);
@@ -941,6 +925,60 @@ const AddProductModal = ({ show, onClose }) => {
                   className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter Reference Number"
                 />
+              </div>
+
+              <div className="flex flex-col gap-2 relative">
+                <label className="font-semibold" htmlFor="categorie">
+                  Categoty:
+                </label>
+                <input
+                  type="text"
+                  id="categorie"
+                  value={categorie}
+                  onChange={handleCategorieChange}
+                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  placeholder="Enter Category Name"
+                />
+                {categorieDropdown && categorie && (
+                  <ul className="absolute top-16 left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
+                    {categorieSuggestions.map((item) => (
+                      <li
+                        key={item.id}
+                        onClick={() => handleCategorieSelect(item)}
+                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                      >
+                        {item.categoryName}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-2 relative">
+                <label className="font-semibold" htmlFor="categorie">
+                  Product Type:
+                </label>
+                <input
+                  type="text"
+                  id="categorie"
+                  value={productTypes}
+                  onChange={handleProductTypesChange}
+                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  placeholder="Enter Category Name"
+                />
+                {productTypesDropdown && productTypes && (
+                  <ul className="absolute top-16 left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
+                    {productTypesSuggestions.map((item) => (
+                      <li
+                        key={item.id}
+                        onClick={() => handleProductTypesSelect(item)}
+                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                      >
+                        {item.product}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
 
               <div className="flex flex-col gap-2 relative">
@@ -1309,18 +1347,19 @@ const AddProductModal = ({ show, onClose }) => {
               </div>
               <div className="flex flex-col gap-2 relative">
                 <label className="font-semibold" htmlFor="piecesPerInner">
-                  No of pieces per inner:
+                  No.of pcs per inner:
                 </label>
                 <input
                   type="number"
                   id="piecesPerInner"
                   value={innerPcs}
                   onChange={(e) => setInnerPcs(e.target.value)}
-                  className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
+                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter No of pieces per inner"
                 />
               </div>
-              <div className="flex flex-col gap-2 relative">
+
+              {/* <div className="flex flex-col gap-2 relative">
                 <label className="font-semibold" htmlFor="piecesPerOuterCarton">
                   No of pieces per outer carton:
                 </label>
@@ -1332,61 +1371,7 @@ const AddProductModal = ({ show, onClose }) => {
                   className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter No of pieces per outer carton"
                 />
-              </div>
-
-              <div className="flex flex-col gap-2 relative">
-                <label className="font-semibold" htmlFor="categorie">
-                  Categoty:
-                </label>
-                <input
-                  type="text"
-                  id="categorie"
-                  value={categorie}
-                  onChange={handleCategorieChange}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
-                  placeholder="Enter Category Name"
-                />
-                {categorieDropdown && categorie && (
-                  <ul className="absolute top-16 left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
-                    {categorieSuggestions.map((item) => (
-                      <li
-                        key={item.id}
-                        onClick={() => handleCategorieSelect(item)}
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
-                      >
-                        {item.categoryName}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-
-              <div className="flex flex-col gap-2 relative">
-                <label className="font-semibold" htmlFor="categorie">
-                  Product Type:
-                </label>
-                <input
-                  type="text"
-                  id="categorie"
-                  value={productTypes}
-                  onChange={handleProductTypesChange}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
-                  placeholder="Enter Category Name"
-                />
-                {productTypesDropdown && productTypes && (
-                  <ul className="absolute top-16 left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
-                    {productTypesSuggestions.map((item) => (
-                      <li
-                        key={item.id}
-                        onClick={() => handleProductTypesSelect(item)}
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
-                      >
-                        {item.product}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
+              </div> */}
 
               <div className="flex flex-col gap-2 relative">
                 <label className="font-semibold" htmlFor="mesurementChart">
@@ -1400,15 +1385,7 @@ const AddProductModal = ({ show, onClose }) => {
                     onChange={handleMesurementChartChange}
                     className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
                     placeholder="Enter Measurement Chart"
-                  />
-                  {selectedMeasurementImage && (
-                    <img
-                      src={selectedMeasurementImage}
-                      alt="Measurement Chart Preview"
-                      className="w-16 h-16 object-cover rounded-md"
-                    />
-                  )}
-                </div>
+                  />                
                 {mesurementDropdown && measurementChart && (
                   <ul className="absolute top-16 left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
                     {mesurementSuggestions.map((item) => (
@@ -1422,6 +1399,7 @@ const AddProductModal = ({ show, onClose }) => {
                     ))}
                   </ul>
                 )}
+                </div>
               </div>
 
               {selectedMesurement && selectedMesurement.sample_size_file && (
