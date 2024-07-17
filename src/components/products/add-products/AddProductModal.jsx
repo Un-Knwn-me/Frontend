@@ -767,7 +767,6 @@ const AddProductModal = ({ show, onClose }) => {
     formData.append("length_id", selectedLengthId);
     formData.append("packing_method_id", selectedPackingId);
     formData.append("inner_pcs", innerPcs);
-    // formData.append("outer_carton_pcs", outerCorton);
     formData.append("measurement_chart_id", selectedMesurementId);
     formData.append("is_Stocked", false);
     images.forEach((image) => {
