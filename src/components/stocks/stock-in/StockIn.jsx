@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import editIcon from "../../../assets/edit-icon.svg";
 import deleteIcon from "../../../assets/delete-icon.svg";
 import leftArrowIcon from "../../../assets/left-arrow-icon.svg";
@@ -7,58 +7,10 @@ import TopLayer from "../../shared/TopLayer"; // Make sure to import TopLayer
 import EditStockInModal from "./editStockInModal";
 import SuccessAlert from "./SuccessAlert";
 import AddStockModal from "./AddStockModal";
+import apiService from "../../../apiService";
 
 const StockIn = ({ searchQuery }) => {
-  const [initialData, setInitialData] = useState([
-    {
-      id: 1,
-      styleNo: "A123",
-      date: "12/5/24",
-      size: "M",
-      description: "Size A",
-      quantity: "2",
-    },
-    {
-      id: 2,
-      styleNo: "B456",
-      date: "12/5/24",
-      size: "L",
-      description: "Size A",
-      quantity: "2",
-    },
-    {
-      id: 3,
-      styleNo: "C789",
-      date: "12/5/24",
-      size: "XL",
-      description: "Size A",
-      quantity: "2",
-    },
-    {
-      id: 4,
-      styleNo: "D012",
-      date: "12/5/24",
-      size: "M",
-      description: "Size A",
-      quantity: "2",
-    },
-    {
-      id: 5,
-      styleNo: "E345",
-      date: "12/5/24",
-      size: "L",
-      description: "Size A",
-      quantity: "2",
-    },
-    {
-      id: 6,
-      styleNo: "F678",
-      date: "12/5/24",
-      size: "XL",
-      description: "Size A",
-      quantity: "2",
-    },
-  ]);
+  const [initialData, setInitialData] = useState([]);
 
   const [filteredData, setFilteredData] = useState(initialData);
   const [editIndex, setEditIndex] = useState(null);
@@ -67,6 +19,34 @@ const StockIn = ({ searchQuery }) => {
   const [recordsPerPage, setRecordsPerPage] = useState(5);
   const [showModal, setShowModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
+
+
+  // Function to fetch all products
+  const getAllStocks = async () => {
+    try {
+      const response = await apiService.get(`/stocks/stockIn/all`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      // Format the created_at date
+    const formattedData = response.data.map(stock => ({
+      ...stock,
+      created_at: new Date(stock.created_at).toLocaleDateString('en-GB')
+    }));
+
+    console.log(formattedData);
+    setInitialData(formattedData);
+    setFilteredData(formattedData);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+
+  useEffect(() => {
+    getAllStocks();
+  }, []);
+
 
   const handleSearch = (searchValue) => {
     const filtered = initialData.filter((item) =>
@@ -86,12 +66,20 @@ const StockIn = ({ searchQuery }) => {
     );
   };
 
-  const handleDelete = () => {
-    const newData = initialData.filter((row) => !checkedIds.includes(row.id));
-    setInitialData(newData);
-    setFilteredData(newData); // Also update filtered data
-    setCheckedIds([]);
-  };
+  const handleDelete = async () => {
+    try {
+      // Assuming checkedIds contains IDs to delete
+      const promises = checkedIds.map(id =>
+        apiService.delete(`/stocks/stockIn/${id}`)
+      );
+      await Promise.all(promises);
+      console.log('Products deleted successfully');
+      getAllStocks(); // Refresh the product list
+      setCheckedIds([]); // Clear checked IDs after deletion
+    } catch (error) {
+      console.error('Error deleting products:', error);
+    }
+  }; 
 
   const handlePageChange = (direction) => {
     if (direction === "prev" && currentPage > 1) {
@@ -160,13 +148,13 @@ const StockIn = ({ searchQuery }) => {
                     Style No
                   </th>
                   <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-32">
-                    Description
+                    Reference No
                   </th>
                   <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-16">
                     Size
                   </th>
                   <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-16">
-                    Qty
+                    Bundles
                   </th>
                   <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-20">
                     Action
@@ -205,19 +193,19 @@ const StockIn = ({ searchQuery }) => {
                       </div>
                     </td>
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black flex-grow">
-                      {row.date}
+                      {row.created_at}
                     </td>
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-36">
-                      {row.styleNo}
+                      {row.Product.Style.style_no}
                     </td>
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-32">
-                      {row.description}
+                      {row.product_reference_number}
                     </td>
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-16">
-                      {row.size}
+                      {row.Product.Size.sizes.join(", ")}
                     </td>
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-16">
-                      {row.quantity}
+                      {row.no_bundles}
                     </td>
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-20">
                       <button
@@ -235,6 +223,14 @@ const StockIn = ({ searchQuery }) => {
                         onChange={() => handleCheckboxChange(row.id)}
                       />
                     </td>
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-8">
+                  <button
+                    onClick={() => handleDelete(row.id)}
+                    className="text-red-500"
+                  >
+                    <img src={deleteIcon} alt="Delete" className="h-5 w-5" />
+                  </button>
+                </td>
                   </tr>
                 ))}
               </tbody>
