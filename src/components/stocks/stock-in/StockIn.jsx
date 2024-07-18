@@ -187,7 +187,7 @@ const StockIn = ({ searchQuery }) => {
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-20">
                       <div className="flex justify-center items-center">
                         <img
-                          src={`https://via.placeholder.com/50`}
+                          src={row.Product.images[0]}
                           alt="Product"
                         />
                       </div>
