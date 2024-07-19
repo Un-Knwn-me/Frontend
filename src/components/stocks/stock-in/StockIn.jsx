@@ -8,6 +8,7 @@ import EditStockInModal from "./editStockInModal";
 import SuccessAlert from "./SuccessAlert";
 import AddStockModal from "./AddStockModal";
 import apiService from "../../../apiService";
+import imgbg from "../../../assets/imgbg.svg";
 
 const StockIn = ({ searchQuery }) => {
   const [initialData, setInitialData] = useState([]);
@@ -188,7 +189,8 @@ const StockIn = ({ searchQuery }) => {
                       <div className="flex justify-center items-center">
                         <img
                           src={row.Product.images[0]}
-                          alt="Product"
+                          alt={imgbg}
+                          className="h-28"
                         />
                       </div>
                     </td>

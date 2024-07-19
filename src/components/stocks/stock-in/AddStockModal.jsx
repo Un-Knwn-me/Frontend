@@ -4,6 +4,7 @@ import editIcon from "../../../assets/edit-icon.svg";
 import excelIcon from "../../../assets/excel-icon.svg";
 import downloadExcelTemplateIcon from "../../../assets/download-excel-template-icon.svg";
 import apiService from "../../../apiService";
+import imgbg from "../../../assets/imgbg.svg";
 
 const AddStockModal = ({ show, onClose }) => {
   const [referenceNumber, setReferenceNumber] = useState("");
@@ -218,14 +219,14 @@ const AddStockModal = ({ show, onClose }) => {
           <div className="flex items-center justify-center border border-gray-400">
             <img
               src={imageUrl}
-              alt="Select Product"
+              alt={imgbg}
               className="h-60 w-60 object-cover rounded"
             />
           </div>
         </div>
 
         <div className="px-20 mb-4">
-          <label className="font-semibold">Assortment Type:</label>
+          <label className="font-semibold">Packaging Type:</label>
           <div className="flex items-center gap-4">
             <label>
               <input
@@ -233,8 +234,9 @@ const AddStockModal = ({ show, onClose }) => {
                 value="assorted"
                 checked={assortmentType === "assorted"}
                 onChange={handleAssortmentTypeChange}
+                className="mx-1"
               />
-              Assorted
+               Assorted
             </label>
             <label>
               <input
@@ -242,8 +244,9 @@ const AddStockModal = ({ show, onClose }) => {
                 value="solid"
                 checked={assortmentType === "solid"}
                 onChange={handleAssortmentTypeChange}
+                className="mx-1"
               />
-              Solid
+               Solid
             </label>
           </div>
         </div>
