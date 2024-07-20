@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import closeIcon from "../../../assets/close-modal-icon.svg";
 import apiService from "../../../apiService";
 
-const CreatePoModal = ({ show, onClose }) => {
+const CreatePoModal = ({ show, onClose, getAllPurchaseOrder }) => {
   const [buyer, setBuyer] = useState("");
   const [orderNumber, setOrderNumber] = useState("");
   const [referenceNumber, setReferenceNumber] = useState("");
@@ -24,8 +24,7 @@ const CreatePoModal = ({ show, onClose }) => {
   const [totalOuterPcs, setTotalOuterPcs] = useState(0);
   const [totalInnerPcsPerBundle, setTotalInnerPcsPerBundle] = useState(0);
   const [totalProducts, setTotalProducts] = useState(0);
-  const [poQty, setPoQty] = useState(null);
-  const [dia, setDia] = useState(null);
+  const [dia, setDia] = useState('');
   const [notes, setNotes] = useState('');
 
   const handleDeliveryDateChange = (e) => {
@@ -157,10 +156,15 @@ const CreatePoModal = ({ show, onClose }) => {
     };
 
     try {
-      console.log(purchaseData);
       const response = await apiService.post("/purchases/create", purchaseData);
-      console.log("Purchase order is created:", response.data);
-      onClose();
+      
+      if (response.status === 201) {
+        getAllPurchaseOrder();
+        onClose();
+        console.log("Purchase order is created:", response.data);
+      } else {
+        console.error("Error creating Purchase order:", response.data);
+      }
     } catch (error) {
       console.error("Error creating Purchase order:", error);
     }
@@ -226,19 +230,6 @@ const CreatePoModal = ({ show, onClose }) => {
                 />
               </div>
               <div className="flex flex-col gap-2 mt-3">
-                <label className="font-semibold" htmlFor="decorations">
-                  Purchase Qty:
-                </label>
-                <input
-                  type="number"
-                  id="poQty"
-                  value={poQty}
-                  onChange={(e) => setPoQty(e.target.value)}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
-                  placeholder="Enter purchase qty"
-                />
-              </div>
-              <div className="flex flex-col gap-2 mt-3">
                 <label className="font-semibold" htmlFor="diameter">
                   Diameter:
                 </label>
@@ -246,7 +237,7 @@ const CreatePoModal = ({ show, onClose }) => {
                   type="number"
                   id="diameter"
                   value={dia}
-                  onChange={(e) => setDia(e.target.value)}
+                  onChange={(e) => setDia(Number(e.target.value))}
                   className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
                   placeholder="Enter bundle dia"
                 />

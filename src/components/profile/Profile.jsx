@@ -1,12 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import profileScreenBg from "../../assets/profile-screen-bg.png";
 import profileImage from "../../assets/profile-image.jpeg"; // Replace this with your actual profile image
 import editIcon from "../../assets/edit-icon.svg";
 import whatsappIcon from "../../assets/whatsapp-icon.svg";
 import emailIcon from "../../assets/email-icon.svg";
 import lockIcon from "../../assets/lock-icon.svg";
+import apiService from "../../apiService";
 
 const Profile = () => {
+    const [data, setData] = useState({});
+
+     // Function to fetch all orders
+   const getUserById = async () => {
+    try {
+      const response = await apiService.get(`/users/type`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      // Format the created_at date
+    const formattedData = response.data.map(stock => ({
+      ...stock,
+      created_at: new Date(stock.created_at).toLocaleDateString('en-GB')
+    }));
+
+    console.log(formattedData);
+    // setInitialData(formattedData);
+    // setFilteredData(formattedData);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+
+  useEffect(() => {
+    getUserById();
+  }, []);
+
     return (
         <div className="h-[80vh] bg-white relative">
             <div

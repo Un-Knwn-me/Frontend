@@ -81,7 +81,7 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
       
       const formData = new FormData();
       formData.append("name", name);
-      formData.append("category", category); // Include category in the form data
+      formData.append("category", category);
       formData.append('sizes', JSON.stringify(formattedSizes));
       if (image) {
         formData.append("sample_size_file", image);

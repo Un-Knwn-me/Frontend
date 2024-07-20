@@ -6,7 +6,7 @@ import downloadExcelTemplateIcon from "../../../assets/download-excel-template-i
 import apiService from "../../../apiService";
 import imgbg from "../../../assets/imgbg.svg";
 
-const AddStockModal = ({ show, onClose }) => {
+const AddStockModal = ({ show, onClose, getAllStocks }) => {
   const [referenceNumber, setReferenceNumber] = useState("");
   const [referenceDropdown, setReferenceDropdown] = useState(false);
   const [referenceSuggestions, setReferenceSuggestions] = useState([]);
@@ -24,6 +24,8 @@ const AddStockModal = ({ show, onClose }) => {
   const [totalInnerPcsPerBundle, setTotalInnerPcsPerBundle] = useState(0);
   const [totalProducts, setTotalProducts] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
 // get product by reference number
   const fetchReferenceSuggestions = async (referenceInput) => {
@@ -143,12 +145,32 @@ const AddStockModal = ({ show, onClose }) => {
     };
 
     try {
-      console.log(stockData);
       const response = await apiService.post("/stocks/create", stockData);
+
+      if (response.status === 200) {
       console.log("Stock created:", response.data);
       onClose();
+      getAllStocks();
+      } 
     } catch (error) {
-      console.error("Error creating stock:", error);
+      if (error.response && error.response.status === 409) {
+        setErrorMessage("Reference number of the product already exists.");
+
+        // Clear messages after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
+      } else {
+        setErrorMessage("Error adding Stock.");
+
+        // Clear messages after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
+      }
+      setSuccessMessage("");
     }
   };
 
@@ -324,72 +346,16 @@ const AddStockModal = ({ show, onClose }) => {
 
           </div>
         </div>
-
-        {/* <div className="px-20">
-          <div className="flex items-center gap-2 mb-4">
-            <h3 className="text-lg font-medium">Stock Info:</h3>
-          </div>
-          <div className="flex gap-4 border border-gray-400 px-5 justify-between">
-            <div className="p-4 rounded-lg">
-              <h4 className="text-sm font-medium mb-4">No Inners Pack:</h4>
-              <div className="flex flex-col gap-4">
-                {sizes.map((size) => (
-                  <div key={size} className="flex gap-4">
-                    <label className="block text-sm font-medium text-gray-700 mr-10 w-10">
-                      {size}
-                    </label>
-                    <input
-                      type="number"
-                      placeholder="size"
-                      className="block w-20 text-center border border-gray-300 shadow-sm"
-                    />
-                  </div>
-                ))}
+        {successMessage && (
+              <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 my-4">
+                <p>{successMessage}</p>
               </div>
-            </div>
-            <div className="p-4 rounded-lg flex items-center justify-center whitespace-nowrap gap-5 mr-5">
-              <h4 className="text-lg font-medium text-gray-800">
-                No of Bundles
-              </h4>
-              <div className="grid grid-cols-1 gap-4">
-                <input
-                  type="number"
-                  className="block w-20 text-center border border-gray-300 shadow-sm"
-                />
+            )}
+            {errorMessage && (
+              <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 my-4">
+                <p>{errorMessage}</p>
               </div>
-            </div>
-
-            <div className="p-4 bg-gray-100 flex items-center justify-center mt-8 mb-8">
-              <div className="flex flex-col gap-4">
-                <div className="flex gap-5 justify-between">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Total Inners
-                  </label>
-                  <span>125</span>
-                </div>
-                <div className="flex gap-5 justify-between">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Pieces per Pack
-                  </label>
-                  <span>125</span>
-                </div>
-                <div className="flex gap-5 justify-between">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Total Pcs in Bundle
-                  </label>
-                  <span>125</span>
-                </div>
-                <div className="flex gap-5 justify-between">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Total Pcs
-                  </label>
-                  <span>125</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> */}
-        
+            )}
         <div className="flex justify-end px-20 mt-4">
           <button
             onClick={handleSubmit}

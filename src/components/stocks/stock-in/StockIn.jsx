@@ -21,7 +21,6 @@ const StockIn = ({ searchQuery }) => {
   const [showModal, setShowModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
 
-
   // Function to fetch all products
   const getAllStocks = async () => {
     try {
@@ -275,7 +274,7 @@ const StockIn = ({ searchQuery }) => {
       </div>
       <EditStockInModal showModal={showModal} close={handleCloseModal} />
       {/* <SuccessAlert show={showModal} onClose={handleCloseModal} /> */}
-      <AddStockModal show={showAddModal} onClose={handleAddModalClose}  />
+      <AddStockModal show={showAddModal} onClose={handleAddModalClose} getAllStocks={getAllStocks} />
     </>
   );
 };

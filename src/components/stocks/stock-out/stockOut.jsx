@@ -8,14 +8,7 @@ import tickIcon from "../../../assets/tick-icon.svg";
 import EditStockOutModel from "./EditstockOutModel";
 
 const StockOut = () => {
-    const [initialData, setInitialData] = useState([
-        { id: 1, PO: 'PO 001', buyer: '001', brand: 'BrandA', fabric: 'Cotton', GSM: '180', styleNo: 'A123', refNo: '345' },
-        { id: 2, PO: 'PO 002', buyer: '002', brand: 'BrandA', fabric: 'Cotton', GSM: '180', styleNo: 'A123', refNo: '345' },
-        { id: 3, PO: 'PO 003', buyer: '003', brand: 'BrandA', fabric: 'Cotton', GSM: '180', styleNo: 'A123', refNo: '345' },
-        { id: 4, PO: 'PO 004', buyer: '004', brand: 'BrandA', fabric: 'Cotton', GSM: '180', styleNo: 'A123', refNo: '345' },
-        { id: 5, PO: 'PO 005', buyer: '005', brand: 'BrandA', fabric: 'Cotton', GSM: '180', styleNo: 'A123', refNo: '345' },
-        { id: 6, PO: 'PO 006', buyer: '006', brand: 'BrandA', fabric: 'Cotton', GSM: '180', styleNo: 'A123', refNo: '345' },{ id: 6, styleNo: 'F678', product: 'Jacket', brand: 'BrandC', fabric: 'Leather', color: 'Black', size: 'XL', status: 'active' },
-      ]);
+    const [initialData, setInitialData] = useState([]);
     
       const [filteredData, setFilteredData] = useState(initialData);
       const [editIndex, setEditIndex] = useState(null);

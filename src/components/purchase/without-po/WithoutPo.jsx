@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import editIcon from "../../../assets/edit-icon.svg";
 import deleteIcon from "../../../assets/delete-icon.svg";
 import leftArrowIcon from "../../../assets/left-arrow-icon.svg";
@@ -7,17 +7,10 @@ import tickIcon from "../../../assets/tick-icon.svg";
 import TopLayer from '../../shared/TopLayer';
 import CreateWithoutPoModal from './CreateWithoutPoModel';
 import EditWithoutPoModal from './EditWithoutPoModel';
+import apiService from '../../../apiService';
 
 const WithoutPo = () => {
-  const [initialData, setInitialData] = useState([
-    { id: 1, WPO: 'WPO 001', buyer: '001', brand: 'BrandA', fabric: 'Cotton', GSM: '180', styleNo: 'A123', refNo: '345' },
-    { id: 2, WPO: 'WPO 002', buyer: '002', brand: 'BrandA', fabric: 'Cotton', GSM: '180', styleNo: 'A123', refNo: '345' },
-    { id: 3, WPO: 'WPO 003', buyer: '003', brand: 'BrandA', fabric: 'Cotton', GSM: '180', styleNo: 'A123', refNo: '345' },
-    { id: 4, WPO: 'WPO 004', buyer: '004', brand: 'BrandA', fabric: 'Cotton', GSM: '180', styleNo: 'A123', refNo: '345' },
-    { id: 5, WPO: 'WPO 005', buyer: '005', brand: 'BrandA', fabric: 'Cotton', GSM: '180', styleNo: 'A123', refNo: '345' },
-    { id: 6, WPO: 'WPO 006', buyer: '006', brand: 'BrandA', fabric: 'Cotton', GSM: '180', styleNo: 'A123', refNo: '345' },{ id: 6, styleNo: 'F678', product: 'Jacket', brand: 'BrandC', fabric: 'Leather', color: 'Black', size: 'XL', status: 'active' },
-  ]);
-
+  const [initialData, setInitialData] = useState([]);
   const [filteredData, setFilteredData] = useState(initialData);
   const [editIndex, setEditIndex] = useState(null);
   const [checkedIds, setCheckedIds] = useState([]);
@@ -27,9 +20,36 @@ const WithoutPo = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState(null);
 
+  // Function to fetch all orders
+  const getAllPurchaseOrder = async () => {
+    try {
+      const poType = "wpo"
+      const response = await apiService.get(`/purchases/type/${poType}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      // Format the created_at date
+    const formattedData = response.data.map(stock => ({
+      ...stock,
+      created_at: new Date(stock.created_at).toLocaleDateString('en-GB')
+    }));
+
+    console.log(formattedData);
+    setInitialData(formattedData);
+    setFilteredData(formattedData);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+
+  useEffect(() => {
+    getAllPurchaseOrder();
+  }, []);
+
   const handleSearch = (searchValue) => {
     const filtered = initialData.filter(item =>
-      item.brand.toLowerCase().includes(searchValue.toLowerCase())
+      item.purchase_order_number.toLowerCase().includes(searchValue.toLowerCase())
     );
     setFilteredData(filtered);
     setCurrentPage(1); // Reset to first page on new search
@@ -137,13 +157,13 @@ const WithoutPo = () => {
                 {currentData.map((row, index) => (
                   <tr key={row.id} style={{ maxHeight: '50px' }}>
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-12">{startIndex + index + 1}</td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">{row.WPO}</td>
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">{row.purchase_order_number}</td>
                     <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black flex-grow">{row.buyer}</td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">{row.brand}</td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-40">{row.fabric}</td>
-                    <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black flex-grow">{row.GSM}</td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">{row.styleNo}</td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">{row.refNo}</td>
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">{row.Product.Brand.brandName}</td>
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-40">{row.Product.Fabric.fabricName}</td>
+                    <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black flex-grow">{row.Product.Gsm.gsmValue}</td>
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">{row.Product.Style.style_no}</td>
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">{row.product_reference_no}</td>
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-16">
                       {editIndex === startIndex + index ? (
                         <button onClick={handleSaveClick} className="bg-green-200 border border-green-500 px-2 py-1 rounded-lg flex">
