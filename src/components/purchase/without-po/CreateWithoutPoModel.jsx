@@ -270,11 +270,11 @@ const CreateWithoutPoModal = ({ show, onClose }) => {
               </div>
 
 
-              <div class="border-0 p-10 bg-gray-100 h-screen mt-5 max-w-[20vw] max-h-[25vh]">
-                <p class="flex text-gray-700 text-base gap-x-12">Total inner packs <span>125</span></p>
-                <p class="flex text-gray-700 text-base mt-3 gap-x-20">Pcs per packs <span>12</span></p>
-                <p class="flex text-gray-700 text-base mt-3 gap-x-10">Total pcs in bundle <span>1500</span></p>
-                <p class="flex font-bold text-2xl mt-10 gap-x-16">Total pcs <span>15000</span></p>
+              <div className="border-0 p-10 bg-gray-100 h-screen mt-5 max-w-[20vw] max-h-[25vh]">
+                <p className="flex text-gray-700 text-base gap-x-12">Total inner packs <span>125</span></p>
+                <p className="flex text-gray-700 text-base mt-3 gap-x-20">Pcs per packs <span>12</span></p>
+                <p className="flex text-gray-700 text-base mt-3 gap-x-10">Total pcs in bundle <span>1500</span></p>
+                <p className="flex font-bold text-2xl mt-10 gap-x-16">Total pcs <span>15000</span></p>
               </div>
             </div>
             <button className="bg-sky-600 px-28 py-3 text-white absolute bottom-5 right-40 rounded-lg font-bold text-sm mr-10">Create PO</button>

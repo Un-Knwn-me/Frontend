@@ -30,7 +30,7 @@ const CreatePoModal = ({ show, onClose }) => {
 
   const handleDeliveryDateChange = (e) => {
     const inputDate = e.target.value;
-    setDeliveryDate(inputDate);
+    setDeliveryDate(new Date(inputDate).toISOString());
   };
   
 
@@ -143,8 +143,8 @@ const CreatePoModal = ({ show, onClose }) => {
       product_reference_no: referenceNumber,
       product_id: selectedProductId,
       buyer: buyer,
-      unique_name: notes,
-      purchase_quantity: poQty,
+      notes: notes,
+      total_purchase_qty: totalProducts,
       delivery_date: deliveryDate,
       diameter: dia,
       packing_type: assortmentType,
@@ -158,9 +158,9 @@ const CreatePoModal = ({ show, onClose }) => {
 
     try {
       console.log(purchaseData);
-      // const response = await apiService.post("/stocks/create", stockData);
-      // console.log("Stock created:", response.data);
-      // onClose();
+      const response = await apiService.post("/purchases/create", purchaseData);
+      console.log("Purchase order is created:", response.data);
+      onClose();
     } catch (error) {
       console.error("Error creating Purchase order:", error);
     }
@@ -219,7 +219,7 @@ const CreatePoModal = ({ show, onClose }) => {
                 <input
                   type="date"
                   id="deliveryDate"
-                  value={deliveryDate}
+                  value={deliveryDate.split("T")[0]}
                   onChange={handleDeliveryDateChange}
                   className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
                   placeholder="Enter delivery date"
