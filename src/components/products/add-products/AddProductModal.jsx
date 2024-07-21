@@ -25,7 +25,8 @@ const AddProductModal = ({ show, onClose }) => {
   const [categorie, setCategorie] = useState("");
   const [productTypes, setProductTypes] = useState("");
   const [innerPcs, setInnerPcs] = useState(null);
-  // const [outerCorton, setOuterCorton] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   //suggestion brand states
   const [brandDropdown, setBrandDropdown] = useState(false);
@@ -781,10 +782,38 @@ const AddProductModal = ({ show, onClose }) => {
       });
       console.log(response.data);
       if (response.status === 201) {
+        setSuccessMessage("Product added successfully.");
+        setErrorMessage("");
+        // Clear messages after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
+
         setLoading(false);
         onClose();
+      } else if (response.status === 409) {
+        setErrorMessage("Reference number on this Product already exists.");
       }
     } catch (error) {
+      if (error.response && error.response.status === 409) {
+        setErrorMessage("Reference number on this Product already exists.");
+
+        // Clear messages after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
+      } else {
+        setErrorMessage("Error adding Product.");
+
+        // Clear messages after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
+      }
+      setSuccessMessage("");
       console.error("Error creating product:", error);
       setLoading(false);
     }
@@ -1411,7 +1440,18 @@ const AddProductModal = ({ show, onClose }) => {
                 </div>
               )}
             </div>
-            {/* <button className="bg-sky-600 px-28 py-2 text-white absolute bottom-5 right-40 rounded-lg font-bold text-sm" >Add Products</button> */}
+            
+            {successMessage && (
+              <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 my-4">
+                <p>{successMessage}</p>
+              </div>
+            )}
+            {errorMessage && (
+              <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 my-4">
+                <p>{errorMessage}</p>
+              </div>
+            )}
+            
             <div className="mt-10 flex justify-center gap-4">
               <button
                 className="bg-blue-500 text-white px-4 py-2 rounded-md"

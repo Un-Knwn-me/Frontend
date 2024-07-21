@@ -6,6 +6,7 @@ import leftArrowIcon from "../../../assets/left-arrow-icon.svg";
 import rightArrowIcon from "../../../assets/right-arrow-icon.svg";
 import tickIcon from "../../../assets/tick-icon.svg";
 import EditStockOutModel from "./EditstockOutModel";
+import StockSelectOptionModel from "./StockSelectOptionModel";
 
 const StockOut = () => {
     const [initialData, setInitialData] = useState([]);
@@ -24,7 +25,7 @@ const StockOut = () => {
           item.brand.toLowerCase().includes(searchValue.toLowerCase())
         );
         setFilteredData(filtered);
-        setCurrentPage(1); // Reset to first page on new search
+        setCurrentPage(1); 
       };
     
       const handleEditClick = (id) => {
@@ -65,11 +66,11 @@ const StockOut = () => {
       const handleCloseModal = () => {
         setShowModal(false);
         setSelectedProductId(null);
-      };
-    
-      const handleAddModalClose = () => {
+    };
+
+    const handleAddModalClose = () => {
         setShowAddModal(false);
-      };
+    };
     
       const startIndex = (currentPage - 1) * recordsPerPage;
       const endIndex = startIndex + recordsPerPage;
@@ -79,7 +80,7 @@ const StockOut = () => {
         <>
             <div className=''>
                 <TopLayer
-                    title="Product List"
+                   title="Product List"
                     isSearch={true}
                     onSearch={handleSearch}
                     showDropdown={true}
@@ -90,6 +91,8 @@ const StockOut = () => {
                         setFilteredData(filtered);
                         setCurrentPage(1);
                     }}
+                    isAddButton={true}
+                    addButtonText="Add Stock Out"
                     onAddButtonClick={() => setShowAddModal(true)}
                 />
                 <div className=" mx-auto p-4 bg-white mt-5">
@@ -181,6 +184,7 @@ const StockOut = () => {
                 </div>
             </div>
             <EditStockOutModel show={showModal} onClose={handleCloseModal} productId={selectedProductId} />
+            <StockSelectOptionModel show={showAddModal} onClose={handleAddModalClose} />
         </>
     )
 }
