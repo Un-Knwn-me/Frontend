@@ -10,83 +10,83 @@ import closeIcon from "../../assets/close-modal-icon.svg";
 import excelIcon from "../../assets/excel-icon.svg";
 import apiService from "../../apiService";
 
-const PiecesPerInner = ({ searchQuery, isModalOpen, onClose }) => {
+const Buyer = ({ searchQuery, isModalOpen, onClose }) => {
   const [data, setData] = useState([]);
-  const [editedPiecesPerInner, setEditedPiecesPerInner] = useState("");
+  const [editedBuyerName, setEditedBuyerName] = useState("");
+  const [editedLocation, setEditedLocation] = useState("");
   const [editIndex, setEditIndex] = useState(null);
   const [checkedIds, setCheckedIds] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(5);
   const [inputValue, setInputValue] = useState("");
-  const [addedStyles, setAddedStyles] = useState([]);
-  const [singlePiecesPerInner, setSinglePiecesPerInner] = useState("");
+  const [addedBuyers, setAddedBuyers] = useState([]);
+  const [singleBuyers, setSingleBuyers] = useState("");
+  const [singleLocation, setSingleLocation] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    fetchAllPiecesPerInner();
+    fetchAllBuyers();
   }, []);
 
-  const fetchAllPiecesPerInner = async () => {
+  const fetchAllBuyers = async () => {
     try {
-      const response = await apiService.get("/innerPcs/getall", {
-        headers:{
+      const response = await apiService.get("/buyers/getall", {
+        headers: {
           'Content-Type': 'application/json',
-        }
+        },
       });
       console.log(response.data);
-      setData(response.data); // Assuming response.data contains an array of brands
+      setData(response.data); 
     } catch (error) {
-      console.error("Error fetching innerPcs:", error);
+      console.error("Error fetching buyers:", error);
     }
   };
 
   // handle toggle button click
   const handleStatusToggle = async ({ id, isActive }) => {
     try {
-      const response = await apiService.put(`/innerPcs/${id}`, {
+      const response = await apiService.put(`/buyers/${id}`, {
         isActive: !isActive,
       }, {
-        headers:{
+        headers: {
           'Content-Type': 'application/json',
-        }
+        },
       });
       if (response.status === 200) {
-        fetchAllPiecesPerInner();
+        fetchAllBuyers();
       }
     } catch (error) {
-      console.error(`Error toggling status for innerPcs with ID ${id}:`, error);
+      console.error(`Error toggling status for buyer with ID ${id}:`, error);
       // Handle error as needed
     }
   };
+  
 
   // handle edit button click
-  const handleEditClick = ({ id, number_of_pcs }) => {
+  const handleEditClick = ({ id, buyerName, location }) => {
     setEditIndex(id);
-    setEditedPiecesPerInner(number_of_pcs);
-  };
-
-  // handle input change
-  const handleInputChange = (e) => {
-    setEditedPiecesPerInner(e.target.value);
+    setEditedBuyerName(buyerName);
+    setEditedLocation(location);
   };
 
   // handle save button click
   const handleSaveClick = async (index, id) => {
     try {
-      const response = await apiService.put(`/innerPcs/${id}`, {
-        number_of_pcs: editedPiecesPerInner,
+      const response = await apiService.put(`/buyers/${id}`, {
+        name: editedBuyerName,
+        location: editedLocation
       }, {
-        headers:{
+        headers: {
           'Content-Type': 'application/json',
-        }
+        },
       });
       if (response.status === 200) {
-        fetchAllPiecesPerInner();
+        fetchAllBuyers();
         setEditIndex(null);
       }
     } catch (error) {
-      console.error(`Error saving Inner Pcs with ID ${id}:`, error);
+      console.error(`Error saving buyer with ID ${id}:`, error);
       // Handle error as needed
     }
   };
@@ -97,28 +97,20 @@ const PiecesPerInner = ({ searchQuery, isModalOpen, onClose }) => {
     );
   };
 
-  const handleHeaderCheckboxChange = (e) => {
-    if (e.target.checked) {
-      setCheckedIds(data.map((row) => row.id));
-    } else {
-      setCheckedIds([]);
-    }
-  };
-
   // handle delete button click
   const handleDelete = async (id) => {
     try {
-      const response = await apiService.delete(`/innerPcs/${id}`, {
-        headers:{
+      const response = await apiService.delete(`/buyers/${id}`, {
+        headers: {
           'Content-Type': 'application/json',
-        }
+        },
       });
       console.log(response);
       if (response.status === 202) {
-        fetchAllPiecesPerInner();
+        fetchAllBuyers();
       }
     } catch (error) {
-      console.error("Error deleting inner Pcs:", error);
+      console.error("Error deleting buyer:", error);
       // Handle error as needed
     }
   };
@@ -139,83 +131,104 @@ const PiecesPerInner = ({ searchQuery, isModalOpen, onClose }) => {
     setCurrentPage(1);
   };
 
-  const handleSingleInnerPcs = async () => {
+  const handleSingleBrand = async () => {
     try {
-      const response = await apiService.post("/innerPcs/create", {
-        number_of_pcs: singlePiecesPerInner,
+      const response = await apiService.post("/buyers/create", {
+        name: singleBuyers,
+        location: singleLocation,
       }, {
-        headers:{
+        headers: {
           'Content-Type': 'application/json',
-        }
+        },
       });
 
       if (response.status === 201) {
-        setSinglePiecesPerInner("");
-        fetchAllPiecesPerInner();
+        setSingleBuyers("");
+        setSingleLocation("");
+        setSuccessMessage("Buyer added successfully.");
+        setErrorMessage("");
+        fetchAllBuyers();
+
+        // Clear messages after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
       }
     } catch (error) {
-      console.error("Error adding Inner Pcs:", error);
+      if (error.response && error.response.status === 409) {
+        setErrorMessage("Buyer already exists.");
+
+        // Clear messages after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
+      } else {
+        setErrorMessage("Error adding buyer.");
+
+        // Clear messages after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
+      }
+      setSuccessMessage("");
     }
   };
 
-  const handleAddStyle = () => {
-    if (inputValue.trim() !== "") {
-      setAddedStyles([...addedStyles, inputValue.trim()]);
-      setInputValue("");
-    }
-  };
+  const filteredData = data.filter(
+    (item) =>
+      item.name &&
+      item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  const handleRemoveStyle = (index) => {
-    const newAddedStyles = [...addedStyles];
-    newAddedStyles.splice(index, 1);
-    setAddedStyles(newAddedStyles);
-  };
-
- 
-  const filteredData = data.filter((item) => {
-    const number_of_pcs = item.number_of_pcs.toString().toLowerCase();
-    return number_of_pcs.includes(searchQuery.toLowerCase());
-  });
   const startIndex = (currentPage - 1) * recordsPerPage;
   const endIndex = startIndex + recordsPerPage;
   const currentData = filteredData.slice(startIndex, endIndex);
 
-  const isHeaderCheckboxChecked =
-    checkedIds.length > 0 && checkedIds.length === data.length;
+  const handleModalClose = () => {
+    setSingleBuyers("");
+    setSingleLocation(""); 
+    onClose(); 
+  };
 
   return (
-    <div className=" mx-auto p-4 bg-white">
+    <div  className="px-4 py-2 sm:px-6 lg:px-8">
       <div className="min-h-[60vh] max-h-[60vh] overflow-y-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50 w-full">
             <tr>
-              <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-40">
+              <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-28">
                 Si No
               </th>
-              <th className="px-2 py-3 text-left text-md font-bold text-black 2xl:w-[500px] xl:w-[450px] min-w-[200px]">
-                No of pcs per inner
+              <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-80">
+                Buyer Name
               </th>
-              <th className="px-6 py-3 text-center text-md font-bold text-black uppercase flex-grow">
+              <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-40">
+                Location
+              </th>
+              <th className="px-6 py-3 text-center text-md font-bold text-black uppercase w-40">
                 Status
               </th>
-              <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-28">
+              <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-40">
                 Action
               </th>
-              <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-20">
+              <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-40">
                 <input
                   type="checkbox"
                   className="form-checkbox"
-                  onChange={handleHeaderCheckboxChange}
-                  checked={isHeaderCheckboxChecked}
+                  onChange={(e) =>
+                    setCheckedIds(
+                      e.target.checked ? data.map((row) => row.id) : []
+                    )
+                  }
+                  checked={checkedIds.length === data.length}
                 />
               </th>
               <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-8">
                 <button onClick={handleDelete} className="text-red-500">
-                  <img
-                    src={deleteIcon}
-                    alt="Delete"
-                    className="min-h-5 min-w-5"
-                  />
+                  <img src={deleteIcon} alt="Delete" className="h-5 w-5" />
                 </button>
               </th>
             </tr>
@@ -223,19 +236,31 @@ const PiecesPerInner = ({ searchQuery, isModalOpen, onClose }) => {
           <tbody className="bg-white divide-y divide-gray-200">
             {currentData?.map((row, index) => (
               <tr key={row.id} style={{ maxHeight: "50px" }}>
-                <td className="px-3 py-3 whitespace-nowrap text-md text-center text-black w-40">
+                <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-12">
                   {startIndex + index + 1}
                 </td>
-                <td className="px-3 py-3 whitespace-nowrap text-md text-left text-black 2xl:w-[500px] xl:w-[450px] min-w-[200px]">
+                <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">
                   {editIndex === row.id ? (
                     <input
-                      type="number"
-                      value={editedPiecesPerInner}
-                      onChange={handleInputChange}
-                      className="border border-gray-300 rounded-md px-2 py-2 text-left 2xl:w-[500px] xl:w-[450px] min-w-[200px]"
+                      type="text"
+                      value={editedBuyerName}
+                      onChange={(e) => setEditedBuyerName(e.target.value)}
+                      className="border border-gray-300 rounded-md w-28 px-2 py-2"
                     />
                   ) : (
-                    row.number_of_pcs
+                    row.name
+                  )}
+                </td>
+                <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">
+                  {editIndex === row.id ? (
+                    <input
+                      type="text"
+                      value={editedLocation}
+                      onChange={(e) => setEditedLocation(e.target.value)}
+                      className="border border-gray-300 rounded-md w-28 px-2 py-2"
+                    />
+                  ) : (
+                    row.location
                   )}
                 </td>
                 <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black flex-grow">
@@ -280,7 +305,8 @@ const PiecesPerInner = ({ searchQuery, isModalOpen, onClose }) => {
                       onClick={() =>
                         handleEditClick({
                           id: row.id,
-                          number_of_pcs: row.number_of_pcs,
+                          buyerName: row.name,
+                          location: row.location
                         })
                       }
                       className="text-blue-500 text-center"
@@ -302,7 +328,7 @@ const PiecesPerInner = ({ searchQuery, isModalOpen, onClose }) => {
                     onClick={() => handleDelete(row.id)}
                     className="text-red-500"
                   >
-                    <img src={deleteIcon} alt="Delete" className="h-6 w-6" />
+                    <img src={deleteIcon} alt="Delete" className="h-5 w-5" />
                   </button>
                 </td>
               </tr>
@@ -350,13 +376,13 @@ const PiecesPerInner = ({ searchQuery, isModalOpen, onClose }) => {
             onClick={onClose}
           ></div>
           <div className="relative bg-white rounded-lg shadow-lg w-full max-w-[35vw] h-screen max-h-[50vh] overflow-y-auto lg:overflow-hidden">
-            <div className="py-2 flex flex-col">
+            <div className="p-5 flex flex-col">
               <div>
                 <div className="flex justify-center">
-                  <h2 className="text-2xl font-bold">No of Pcs Per Inner</h2>
+                  <h2 className="text-2xl font-bold">Add Buyer</h2>
                   <button
                     className="absolute right-5 cursor-pointer"
-                    onClick={onClose}
+                    onClick={handleModalClose}
                   >
                     <img src={closeIcon} alt="Close" className="mt-2" />
                   </button>
@@ -364,19 +390,33 @@ const PiecesPerInner = ({ searchQuery, isModalOpen, onClose }) => {
                 <hr className="w-full mt-3" />
               </div>
               <div className="flex flex-col items-center">
-                {/* <p className="text-gray-400 font-bold mt-10">
-                  *For multiple “Pcs Per Inner” feed use enter after each values
-                </p> */}
                 <input
                   className="bg-gray-200 rounded w-80 py-3 px-4 text-gray-700 focus:outline-none focus:shadow-outline mt-5 text-lg text-center"
                   type="text"
-                  placeholder="Enter no of pcs"
-                  value={singlePiecesPerInner}
-                  onChange={(e) => setSinglePiecesPerInner(e.target.value)}
+                  placeholder="Enter Buyer name"
+                  value={singleBuyers}
+                  onChange={(e) => setSingleBuyers(e.target.value)}
                 />
+                  <input
+                  className="bg-gray-200 rounded w-80 py-3 px-4 text-gray-700 focus:outline-none focus:shadow-outline mt-5 text-lg text-center"
+                  type="text"
+                  placeholder="Enter Location"
+                  value={singleLocation}
+                  onChange={(e) => setSingleLocation(e.target.value)}
+                />
+                {successMessage && (
+              <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 my-4">
+                <p>{successMessage}</p>
+              </div>
+            )}
+            {errorMessage && (
+              <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 my-4">
+                <p>{errorMessage}</p>
+              </div>
+            )}
                 <button
                   className="bg-sky-600 w-80 py-3 text-white rounded-lg font-bold text-lg mt-3"
-                  onClick={() => handleSingleInnerPcs()}
+                  onClick={() => handleSingleBrand()}
                 >
                   Update
                 </button>
@@ -390,6 +430,7 @@ const PiecesPerInner = ({ searchQuery, isModalOpen, onClose }) => {
                     </span>
                   </p>
                 </div>
+ 
               </div>
             </div>
           </div>
@@ -399,4 +440,4 @@ const PiecesPerInner = ({ searchQuery, isModalOpen, onClose }) => {
   );
 };
 
-export default PiecesPerInner;
+export default Buyer;

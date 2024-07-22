@@ -4,7 +4,22 @@ import profile from "../../assets/profile-image.png";
 import logoutIcon from "../../assets/logout-icon.svg";
 
 const HorizontalNavbar = () => {
-  const location = useLocation(); // Get the current location
+  const location = useLocation();
+    
+  const routeNames = {
+    "/main/dashboard": "Dashboard",
+    "/main/permissions": "Permissions",
+    "/main/users": "Users",
+    "/main/product-master": "Product Master",
+    "/main/add-products": "Add Products",
+    "/main/stock-in": "Stock In",
+    "/main/stock-out": "Stock Out",
+    "/main/withpo": "With PO",
+    "/main/withoutpo": "Without PO",
+    "/main/report": "Reports",
+    "/main/profile": "Profile",
+   
+  };
 
   // Function to extract route name from pathname
   const getRouteName = () => {
@@ -13,14 +28,14 @@ const HorizontalNavbar = () => {
     const segments = path.split("/").filter(Boolean); // Split path by '/' and remove empty segments
     const lastSegment = segments.pop(); // Get the last segment
     // Capitalize first letter of last segment
-    return lastSegment ? lastSegment.charAt(0).toUpperCase() + lastSegment.slice(1) : "Dashboard";
+    return routeNames[path] || (lastSegment ? lastSegment.charAt(0).toUpperCase() + lastSegment.slice(1) : "Dashboard");
   };
 
   return (
     <>
       <div className="flex justify-between items-center py-4 px-10 bg-black">
         <div className="py-2 rounded-full flex relative">
-          <h1 className="text-4xl font-medium text-white">{getRouteName()}</h1> {/* Display dynamically */}
+          <h1 className="text-4xl font-medium text-white">{getRouteName()}</h1>
         </div>
         <div className="flex items-center">
           <img

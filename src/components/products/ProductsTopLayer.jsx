@@ -22,6 +22,7 @@ import addIcon from "../../assets/add-icon.svg";
 import noDataImage from "../../assets/no-data1.png";
 import Category from "./Category";
 import ProductTypes from "./ProductTypes";
+import Buyer from "./Buyer";
 
 const ProductsTopLayer = ({
   showDropdown = true,
@@ -78,6 +79,7 @@ const ProductsTopLayer = ({
       label: "ProductTypes",
       component: ProductTypes,
     },
+    { id: "pr19", value: "19", label: "Buyers", component: Buyer },
   ];
 
   const handlePresetChange = (event) => {

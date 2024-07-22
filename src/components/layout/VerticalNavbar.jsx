@@ -63,7 +63,7 @@ const VerticalNavbar = () => {
           onClick={toggleSidebar}
           aria-controls="default-sidebar"
           type="button"
-          className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg md:hidden dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+          className="inline-flex items-center p-2 mt-2 ml-3 text-sm text-gray-300 rounded-lg md:hidden dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600 z-50"
         >
           <span className="sr-only">Open sidebar</span>
           <div className="py-5">
@@ -246,7 +246,7 @@ const VerticalNavbar = () => {
               <li className={isActiveTab("/main/report") ? 'bg-white text-black' : ''}>
                 <NavLink
                   to="/main/report"
-                  className="flex items-center p-2 rounded-lg dark:text-white hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700 group"
+                  className="flex items-center p-2 rounded-lg hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700 group"
                   style={({ isActive }) => isActive ? { backgroundColor: 'white', color: 'black' } : {}}
                 >
                   <img src={getIcon(reportIcon, reportHighlightedIcon, '/main/report')} alt="" className="h-8 w-8" />
@@ -256,7 +256,7 @@ const VerticalNavbar = () => {
               <li className={isActiveTab("/main/profile") ? 'bg-white text-black' : ''}>
                 <NavLink
                   to="/main/profile"
-                  className="flex items-center p-2 rounded-lg dark:text-white hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700 group"
+                  className="flex items-center p-2 rounded-lg hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700 group"
                   style={({ isActive }) => isActive ? { backgroundColor: 'white', color: 'black' } : {}}
                 >
                   <img src={getIcon(profileIcon, profileHighlightedIcon, '/main/profile')} alt="" className="h-8 w-8" />
