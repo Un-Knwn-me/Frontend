@@ -73,7 +73,7 @@ const AddProductModal = ({ show, onClose }) => {
   const [decorationSuggestions, setDecorationSuggestions] = useState([]);
   const [selecteDecorationId, setSelectedDecorationId] = useState(null);
 
-  //suggestion brand states
+  //suggestion print states
   const [printDropdown, setPrintDropdown] = useState(false);
   const [printSuggestions, setPrintSuggestions] = useState([]);
   const [selectedPrintId, setSelectedPrintId] = useState(null);
@@ -1386,20 +1386,6 @@ const AddProductModal = ({ show, onClose }) => {
                   placeholder="Enter No of pieces per inner"
                 />
               </div>
-
-              {/* <div className="flex flex-col gap-2 relative">
-                <label className="font-semibold" htmlFor="piecesPerOuterCarton">
-                  No of pieces per outer carton:
-                </label>
-                <input
-                  type="number"
-                  id="piecesPerOuterCarton"
-                  value={outerCorton}
-                  onChange={(e) => setOuterCorton(e.target.value)}
-                  className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
-                  placeholder="Enter No of pieces per outer carton"
-                />
-              </div> */}
 
               <div className="flex flex-col gap-2 relative">
                 <label className="font-semibold" htmlFor="mesurementChart">
