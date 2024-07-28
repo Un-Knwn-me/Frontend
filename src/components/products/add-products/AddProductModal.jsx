@@ -22,7 +22,7 @@ const AddProductModal = ({ show, onClose }) => {
   const [measurementChart, setMeasurementChart] = useState("");
   const [selectedMeasurementImage, setSelectedMeasurementImage] = useState(null);
   const [packingMethod, setPackingMethod] = useState("");
-  const [categorie, setCategorie] = useState("");
+  const [category, setCategory] = useState("");
   const [productTypes, setProductTypes] = useState("");
   const [innerPcs, setInnerPcs] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
@@ -109,10 +109,10 @@ const AddProductModal = ({ show, onClose }) => {
   const [selectedMesurementId, setSelectedMesurementId] = useState(null);
   const [selectedMesurement, setSelectedMesurement] = useState(null);
 
-  //suggestion categorie states
-  const [categorieDropdown, setCategorieDropdown] = useState(false);
-  const [categorieSuggestions, setCategorieSuggestions] = useState([]);
-  const [selectedCategorieId, setSelectedCategorieId] = useState(null);
+//suggestion category states
+const [categoryDropdown, setCategoryDropdown] = useState(false);
+const [categorySuggestions, setCategorySuggestions] = useState([]);
+const [selectedCategoryId, setSelectedCategoryId] = useState(null);
 
     //suggestion productTypes states
     const [productTypesDropdown, setProductTypesDropdown] = useState(false);
@@ -152,6 +152,13 @@ const AddProductModal = ({ show, onClose }) => {
     setBrand(brand.brandName);
     setSelectedBrandId(brand.id);
     setBrandSuggestions([]);
+    setBrandDropdown(false);
+  };
+
+  const handleAddNewBrand = () => {
+    // Implement the logic to add a new buyer here
+    console.log("Adding new brand:", brand);
+    // Close the dropdown after adding the buyer
     setBrandDropdown(false);
   };
 
@@ -217,6 +224,13 @@ const AddProductModal = ({ show, onClose }) => {
     setFabricDropdown(false);
   };
 
+  const handleAddNewFabric = () => {
+    // Implement the logic to add a new buyer here
+    console.log("Adding new fabric:", fabric);
+    // Close the dropdown after adding the buyer
+    setFabricDropdown(false);
+  };
+
   // fetch Fabric Finish
   const fetchFabricFinishSuggestions = async (fabricFinishInput) => {
     try {
@@ -247,6 +261,13 @@ const AddProductModal = ({ show, onClose }) => {
     setFabricFinish(fabricFinish.fabricFinishName);
     setSelectedFabricFinishId(fabricFinish.id);
     setFabricFinishSuggestions([]);
+    setFabricFinishDropdown(false);
+  };
+
+  const handleAddNewFabricFinish = () => {
+    // Implement the logic to add a new buyer here
+    console.log("Adding new fabric finish:", fabricFinish);
+    // Close the dropdown after adding the buyer
     setFabricFinishDropdown(false);
   };
 
@@ -282,6 +303,13 @@ const AddProductModal = ({ show, onClose }) => {
     setGsmDropdown(false);
   };
 
+  const handleAddNewGsm = () => {
+    // Implement the logic to add a new buyer here
+    console.log("Adding new gsm:", gsm);
+    // Close the dropdown after adding the buyer
+    setGsmDropdown(false);
+  };
+
   // fetch knit type
   const fetchKnitSuggestions = async (knitInput) => {
     try {
@@ -310,6 +338,13 @@ const AddProductModal = ({ show, onClose }) => {
     setKnitType(knit.knitType);
     setSelectedKnitId(knit.id);
     setKnitSuggestions([]);
+    setKnitDropdown(false);
+  };
+
+  const handleAddNewKnitType = () => {
+    // Implement the logic to add a new buyer here
+    console.log("Adding new knit type:", knitType);
+    // Close the dropdown after adding the buyer
     setKnitDropdown(false);
   };
 
@@ -344,6 +379,13 @@ const AddProductModal = ({ show, onClose }) => {
     setColorDropdown(false);
   };
 
+  const handleAddNewColor = () => {
+    // Implement the logic to add a new buyer here
+    console.log("Adding new color:", colors);
+    // Close the dropdown after adding the buyer
+    setColorDropdown(false);
+  };
+
   // fetch size
   const fetchSizeSuggestions = async (sizeInput) => {
     try {
@@ -372,6 +414,13 @@ const AddProductModal = ({ show, onClose }) => {
     setSizes(size.sizes);
     setSelectedSizeId(size.id);
     setSizeSuggestions([]);
+    setSizeDropdown(false);
+  };
+
+  const handleAddNewSize = () => {
+    // Implement the logic to add a new buyer here
+    console.log("Adding new size:", sizes);
+    // Close the dropdown after adding the buyer
     setSizeDropdown(false);
   };
 
@@ -408,6 +457,13 @@ const AddProductModal = ({ show, onClose }) => {
     setDecorationDropdown(false);
   };
 
+  const handleAddNewDecoration = () => {
+    // Implement the logic to add a new buyer here
+    console.log("Adding new decoration:", decorations);
+    // Close the dropdown after adding the buyer
+    setDecorationDropdown(false);
+  };
+
   // fetch print
   const fetchPrintSuggestions = async (printInput) => {
     try {
@@ -436,6 +492,13 @@ const AddProductModal = ({ show, onClose }) => {
     setPrintOrEmbName(print.printType);
     setSelectedPrintId(print.id);
     setPrintSuggestions([]);
+    setPrintDropdown(false);
+  };
+
+  const handleAddNewPrint = () => {
+    // Implement the logic to add a new buyer here
+    console.log("Adding new print/Emb:", printOrEmbName);
+    // Close the dropdown after adding the buyer
     setPrintDropdown(false);
   };
 
@@ -470,6 +533,13 @@ const AddProductModal = ({ show, onClose }) => {
     setStitchDetailDropdown(false);
   };
 
+  const handleAddNewStitch = () => {
+    // Implement the logic to add a new buyer here
+    console.log("Adding new stitch detail:", stitchDetails);
+    // Close the dropdown after adding the buyer
+    setStitchDetailDropdown(false);
+  };
+
   // fetch neck
   const fetchNeckSuggestions = async (neckInput) => {
     try {
@@ -498,6 +568,13 @@ const AddProductModal = ({ show, onClose }) => {
     setNeck(neck.neckType);
     setSelectedNeckId(neck.id);
     setNeckSuggestions([]);
+    setNeckDropdown(false);
+  };
+
+  const handleAddNewNeck = () => {
+    // Implement the logic to add a new buyer here
+    console.log("Adding new neck:", neck);
+    // Close the dropdown after adding the buyer
     setNeckDropdown(false);
   };
 
@@ -532,6 +609,13 @@ const AddProductModal = ({ show, onClose }) => {
     setSleeveDropdown(false);
   };
 
+  const handleAddNewSleeve = () => {
+    // Implement the logic to add a new buyer here
+    console.log("Adding new sleeve:", sleeve);
+    // Close the dropdown after adding the buyer
+    setSleeveDropdown(false);
+  };
+
   // fetch length
   const fetchLengthSuggestions = async (lengthInput) => {
     try {
@@ -560,6 +644,13 @@ const AddProductModal = ({ show, onClose }) => {
     setLength(length.lengthType);
     setSelectedLengthId(length.id);
     setLengthSuggestions([]);
+    setLengthDropdown(false);
+  };
+
+  const handleAddNewLength = () => {
+    // Implement the logic to add a new buyer here
+    console.log("Adding new length:", length);
+    // Close the dropdown after adding the buyer
     setLengthDropdown(false);
   };
 
@@ -596,6 +687,13 @@ const AddProductModal = ({ show, onClose }) => {
     setPackingDropdown(false);
   };
 
+  const handleAddNewPackingMethod = () => {
+    // Implement the logic to add a new buyer here
+    console.log("Adding new packing method:", packingMethod);
+    // Close the dropdown after adding the buyer
+    setPackingDropdown(false);
+  };
+
   // fetch mesurementChart
   const fetchMesurementChartSuggestions = async (mesurementChartInput) => {
     try {
@@ -629,35 +727,49 @@ const AddProductModal = ({ show, onClose }) => {
     setMesurementDropdown(false);
   };
 
+  const handleAddNewMeasurement = () => {
+    // Implement the logic to add a new buyer here
+    console.log("Adding new Measurements:", measurementChart);
+    // Close the dropdown after adding the buyer
+    setMesurementDropdown(false);
+  };
+
   // fetch categorie
-  const fetchCategorieSuggestions = async (categorieInput) => {
+  const fetchCategorySuggestions = async (categoryInput) => {
     try {
-      if (categorieInput.length > 0) {
+      if (categoryInput.length > 0) {
         const response = await apiService.get("/categories/getall");
         const filteredCategories = response.data.filter((b) =>
-          b.categoryName.toLowerCase().startsWith(categorieInput.toLowerCase())
+          b.categoryName.toLowerCase().startsWith(categoryInput.toLowerCase())
         );
-        setCategorieSuggestions(filteredCategories);
+        setCategorySuggestions(filteredCategories);
       } else {
-        setCategorieSuggestions([]);
+        setCategorySuggestions([]);
       }
     } catch (error) {
       console.error("Error fetching categories:", error);
     }
   };
 
-  const handleCategorieChange = (e) => {
-    const categorieInput = e.target.value;
-    setCategorie(categorieInput);
-    setCategorieDropdown(true);
-    fetchCategorieSuggestions(categorieInput);
+  const handleCategoryChange = (e) => {
+    const categoryInput = e.target.value;
+    setCategory(categoryInput);
+    setCategoryDropdown(true);
+    fetchCategorySuggestions(categoryInput);
   };
 
-  const handleCategorieSelect = (categorie) => {
-    setCategorie(categorie.categoryName);
-    setSelectedCategorieId(categorie.id);
-    setCategorieSuggestions([]);
-    setCategorieDropdown(false);
+  const handleCategorySelect = (category) => {
+    setCategory(category.categoryName);
+    setSelectedCategoryId(category.id);
+    setCategorySuggestions([]);
+    setCategoryDropdown(false);
+  };
+
+  const handleAddNewCategory = () => {
+    // Implement the logic to add a new buyer here
+    console.log("Adding new category:", category);
+    // Close the dropdown after adding the buyer
+    setCategoryDropdown(false);
   };
 
    // fetch product types
@@ -688,6 +800,13 @@ const AddProductModal = ({ show, onClose }) => {
     setProductTypes(productTypes.product);
     setSelectedProductTypesId(productTypes.id);
     setProductTypesSuggestions([]);
+    setProductTypesDropdown(false);
+  };
+
+  const handleAddNewProductType = () => {
+    // Implement the logic to add a new buyer here
+    console.log("Adding new product types:", productTypes);
+    // Close the dropdown after adding the buyer
     setProductTypesDropdown(false);
   };
 
@@ -751,7 +870,7 @@ const AddProductModal = ({ show, onClose }) => {
     const formData = new FormData();
     formData.append("reference_number", referenceNo);
     formData.append("style_id", selectedStyleId);
-    formData.append("category_id", selectedCategorieId);
+    formData.append("category_id", selectedCategoryId);
     formData.append("productType_id", selectedProductTypesId);
     formData.append("brand_id", selectedBrandId);
     formData.append("fabric_id", selectedFabricId);
@@ -956,23 +1075,23 @@ const AddProductModal = ({ show, onClose }) => {
               </div>
 
               <div className="flex flex-col gap-2 relative">
-                <label className="font-semibold" htmlFor="categorie">
-                  Categoty:
+                <label className="font-semibold" htmlFor="category">
+                  Category:
                 </label>
                 <input
                   type="text"
-                  id="categorie"
-                  value={categorie}
-                  onChange={handleCategorieChange}
+                  id="category"
+                  value={category}
+                  onChange={handleCategoryChange}
                   className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter Category Name"
                 />
-                {categorieDropdown && categorie && (
+                {categoryDropdown && category && (
                   <ul className="absolute top-16 left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
-                    {categorieSuggestions.map((item) => (
+                    {categorySuggestions.map((item) => (
                       <li
                         key={item.id}
-                        onClick={() => handleCategorieSelect(item)}
+                        onClick={() => handleCategorySelect(item)}
                         className="cursor-pointer px-4 py-2 hover:bg-gray-100"
                       >
                         {item.categoryName}

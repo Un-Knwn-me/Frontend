@@ -8,7 +8,6 @@ import EditStockInModal from "./editStockInModal";
 import SuccessAlert from "./SuccessAlert";
 import AddStockModal from "./AddStockModal";
 import apiService from "../../../apiService";
-import imgbg from "../../../assets/imgbg.svg";
 
 const StockIn = ({ searchQuery }) => {
   const [initialData, setInitialData] = useState([]);
@@ -187,8 +186,8 @@ const StockIn = ({ searchQuery }) => {
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-20">
                       <div className="flex justify-center items-center">
                         <img
-                          src={row.Product.images[0]}
-                          alt={imgbg}
+                          src={row.Product.images[0] || 'https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?t=st=1722163869~exp=1722167469~hmac=37361beb0ca1a1c652d36c9ca94818f793a54d21822edab80e80c6e43a9b7b37&w=740'}
+                          alt='Stock'
                           className="h-28"
                         />
                       </div>
@@ -197,10 +196,10 @@ const StockIn = ({ searchQuery }) => {
                       {row.created_at}
                     </td>
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-36">
-                      {row.Product.Style.style_no}
+                      {row.Product.style_no}
                     </td>
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-32">
-                      {row.product_reference_number}
+                      {row.Product.Reference.reference_no}
                     </td>
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-16">
                       {row.Product.Size.sizes.join(", ")}

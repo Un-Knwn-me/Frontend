@@ -6,19 +6,7 @@ import StockSelectOptionModel from "./StockSelectOptionModel";
 const EditStockOutModel = ({ show, onClose }) => {
   const styleNo = 1234;
 
-  const initialFields = [
-    { id: "pO1", value: "KK234", label: "Buyer" },
-    { id: "pO3", value: "3", label: "Brand" },
-    { id: "pO4", value: "4", label: "Fabric" },
-    { id: "pO6", value: "6", label: "GSM" },
-    { id: "pO7", value: "7", label: "Style No" },
-    { id: "pO8", value: "8", label: "Ref No" },
-    { id: "pO11", value: "11", label: "Print or Emb name" },
-    { id: "pO9", value: "9", label: "Unique name" },
-    { id: "pO10", value: "10", label: "Po Qty" },
-    { id: "pO13", value: "13", label: "Dia" },
-    { id: "pO14", value: "14", label: "Delivery date" },
-  ];
+  const initialFields = [];
 
   const [fields, setFields] = useState(initialFields);
   const [editFieldId, setEditFieldId] = useState(null);

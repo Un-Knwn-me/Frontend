@@ -382,9 +382,6 @@ const handleEditClick = ({ id, sleeveName }) => {
                 <hr className="w-full mt-3" />
               </div>
               <div className="flex flex-col items-center">
-                <p className="text-gray-400 font-bold mt-10">
-                  *For multiple “Sleeve” feed use enter after each values
-                </p>
                 <input
                   className="bg-gray-200 rounded w-80 py-3 px-4 text-gray-700 focus:outline-none focus:shadow-outline mt-5 text-lg text-center"
                   type="text"

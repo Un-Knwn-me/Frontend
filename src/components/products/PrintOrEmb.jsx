@@ -371,7 +371,7 @@ const PrintOrEmb = ({ searchQuery, isModalOpen, onClose }) => {
                 <input
                   className="bg-gray-200 rounded w-80 py-3 px-4 text-gray-700 focus:outline-none focus:shadow-outline mt-5 text-lg text-center"
                   type="text"
-                  placeholder="Enter brand name"
+                  placeholder="Enter Print or Emb"
                   value={singlePrints}
                   onChange={(e) => setSinglePrints(e.target.value)}
                 />

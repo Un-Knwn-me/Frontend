@@ -1,19 +1,34 @@
 import React, { useState, useEffect } from "react";
 import closeIcon from "../../../assets/close-modal-icon.svg";
-import editIcon from "../../../assets/edit-icon.svg";
-import excelIcon from "../../../assets/excel-icon.svg";
-import downloadExcelTemplateIcon from "../../../assets/download-excel-template-icon.svg";
 import apiService from "../../../apiService";
-import imgbg from "../../../assets/imgbg.svg";
+import imgbg from "../../../assets/imgbg.jpg";
 
 const AddStockModal = ({ show, onClose, getAllStocks }) => {
-  const [referenceNumber, setReferenceNumber] = useState("");
-  const [referenceDropdown, setReferenceDropdown] = useState(false);
-  const [referenceSuggestions, setReferenceSuggestions] = useState([]);
+  const [styleNumber, setStyleNumber] = useState("");
+  const [styleDropdown, setStyleDropdown] = useState(false);
+  const [styleSuggestions, setStyleSuggestions] = useState([]);
   const [selectedProductId, setSelectedProductId] = useState(null);
-  const [styleNo, setStyleNo] = useState("");
-  const [fullDescription, setFullDescription] = useState('');
+  const [ReferenceNo, setReferenceNo] = useState("");
+  const [category, setCategory] = useState("");
+  const [productType, setProductType] = useState("");
+  const [brand, setBrand] = useState("");
+  const [fabric, setFabric] = useState("");
+  const [fabricFinish, setFabricFinish] = useState("");
+  const [gsm, setGsm] = useState(null);
+  const [knitType, setKnitType] = useState("");
+  const [colors, setColors] = useState("");
+  const [decoration, setDecoration] = useState("");
+  const [printOrEmb, setPrintOrEmb] = useState("");
+  const [stitch, setStitch] = useState("");
+  const [neck, setNeck] = useState("");
+  const [sleeve, setSleeve] = useState("");
+  const [length, setLength] = useState("");
+  const [measurementChart, setMeasurementChart] = useState("");
+  const [selectedMeasurementImage, setSelectedMeasurementImage] = useState(null);
+  const [packingMethod, setPackingMethod] = useState("");
   const [sizes, setSizes] = useState([]);
+  const [shortDescription, setShortDescription] = useState('');
+  const [fullDescription, setFullDescription] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [assortmentType, setAssortmentType] = useState("assorted");
   const [innerPcs, setInnerPcs] = useState({});
@@ -27,18 +42,18 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-// get product by reference number
-  const fetchReferenceSuggestions = async (referenceInput) => {
+// get product by style number
+  const fetchStyleSuggestions = async (styleInput) => {
     try {
-      if (referenceInput.length > 0) {
+      if (styleInput.length > 0) {
         const response = await apiService.get("/products/getall");
         const filteredProduct = response.data.filter((e) =>
-          e.reference_number.toLowerCase().startsWith(referenceInput.toLowerCase())
+          e.style_no.toLowerCase().startsWith(styleInput.toLowerCase())
         );
         console.log(filteredProduct);
-        setReferenceSuggestions(filteredProduct);
+        setStyleSuggestions(filteredProduct);
       } else {
-        setReferenceSuggestions([]);
+        setStyleSuggestions([]);
       }
     } catch (error) {
       console.error("Error fetching Product:", error);
@@ -46,29 +61,65 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
   };
 
   const handleInputChange = (e) => {
-    const referenceInput = e.target.value;
-    if (referenceInput.length > 0) {
-    setReferenceNumber(referenceInput);
-    setReferenceDropdown(true);
-    fetchReferenceSuggestions(referenceInput);
+    const styleInput = e.target.value;
+    if (styleInput.length > 0) {
+    setStyleNumber(styleInput);
+    setStyleDropdown(true);
+    fetchStyleSuggestions(styleInput);
     } else {
-      setReferenceNumber("");
-      setReferenceDropdown(false);
-      setStyleNo("");
-      setFullDescription("");
+      setStyleNumber("");
+      setStyleDropdown(false);
+      setReferenceNo("");
+      setCategory("");
+      setProductType("");
+      setBrand("");
+      setFabric("");
+      setFabricFinish("");
+      setGsm("");
+      setKnitType("");
+      setColors("");
       setSizes([]);
+      setDecoration("");
+      setPrintOrEmb("");
+      setStitch("");
+      setLength("");
+      setNeck("");
+      setSleeve("");
+      setMeasurementChart("");
+      setSelectedMeasurementImage("");
+      setPackingMethod("");
+      setShortDescription("");
+      setFullDescription("");
       setImageUrl('');
       setSelectedProduct(null);
     }
   };
 
-  const handleReferenceSelect = (e) => {
-    setReferenceNumber(e.reference_number);
+  const handleStyleSelect = (e) => {
+    setStyleNumber(e.style_no);
     setSelectedProductId(e.id);
-    setReferenceSuggestions([]);
-    setReferenceDropdown(false);
-    setStyleNo(e.Style.style_no);
-    setFullDescription(e.Style.full_description);
+    setStyleSuggestions([]);
+    setStyleDropdown(false);
+    setReferenceNo(e.Reference.reference_no);
+    setCategory(e.Category.categoryName);
+    setProductType(e.ProductType.product);
+    setBrand(e.Brand.brandName);
+    setFabric(e.Fabric.fabricName);
+    setFabricFinish(e.FabricFinish.fabricFinishName);
+    setGsm(e.Gsm.gsmValue);
+    setKnitType(e.KnitType.knitType);
+    setColors(e.Color.colorName);
+    setDecoration(e.Decoration.decorationName);
+    setPrintOrEmb(e.PrintEmbName.printType);
+    setStitch(e.StitchDetail.stictchDetail);
+    setNeck(e.Neck.neckType);
+    setLength(e.Length.lengthType);
+    setSleeve(e.Sleeve.sleeveName);
+    setPackingMethod(e.PackingMethod.packingType);
+    setMeasurementChart(e.MeasurementChart.name);
+    setSelectedMeasurementImage(e.MeasurementChart.sample_size_file);
+    setShortDescription(e.short_description);
+    setFullDescription(e.full_description);
     setSizes(e.Size.sizes);
     setImageUrl(e.images[0]);
     setSelectedProduct(e);
@@ -133,9 +184,10 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
 
   const handleSubmit = async () => {
     const stockData = {
-      product_reference_number: referenceNumber,
+      product_style_number: styleNumber,
       product_id: selectedProductId,
       packing_type: assortmentType,
+      total_pcs: totalProducts,
       stock_by_size: sizes.map((size) => ({
         size,
         innerPcs: innerPcs[size],
@@ -183,9 +235,9 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
         className="fixed inset-0 bg-black opacity-50"
         onClick={onClose}
       ></div>
-      <div className="relative bg-white rounded-lg shadow-lg w-full max-w-[80vw] h-auto p-4 overflow-auto">
+      <div className="relative bg-white rounded-lg shadow-lg w-full max-w-[80vw] h-screen max-h-[90vh] overflow-auto py-10">
         <div className="flex justify-between items-center mb-4 relative px-20">
-          <div className="flex items-center gap-3">
+          <div className="flex justify-center gap-3">
             <h2 className="text-2xl font-medium">CREATE STOCK INWARD</h2>
           </div>
           {/* <p className="text-2xl font-medium">Date:</p> */}
@@ -195,61 +247,293 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
         </div>
         <hr className="my-4" />
         <div className="flex justify-between px-20 mb-4">
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col items-start justify-between">
+
+          <div className="flex flex-col grid grid-cols-3 2xl:grid-cols-5 gap-2">
+            <div className="flex flex-col">
             <div className="flex flex-col gap-2 relative">
-                <label className="font-semibold" htmlFor="brand">
-                  Reference No:
+                <label className="font-semibold" htmlFor="styleNumber">
+                  Style No:
                 </label>
                 <input
                   type="text"
-                  id="referenceNumber"
-                  value={referenceNumber}
+                  id="styleNumber"
+                  value={styleNumber}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
-                  placeholder="Enter Brand Name"
+                  placeholder="Enter Style Number"
                 />
-              {referenceDropdown && referenceNumber && (
+              {styleDropdown && styleNumber && (
                   <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg">
-                    {referenceSuggestions.map((item) => (
+                    {styleSuggestions.map((item) => (
                       <li
                         key={item.id}
-                        onClick={() => handleReferenceSelect(item)}
+                        onClick={() => handleStyleSelect(item)}
                         className="cursor-pointer px-4 py-2 hover:bg-gray-100"
                       >
-                        {item.reference_number}
+                        {item.style_no}
                       </li>
                     ))}
                   </ul>
                 )}
                 </div>
             </div>
-            <div className="flex flex-col items-start justify-between">
-              <div className="flex items-center gap-2">
-                <h3 className="text-lg font-medium">Style No:</h3>
-              </div>
-              <span className="text-black">{styleNo}</span>
+            <div className="flex flex-col gap-2 relative">
+              <label className="font-semibold" htmlFor="referenceNo">
+              Reference No:
+              </label>
+              <input
+                  type="text"
+                  id="referenceNo"
+                  value={ReferenceNo}
+                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  disabled
+              />
             </div>
-            <div className="flex flex-col items-start justify-between">
-              <div className="flex items-center gap-2">
-                <h3 className="text-lg font-medium">Description:</h3>
-               
-              </div>
-              <span className="text-black">{fullDescription}</span>
+            <div className="flex flex-col gap-2 relative">
+              <label className="font-semibold" htmlFor="category">
+                  Category:
+              </label>
+              <input
+                  type="text"
+                  id="category"
+                  value={category}
+                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  disabled
+              />
             </div>
+            <div className="flex flex-col gap-2 relative">
+              <label className="font-semibold" htmlFor="productType">
+                Product Type:
+              </label>
+              <input
+                  type="text"
+                  id="productType"
+                  value={productType}
+                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  disabled
+              />
+            </div>
+            <div className="flex flex-col gap-2 relative">
+              <label className="font-semibold" htmlFor="brand">
+                Brand:
+              </label>
+              <input
+                  type="text"
+                  id="brand"
+                  value={brand}
+                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  disabled
+              />
+            </div>
+            <div className="flex flex-col gap-2 relative">
+              <label className="font-semibold" htmlFor="fabric">
+                Fabric:
+              </label>
+              <input
+                  type="text"
+                  id="fabric"
+                  value={fabric}
+                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  disabled
+              />
+            </div>
+            <div className="flex flex-col gap-2 relative">
+              <label className="font-semibold" htmlFor="fabric-finish">
+                Fabric Fisnish:
+              </label>
+              <input
+                  type="text"
+                  id="fabric-finish"
+                  value={fabricFinish}
+                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  disabled
+              />
+            </div>
+            <div className="flex flex-col gap-2 relative">
+              <label className="font-semibold" htmlFor="gsm">
+                GSM:
+              </label>
+              <input
+                  type="number"
+                  id="gsm"
+                  value={gsm}
+                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  disabled
+              />
+            </div>
+            <div className="flex flex-col gap-2 relative">
+              <label className="font-semibold" htmlFor="knitType">
+                Knit Type:
+              </label>
+              <input
+                  type="text"
+                  id="knitType"
+                  value={knitType}
+                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  disabled
+              />
+            </div>
+            <div className="flex flex-col gap-2 relative">
+              <label className="font-semibold" htmlFor="color">
+                Color:
+              </label>
+              <input
+                  type="text"
+                  id="color"
+                  value={colors}
+                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  disabled
+              />
+            </div>
+            <div className="flex flex-col gap-2 relative">
+              <label className="font-semibold" htmlFor="size">
+                Size:
+              </label>
+              <input
+                  type="text"
+                  id="size"
+                  value={sizes}
+                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  disabled
+              />
+            </div>
+            <div className="flex flex-col gap-2 relative">
+              <label className="font-semibold" htmlFor="decoration">
+                Decoration:
+              </label>
+              <input
+                  type="text"
+                  id="decoration"
+                  value={decoration}
+                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  disabled
+              />
+            </div>
+            <div className="flex flex-col gap-2 relative">
+              <label className="font-semibold" htmlFor="print">
+                Print or Emb:
+              </label>
+              <input
+                  type="text"
+                  id="print"
+                  value={printOrEmb}
+                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  disabled
+              />
+            </div>
+            <div className="flex flex-col gap-2 relative">
+              <label className="font-semibold" htmlFor="stitch">
+                Stitch Details:
+              </label>
+              <input
+                  type="text"
+                  id="stitch"
+                  value={stitch}
+                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  disabled
+              />
+            </div>
+            <div className="flex flex-col gap-2 relative">
+              <label className="font-semibold" htmlFor="neck">
+                Neck:
+              </label>
+              <input
+                  type="text"
+                  id="neck"
+                  value={neck}
+                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  disabled
+              />
+            </div>
+            <div className="flex flex-col gap-2 relative">
+              <label className="font-semibold" htmlFor="length">
+                Length:
+              </label>
+              <input
+                  type="text"
+                  id="length"
+                  value={length}
+                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  disabled
+              />
+            </div>
+            <div className="flex flex-col gap-2 relative">
+              <label className="font-semibold" htmlFor="sleeve">
+                Sleeve:
+              </label>
+              <input
+                  type="text"
+                  id="sleeve"
+                  value={sleeve}
+                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  disabled
+              />
+            </div>
+            <div className="flex flex-col gap-2 relative">
+              <label className="font-semibold" htmlFor="packing">
+                Packing Method:
+              </label>
+              <input
+                  type="text"
+                  id="packing"
+                  value={packingMethod}
+                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  disabled
+              />
+            </div>
+            <div className="flex flex-col gap-2 relative">
+              <label className="font-semibold" htmlFor="measurement">
+                Measurement Chart:
+              </label>
+              <input
+                  type="text"
+                  id="measurement"
+                  value={measurementChart}
+                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  disabled
+              />
+            </div>
+
           </div>
+          
           <div className="flex items-center justify-center border border-gray-400">
             <img
-              src={imageUrl}
-              alt={imgbg}
+              src={imageUrl || 'https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?t=st=1722163869~exp=1722167469~hmac=37361beb0ca1a1c652d36c9ca94818f793a54d21822edab80e80c6e43a9b7b37&w=740'}
+              alt='Stock'
               className="h-60 w-60 object-cover rounded"
             />
           </div>
         </div>
 
-        <div className="px-20 mb-4">
+        <div className="flex flex-col gap-2 mt-3 mx-20">
+              <label className="font-semibold" htmlFor="shortDescription">
+                Short Description:
+              </label>
+              <textarea
+                id="shortDescription"
+                value={shortDescription}
+                className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                rows="1"
+                disabled
+              />
+            </div>
+
+            <div className="flex flex-col gap-2 mt-3 mx-20">
+              <label className="font-semibold" htmlFor="fullDescription">
+                Full Description:
+              </label>
+              <textarea
+                id="fullDescription"
+                value={fullDescription}
+                className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                rows="2"
+                disabled
+              />
+            </div>
+
+        <div className="px-20 my-4">
           <label className="font-semibold">Packaging Type:</label>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 mt-2">
             <label>
               <input
                 type="radio"

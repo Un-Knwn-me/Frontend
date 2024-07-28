@@ -134,7 +134,7 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
     setCategory(selectedData.category);
     setSizes(Object.entries(selectedData.sizes).map(([key, value]) => ({ key, value })));
     setImagePreview(selectedData.sample_size_file);
-    setIsSecondModalOpen(true); // Open the modal for editing
+    setIsSecondModalOpen(true); 
   };
 
   const handleUpdateClick = async (e) => {
@@ -343,7 +343,7 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
                 </td>
                 <td className="px-3 py-3 whitespace-nowrap text-md text-left text-black">
                   {row.sizes ? Object.keys(row.sizes).map((key) => (
-                    <span key={key}>{key}: {row.sizes[key]}, </span>
+                    <span key={key}>[{key}: {row.sizes[key]}], </span>
                   )) : null}
                 </td>
                 <td className="px-3 py-3 whitespace-nowrap text-md text-left text-black">

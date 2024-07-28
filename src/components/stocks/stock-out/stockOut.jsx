@@ -6,7 +6,7 @@ import leftArrowIcon from "../../../assets/left-arrow-icon.svg";
 import rightArrowIcon from "../../../assets/right-arrow-icon.svg";
 import tickIcon from "../../../assets/tick-icon.svg";
 import EditStockOutModel from "./EditstockOutModel";
-import StockSelectOptionModel from "./StockSelectOptionModel";
+import AddStockOutModel from "./AddStockOutModel";
 
 const StockOut = () => {
     const [initialData, setInitialData] = useState([]);
@@ -184,7 +184,7 @@ const StockOut = () => {
                 </div>
             </div>
             <EditStockOutModel show={showModal} onClose={handleCloseModal} productId={selectedProductId} />
-            <StockSelectOptionModel show={showAddModal} onClose={handleAddModalClose} />
+            <AddStockOutModel show={showAddModal} onClose={handleAddModalClose} />
         </>
     )
 }
