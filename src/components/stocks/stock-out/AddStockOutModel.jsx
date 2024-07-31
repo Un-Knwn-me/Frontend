@@ -604,7 +604,7 @@ const AddStockOutModel = ({ show, onClose }) => {
                   disabled
                 />
               </div>
-
+              {orderInfo && (
               <div className="flex flex-col gap-2 relative">
                 <label className="font-semibold" htmlFor="buyer">
                   Buyer:
@@ -617,7 +617,7 @@ const AddStockOutModel = ({ show, onClose }) => {
                   disabled
                 />
               </div>
-
+             ) }
               <div className="flex flex-col gap-2 relative">
                 <label className="font-semibold" htmlFor="deliveryDate">
                   Delivery Date:

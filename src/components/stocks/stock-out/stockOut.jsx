@@ -8,6 +8,7 @@ import tickIcon from "../../../assets/tick-icon.svg";
 import EditStockOutModel from "./EditstockOutModel";
 import AddStockOutModel from "./AddStockOutModel";
 import apiService from "../../../apiService";
+import StockSelectOptionModel from "./StockSelectOptionModel";
 
 const StockOut = () => {
   const [initialData, setInitialData] = useState([]);
@@ -280,7 +281,8 @@ const StockOut = () => {
         onClose={handleCloseModal}
         productId={selectedProductId}
       />
-      <AddStockOutModel show={showAddModal} onClose={handleAddModalClose}  fetchStockOut={fetchStockOut}/>
+      {/* <AddStockOutModel show={showAddModal} onClose={handleAddModalClose} fetchStockOut={fetchStockOut}/> */}
+      <StockSelectOptionModel show={showAddModal} onClose={handleAddModalClose} fetchStockOut={fetchStockOut}/>
     </>
   );
 };
