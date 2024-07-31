@@ -210,7 +210,7 @@ const WithoutPo = () => {
           </div>
         </div>
       </div>
-      <CreateWithoutPoModal show={showAddModal} onClose={handleAddModalClose} />
+      <CreateWithoutPoModal show={showAddModal} onClose={handleAddModalClose} getAllPurchaseOrder={getAllPurchaseOrder} />
       <EditWithoutPoModal show={showModal} onClose={handleCloseModal} productId={selectedProductId} />
     </>
   );

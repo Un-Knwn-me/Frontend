@@ -106,10 +106,10 @@ const VerticalNavbar = () => {
               <li className={`${isActiveTab("/main/permissions") || isActiveTab("/main/users") ? 'text-black bg-white' : 'dark:text-white'}`}>
                 <div className="flex items-center p-2 rounded-lg hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700 group cursor-pointer" onClick={toggleAdminDropdown}>
                 <img 
-  src={getIcon(adminIcon, adminHighlightedIcon, ['permissions', 'users'])} 
-  alt="" 
-  className="h-8 w-8" 
-/>
+                  src={getIcon(adminIcon, adminHighlightedIcon, ['permissions', 'users'])} 
+                  alt="" 
+                  className="h-8 w-8" 
+                />
                   <span className="ms-3">Admin</span>
                   <img
                     src={isAdminDropdownOpen ? dropdownOpenIcon : dropdownCloseIcon}
@@ -141,10 +141,10 @@ const VerticalNavbar = () => {
               <li className={isActiveTab("/main/add-products") || isActiveTab("/main/product-master") ? 'bg-white text-black' : 'dark:text-white'}>
                 <div className="flex items-center p-2 rounded-lg hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700 group cursor-pointer" onClick={toggleProductDropdown}>
                 <img 
-  src={getIcon(productIcon, productHighlightedIcon, ['product-master', 'add-products'])} 
-  alt="" 
-  className="h-8 w-8" 
-/>
+                  src={getIcon(productIcon, productHighlightedIcon, ['product-master', 'add-products'])} 
+                  alt="" 
+                  className="h-8 w-8" 
+                />
                   <span className="ms-3">Product</span>
                   <img
                     src={isProductDropdownOpen ? dropdownOpenIcon : dropdownCloseIcon}
@@ -172,49 +172,14 @@ const VerticalNavbar = () => {
                     </li>
                   </ul>
                 )}
-              </li>
-              <li className={isActiveTab("/main/stock") ? 'bg-white text-black' : 'dark:text-white'}>
-                <div className="flex items-center p-2 rounded-lg hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700 group cursor-pointer" onClick={toggleStockDropdown}>
-                <img 
-  src={getIcon(stockIcon, stockHighlightedIcon, ['stock-in', 'stock-out'])} 
-  alt="" 
-  className="h-8 w-8" 
-/>
-                  <span className="ms-3">Stock</span>
-                  <img
-                    src={isStockDropdownOpen ? dropdownOpenIcon : dropdownCloseIcon}
-                    alt=""
-                    className="h-5 w-5 ml-auto"
-                  />
-                </div>
-                {isStockDropdownOpen && (
-                  <ul className="space-y-2">
-                    <li className={isActiveTab("/main/stock-in") ? 'bg-gray-100 text-black' : isActiveTab("/main/stock-out") ? 'bg-white dark:text-black' : ''}>
-                      <NavLink
-                        to="/main/stock-in"
-                        className="flex items-center p-2 px-10 whitespace-nowrap rounded-lg hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700 group"
-                      >
-                        <span className="ms-3">Stock In</span>
-                      </NavLink>
-                    </li>
-                    <li className={isActiveTab("/main/stock-out") ? 'bg-gray-100 text-black' : isActiveTab("/main/stock-in") ? 'bg-white dark:text-black' : ''}>
-                      <NavLink
-                        to="/main/stock-out"
-                        className="flex items-center p-2 px-10 whitespace-nowrap rounded-lg hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700 group"
-                      >
-                        <span className="ms-3">Stock Out</span>
-                      </NavLink>
-                    </li>
-                  </ul>
-                )}
-              </li>
+              </li>              
               <li className={isActiveTab("/main/withpo") || isActiveTab("/main/withoutpo") ? 'bg-white text-black' : ''}>
                 <div className="flex items-center p-2 rounded-lg dark:text-white hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700 group cursor-pointer" onClick={togglePurchaseDropdown}>
                 <img 
-  src={getIcon(purchaseOrderIcon, purchaseOrderHighlightedIcon, ['withpo', 'withoutpo'])} 
-  alt="" 
-  className="h-8 w-8" 
-/>
+                  src={getIcon(purchaseOrderIcon, purchaseOrderHighlightedIcon, ['withpo', 'withoutpo'])} 
+                  alt="" 
+                  className="h-8 w-8" 
+                />
                   <span className="ms-3">Purchase Order</span>
                   <img
                     src={isPurchaseDropdownOpen ? dropdownOpenIcon : dropdownCloseIcon}
@@ -238,6 +203,41 @@ const VerticalNavbar = () => {
                         className="flex items-center p-2 px-10 whitespace-nowrap rounded-lg dark:text-white hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700 group aria-[current=page]:bg-gray-200 aria-[current=page]:text-black"
                       >
                         <span className="ms-3">Without po</span>
+                      </NavLink>
+                    </li>
+                  </ul>
+                )}
+              </li>
+              <li className={isActiveTab("/main/stock") ? 'bg-white text-black' : 'dark:text-white'}>
+                <div className="flex items-center p-2 rounded-lg hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700 group cursor-pointer" onClick={toggleStockDropdown}>
+                <img 
+                  src={getIcon(stockIcon, stockHighlightedIcon, ['stock-in', 'stock-out'])} 
+                  alt="" 
+                  className="h-8 w-8" 
+                />
+                  <span className="ms-3">Stock</span>
+                  <img
+                    src={isStockDropdownOpen ? dropdownOpenIcon : dropdownCloseIcon}
+                    alt=""
+                    className="h-5 w-5 ml-auto"
+                  />
+                </div>
+                {isStockDropdownOpen && (
+                  <ul className="space-y-2">
+                    <li className={isActiveTab("/main/stock-in") ? 'bg-gray-100 text-black' : isActiveTab("/main/stock-out") ? 'bg-white dark:text-black' : ''}>
+                      <NavLink
+                        to="/main/stock-in"
+                        className="flex items-center p-2 px-10 whitespace-nowrap rounded-lg hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700 group"
+                      >
+                        <span className="ms-3">Stock In</span>
+                      </NavLink>
+                    </li>
+                    <li className={isActiveTab("/main/stock-out") ? 'bg-gray-100 text-black' : isActiveTab("/main/stock-in") ? 'bg-white dark:text-black' : ''}>
+                      <NavLink
+                        to="/main/stock-out"
+                        className="flex items-center p-2 px-10 whitespace-nowrap rounded-lg hover:bg-gray-100 hover:text-black dark:hover:bg-gray-700 group"
+                      >
+                        <span className="ms-3">Stock Out</span>
                       </NavLink>
                     </li>
                   </ul>

@@ -32,20 +32,23 @@ const UsersTable = () => {
     "PRODUCT MASTER",
     "REPORTS",
   ];
-  useEffect(() => {
-    // Fetch all users from API when component mounts
-    getAllUsers();
-  }, []);
 
   const getAllUsers = async () => {
     try {
-      const response = await apiService.get("/users/getall");
-      console.log(response.data); // Log the response data to verify
-      setUsers(response.data); // Update state with fetched users
+      const response = await apiService.get(`/users/getall`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(response.data);
+      setUsers(response.data);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
   };
+  useEffect(() => {
+    getAllUsers();
+  }, []);
 
   // Function to open the add user modal
   const openModal = () => {
@@ -140,8 +143,8 @@ const UsersTable = () => {
                 <td className="px-6 py-4 text-center whitespace-nowrap">
                   {index + 1}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">{user.name}</td>
-                <td className="px-6 py-4 text-center">
+                <td className="px-6 py-4 whitespace-nowrap">{user.full_name}</td>
+                {/* <td className="px-6 py-4 text-center">
                   <span className="flex gap-2">
                     {user.moduleAccess.map((module, idx) => (
                       <span
@@ -152,7 +155,8 @@ const UsersTable = () => {
                       </span>
                     ))}
                   </span>
-                </td>
+                </td> */}
+                <td className="px-6 py-4 whitespace-nowrap">{user.email}</td>
                 <td className="px-6 py-4 text-center">
                   <button
                     onClick={() => openEditModal(user)}

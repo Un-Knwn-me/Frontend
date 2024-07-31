@@ -20,6 +20,7 @@ const AddStockOutModel = ({ show, onClose }) => {
   const [productOuterTotals, setProductOuterTotals] = useState(null);
   const [orderInnerTotals, setOrderInnerTotals] = useState(null);
   const [orderOuterTotals, setOrderOuterTotals] = useState(null);
+  const [stockOutBundle, setStockOutBundle] = useState(null);
 
   // fetch styleNo
   const fetchStyleSuggestions = async (styleInput) => {
@@ -132,6 +133,14 @@ const AddStockOutModel = ({ show, onClose }) => {
     setOrderDropdown(false);
   };
 
+  const handleBundleChange = async(e) => {
+    try {
+      const setBundle = setStockOutBundle(e.target.value);
+    } catch (error) {
+      
+    }
+  }
+
   const calculateTotalInnerPcs = (data) => {
     return data.reduce((total, item) => total + item.innerPcs, 0);
   };
@@ -167,7 +176,7 @@ const AddStockOutModel = ({ show, onClose }) => {
       const stockData = {
       stock_id: productInfo.id,
       stockOut_by_size: orderInfo.purchase_by_size,
-      stockOut_bundle: orderInfo.req_bundle,
+      stockOut_bundle: stockOutBundle,
       total_stockOut_pcs: orderInfo.req_purchase_qty,
       product_style_number: productInfo.product_style_number,
       product_id: productInfo.Product.id,
@@ -304,7 +313,7 @@ const AddStockOutModel = ({ show, onClose }) => {
               <h3 className="text-lg font-medium my-2">Product Image:</h3>
             <div className="flex items-center justify-center max-w-48 border border-gray-400">
               <img
-                src={productInfo?.Product.images[2] || 'https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?t=st=1722163869~exp=1722167469~hmac=37361beb0ca1a1c652d36c9ca94818f793a54d21822edab80e80c6e43a9b7b37&w=740'}
+                src={productInfo?.Product.images[0] || 'https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?t=st=1722163869~exp=1722167469~hmac=37361beb0ca1a1c652d36c9ca94818f793a54d21822edab80e80c6e43a9b7b37&w=740'}
                 alt='Product'
                 className="h-40 object-cover rounded"
               />
@@ -740,9 +749,21 @@ const AddStockOutModel = ({ show, onClose }) => {
               )}
             </div>
           </div>
-
-
           </div>
+
+          <div className="flex flex-col justify-center items-center my-10 ">
+            <label className="font-semibold mb-2" htmlFor="StockOutBundle">
+              Enter Stock Out Bundle:
+            </label>
+            <input
+              className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200 w-40 "
+              type="number"
+              value={stockOutBundle}
+              onChange={handleBundleChange}
+              placeholder="Enter Bundle Value"
+            />
+          </div>
+
           <div className="flex justify-center px-20 mt-5">
             <button
               onClick={handleSubmit}

@@ -25,6 +25,8 @@ const AddProductModal = ({ show, onClose }) => {
   const [category, setCategory] = useState("");
   const [productTypes, setProductTypes] = useState("");
   const [innerPcs, setInnerPcs] = useState(null);
+  const [shortDescription, setShortDescription] = useState("");
+  const [fullDescription, setFullDescription] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -38,10 +40,10 @@ const AddProductModal = ({ show, onClose }) => {
   const [fabricSuggestions, setFabricSuggestions] = useState([]);
   const [selectedFabricId, setSelectedFabricId] = useState(null);
 
-  //suggestion styleNo states
-  const [styleDropdown, setStyleDropdown] = useState(false);
-  const [styleSuggestions, setStyleSuggestions] = useState([]);
-  const [selectedStyleId, setSelectedStyleId] = useState(null);
+  //suggestion reference No states
+  const [referenceDropdown, setReferenceDropdown] = useState(false);
+  const [referenceSuggestions, setReferenceSuggestions] = useState([]);
+  const [selectedReferenceId, setSelectedReferenceId] = useState(null);
 
   //suggestion Fabric Finish states
   const [fabricFinishDropdown, setFabricFinishDropdown] = useState(false);
@@ -109,15 +111,15 @@ const AddProductModal = ({ show, onClose }) => {
   const [selectedMesurementId, setSelectedMesurementId] = useState(null);
   const [selectedMesurement, setSelectedMesurement] = useState(null);
 
-//suggestion category states
-const [categoryDropdown, setCategoryDropdown] = useState(false);
-const [categorySuggestions, setCategorySuggestions] = useState([]);
-const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+  //suggestion category states
+  const [categoryDropdown, setCategoryDropdown] = useState(false);
+  const [categorySuggestions, setCategorySuggestions] = useState([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
 
-    //suggestion productTypes states
-    const [productTypesDropdown, setProductTypesDropdown] = useState(false);
-    const [productTypesSuggestions, setProductTypesSuggestions] = useState([]);
-    const [selectedProductTypesId, setSelectedProductTypesId] = useState(null);
+  //suggestion productTypes states
+  const [productTypesDropdown, setProductTypesDropdown] = useState(false);
+  const [productTypesSuggestions, setProductTypesSuggestions] = useState([]);
+  const [selectedProductTypesId, setSelectedProductTypesId] = useState(null);
 
   const [images, setImages] = useState([]);
   const [previews, setPreviews] = useState([]);
@@ -162,35 +164,42 @@ const [selectedCategoryId, setSelectedCategoryId] = useState(null);
     setBrandDropdown(false);
   };
 
-  // fetch styleNo
-  const fetchStyleSuggestions = async (styleInput) => {
+  // fetch reference no
+  const fetchReferenceSuggestions = async (referenceInput) => {
     try {
-      if (styleInput.length > 0) {
-        const response = await apiService.get("/styles/getall");
-        const filteredStyles = response.data.filter((b) =>
-          b.style_no.toLowerCase().startsWith(styleInput.toLowerCase())
+      if (referenceInput.length > 0) {
+        const response = await apiService.get("/references/getall");
+        const filteredReference = response.data.filter((b) =>
+          b.reference_no.toLowerCase().startsWith(referenceInput.toLowerCase())
         );
-        setStyleSuggestions(filteredStyles);
+        setReferenceSuggestions(filteredReference);
       } else {
-        setStyleSuggestions([]);
+        setReferenceSuggestions([]);
       }
     } catch (error) {
-      console.error("Error fetching StyleNo:", error);
+      console.error("Error fetching Reference No:", error);
     }
   };
 
-  const handleStyleChange = (e) => {
-    const styleInput = e.target.value;
-    setStyleNo(styleInput);
-    setStyleDropdown(true);
-    fetchStyleSuggestions(styleInput);
+  const handleReferenceChange = (e) => {
+    const referenceInput = e.target.value;
+    setReferenceNo(referenceInput);
+    setReferenceDropdown(true);
+    fetchReferenceSuggestions(referenceInput);
   };
 
-  const handleStyleSelect = (style) => {
-    setStyleNo(style.style_no);
-    setSelectedStyleId(style.id);
-    setStyleSuggestions([]);
-    setStyleDropdown(false);
+  const handleReferenceSelect = (ref) => {
+    setReferenceNo(ref.reference_no);
+    setSelectedReferenceId(ref.id);
+    setReferenceSuggestions([]);
+    setReferenceDropdown(false);
+  };
+
+  const handleAddNewReference = () => {
+    // Implement the logic to add a new buyer here
+    console.log("Adding new reference NO:", referenceNo);
+    // Close the dropdown after adding the buyer
+    setReferenceDropdown(false);
   };
 
   // fetch fabric
@@ -868,8 +877,8 @@ const [selectedCategoryId, setSelectedCategoryId] = useState(null);
      }
 
     const formData = new FormData();
-    formData.append("reference_number", referenceNo);
-    formData.append("style_id", selectedStyleId);
+    formData.append("style_no", styleNo);
+    formData.append("reference_id", selectedReferenceId);
     formData.append("category_id", selectedCategoryId);
     formData.append("productType_id", selectedProductTypesId);
     formData.append("brand_id", selectedBrandId);
@@ -888,7 +897,8 @@ const [selectedCategoryId, setSelectedCategoryId] = useState(null);
     formData.append("packing_method_id", selectedPackingId);
     formData.append("inner_pcs", innerPcs);
     formData.append("measurement_chart_id", selectedMesurementId);
-    formData.append("is_Stocked", false);
+    formData.append("short_description", shortDescription);
+    formData.append("full_description", fullDescription);
     images.forEach((image) => {
       formData.append("images", image); 
     });
@@ -940,13 +950,38 @@ const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   
   if (!show) return null;
 
+  const handleModalClose = () => {
+    setPreviews([]);
+    setStyleNo("");
+    setReferenceNo("");
+    setCategory("");
+    setProductTypes("");
+    setBrand("");
+    setFabric("");
+    setFabricFinish("");
+    setGsm(null);
+    setKnitType("");
+    setColors("");
+    setSizes("");
+    setDecorations("");
+    setPrintOrEmbName("");
+    setStitchDetails("");
+    setNeck("");
+    setSleeve("");
+    setLength("");
+    setPackingMethod("");
+    setInnerPcs(null);
+    setMeasurementChart("");
+    onClose();
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div
         className="fixed inset-0 bg-black opacity-50"
         onClick={onClose}
       ></div>
-      <div className="relative bg-white rounded-lg shadow-lg w-full max-w-[80vw] h-screen max-h-[85vh] overflow-y-auto lg:overflow-auto">
+      <div className="relative bg-white rounded-lg shadow-lg w-full max-w-[80vw] h-screen max-h-[90vh] overflow-y-auto lg:overflow-auto">
         <div className="px-10 py-5">
           <div className="flex justify-center">
             {" "}
@@ -954,7 +989,7 @@ const [selectedCategoryId, setSelectedCategoryId] = useState(null);
             <h2 className="text-lg font-bold">Add Product</h2>
             <button
               className="absolute right-5 cursor-pointer"
-              onClick={onClose}
+              onClick={handleModalClose}
             >
               <img src={closeIcon} alt="Close" />
             </button>
@@ -1041,23 +1076,10 @@ const [selectedCategoryId, setSelectedCategoryId] = useState(null);
                   type="text"
                   id="styleNo"
                   value={styleNo}
-                  onChange={handleStyleChange}
+                  onChange={(e) => setStyleNo(e.target.value)}
                   className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter Style No"
                 />
-                {styleDropdown && styleNo && (
-                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
-                    {styleSuggestions.map((item) => (
-                      <li
-                        key={item.id}
-                        onClick={() => handleStyleSelect(item)}
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
-                      >
-                        {item.style_no}
-                      </li>
-                    ))}
-                  </ul>
-                )}
               </div>
 
               <div className="flex flex-col gap-2 relative">
@@ -1068,10 +1090,32 @@ const [selectedCategoryId, setSelectedCategoryId] = useState(null);
                   type="text"
                   id="referenceNo"
                   value={referenceNo}
-                  onChange={(e) => setReferenceNo(e.target.value)}
+                  onChange={handleReferenceChange}
                   className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
                   placeholder="Enter Reference Number"
                 />
+                {referenceDropdown && referenceNo && (
+                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
+                    {referenceSuggestions.length > 0 ? (
+                      referenceSuggestions.map((item) => (
+                        <li
+                          key={item.id}
+                          onClick={() => handleReferenceSelect(item)}
+                          className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                        >
+                          {item.reference_no}
+                        </li>
+                      ))
+                    ) : (
+                      <li
+                        className="px-4 py-2 cursor-pointer text-sm text-blue-600 hover:bg-gray-200"
+                        onClick={handleAddNewReference}
+                      >
+                        Add New Buyer: "{referenceNo}"
+                      </li>
+                    )}
+                  </ul>
+                )}
               </div>
 
               <div className="flex flex-col gap-2 relative">
@@ -1556,6 +1600,34 @@ const [selectedCategoryId, setSelectedCategoryId] = useState(null);
                 <p>{errorMessage}</p>
               </div>
             )}
+
+            <div className="flex flex-col gap-2 mt-3">
+              <label className="font-semibold" htmlFor="shortDescription">
+                Short Description:
+              </label>
+              <textarea
+                id="shortDescription"
+                value={shortDescription}
+                onChange={(e) => setShortDescription(e.target.value)}
+                className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                rows="1"
+                placeholder="Enter Short Description"
+              />
+            </div>
+
+            <div className="flex flex-col gap-2 mt-3">
+              <label className="font-semibold" htmlFor="fullDescription">
+                Full Description:
+              </label>
+              <textarea
+                id="fullDescription"
+                value={fullDescription}
+                onChange={(e) => setFullDescription(e.target.value)}
+                className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                rows="2"
+                placeholder="Enter Full Description"
+              />
+            </div>
             
             <div className="mt-10 flex justify-center gap-4">
               <button

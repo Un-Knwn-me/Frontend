@@ -7,13 +7,10 @@ import EditUserProfileModal from "./EditUserProfileModal";
 import apiService from "../../apiService";
 
 const EditUsersModal = ({ user, onClose, onUpdate, permissions }) => {
-    const [editedUser, setEditedUser] = useState(user);
-    const userToBeEdited = {
-        avatar: 'path/to/avatar.jpg',
-        name: 'Ram kumar',
-        phone: '+91 9876543210',
-        email: 'demo@quco.com',
-    };
+    const [editedUser, setEditedUser] = useState({
+        ...user,
+        moduleAccess: user.moduleAccess || [], // Ensure moduleAccess is defined
+      });
     const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
 
     const handlePermissionToggle = (permission) => {
@@ -24,11 +21,6 @@ const EditUsersModal = ({ user, onClose, onUpdate, permissions }) => {
                 : [...prevUser.moduleAccess, permission],
         }));
     };
-
-    // const handleUpdate = () => {
-    //     onUpdate(editedUser);
-    //     onClose();
-    // };
 
     const handleUpdate = async () => {
         try {
@@ -82,18 +74,18 @@ const EditUsersModal = ({ user, onClose, onUpdate, permissions }) => {
                             {user.avatar ? (
                                 <img
                                     src={user.avatar}
-                                    alt={user.name}
+                                    alt={user.full_name}
                                     className="w-16 h-16 rounded-full object-cover mr-4"
                                 />
                             ) : (
                                 <div
                                     className={`w-16 h-16 rounded-full flex items-center justify-center bg-blue-500 text-white mr-4 text-2xl`}
                                 >
-                                    {user.name.charAt(0).toUpperCase()}
+                                    {user.full_name.charAt(0).toUpperCase()}
                                 </div>
                             )}
                             <div className="flex" >
-                                <div className="font-semibold">{user.name}</div>
+                                <div className="font-semibold">{user.full_name}</div>
                                 <button className="text-blue-500 flex ml-5" onClick={openEditProfileModal}>
                                     <img src={editIcon} alt="Edit" className="w-6 h-6" />
                                     <span className="text-lg underline" >Edit Profile</span>
@@ -125,8 +117,8 @@ const EditUsersModal = ({ user, onClose, onUpdate, permissions }) => {
                                         </button>
                                     </div>
                                 </div>
-                                    <hr className="my-2 border border-gray-200 w-full" />
-        </>
+                    <hr className="my-2 border border-gray-200 w-full" />
+                </>
                             ))}
                         </div>
                         <div className="mt-4 flex justify-between">
@@ -146,12 +138,12 @@ const EditUsersModal = ({ user, onClose, onUpdate, permissions }) => {
                     </div>
                 </div>
         )}
-                    {isEditProfileModalOpen && (
-                        <EditUserProfileModal
-                            user={userToBeEdited}
-                            onClose={() => setIsEditProfileModalOpen(false)}
-                            onUpdate={handleUpdateUser}
-                        />
+        {isEditProfileModalOpen && (
+            <EditUserProfileModal
+                user={editedUser}
+                onClose={() => setIsEditProfileModalOpen(false)}
+                onUpdate={handleUpdateUser}
+            />
     )}
         </>
     );

@@ -17,7 +17,7 @@ const Sizes = ({ searchQuery, isModalOpen, onClose }) => {
   const [checkedIds, setCheckedIds] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(5);
-  const [sizes, setSizes] = useState([""]);
+  const [sizes, setSizes] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [singleSize, setSingleSize] = useState("");
   const [typeName, setTypeName] = useState('');
@@ -48,8 +48,8 @@ const Sizes = ({ searchQuery, isModalOpen, onClose }) => {
   );
 
   const handleAddSizeField = () => {
-    setSizes([...sizes, []]);
-  };
+    setSizes([...sizes, ['']]);
+  };  
 
   const handleRemoveSizeField = (index) => {
     const newSizes = sizes.filter((_, i) => i !== index);
@@ -76,7 +76,7 @@ const Sizes = ({ searchQuery, isModalOpen, onClose }) => {
       })
       if (response.status === 201) {
         setTypeName("");
-        setSizes([""]);
+        setSizes([]);
         setSuccessMessage("Size added successfully.");
         setErrorMessage("");
         fetchAllSizes();
@@ -117,7 +117,7 @@ const Sizes = ({ searchQuery, isModalOpen, onClose }) => {
         ...data,
         { id: data.length + 1, sizes: newSizes, status: "active" },
       ]);
-      setSizes([{ size: "" }]);
+      setSizes([]);
       onClose();
     }
   };
@@ -212,9 +212,6 @@ const Sizes = ({ searchQuery, isModalOpen, onClose }) => {
     setRecordsPerPage(Number(e.target.value));
     setCurrentPage(1);
   };
-
-
-
 
   const startIndex = (currentPage - 1) * recordsPerPage;
   const endIndex = startIndex + recordsPerPage;

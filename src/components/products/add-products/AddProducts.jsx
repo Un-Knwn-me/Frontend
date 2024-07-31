@@ -229,7 +229,7 @@ const AddProducts = ({ searchQuery }) => {
                       </div>
                     </td>
                     <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black w-32">
-                      {row.Style.style_no}
+                      {row.style_no}
                     </td>
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-32">
                       {row.ProductType.product}
@@ -327,11 +327,13 @@ const AddProducts = ({ searchQuery }) => {
           </div>
         </div>
       </div>
+      {showModal && (
       <EditProductModal
         show={showModal}
         onClose={handleCloseModal}
         productId={selectedProductId}
       />
+      )}
       <AddProductModal show={showAddModal} onClose={handleAddModalClose} />
     </>
   );
