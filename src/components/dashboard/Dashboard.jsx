@@ -41,21 +41,17 @@ const Dashboard = () => {
     };
 
     const fetchTotalStocks = async () => {
-      if (totalProducts.length > 0) {
         try {
-          const response = await apiService.get("/reports/overallStock", {
+          const response = await apiService.get("/stocks/stockIn/all", {
             headers: {
               'Content-Type': 'application/json',
             },
           });
           console.log(response.data);
-          setTotalStocksCount(response.data.totalStocks);
+          setTotalStocksCount(response.data.length);
         } catch (error){
           console.error("Error fetching total stocks:", error);
         }
-      }else {
-        setTotalStocksCount(0);
-      }
     }
 
     fetchTotalProducts();

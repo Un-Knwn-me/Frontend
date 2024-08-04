@@ -246,7 +246,7 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
           </button>
         </div>
         <hr className="my-4" />
-        <div className="flex justify-between px-20 mb-4">
+        <div className="flex justify-between px-20 my-5 mt-6">
 
           <div className="flex flex-col grid grid-cols-3 2xl:grid-cols-5 gap-2">
             <div className="flex flex-col">
@@ -496,11 +496,11 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
 
           </div>
           
-          <div className="flex items-center justify-center border border-gray-400">
+          <div className="flex items-center justify-center border border-gray-400 h-64 mt-10">
             <img
               src={imageUrl || 'https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?t=st=1722163869~exp=1722167469~hmac=37361beb0ca1a1c652d36c9ca94818f793a54d21822edab80e80c6e43a9b7b37&w=740'}
               alt='Stock'
-              className="h-60 w-60 object-cover rounded"
+              className="h-64 w-60 object-cover rounded"
             />
           </div>
         </div>
@@ -588,7 +588,7 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
               </div>
             </div>
 
-            <div className="px-20 content-center">
+            <div className="px-10 content-center">
           <label className="font-semibold">Number of Bundles: </label>
           <input
             type="number"
@@ -599,7 +599,7 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
           />
         </div>
 
-        <div className="p-4 bg-gray-100 flex items-center justify-center mt-8 mb-8">
+        <div className="p-4 bg-gray-100 flex items-center justify-center my-8">
               <div className="flex flex-col gap-4">
                 <div className="flex gap-5 justify-between">
                   <label className="block text-sm font-medium text-gray-700">

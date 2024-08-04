@@ -44,6 +44,7 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
   const [totalInnerPcsPerBundle, setTotalInnerPcsPerBundle] = useState(0);
   const [totalProducts, setTotalProducts] = useState(0);
   const [stockOutPoNo, setStockOutPoNo] = useState('');
+  const [stockOutOrder, setStockOutOrder] = useState({});
   const [showStockOut, setShowStockOut] = useState(false);
 
   const handleDeliveryDateChange = (e) => {
@@ -286,6 +287,7 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
         setFullDescription("");
         setSelectedProduct(null);
         setStockOutPoNo(response.data.purchase_order_number);
+        setStockOutOrder(response.data)
         handleStockOutModelShow();
         // onClose();
       } else {
@@ -440,6 +442,19 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                     )}
                   </ul>
                 )}
+              </div>
+
+              <div className="flex flex-col gap-2 relative">
+                <label className="font-semibold" htmlFor="referenceNo">
+                  Reference No:
+                </label>
+                <input
+                  type="text"
+                  id="referenceNo"
+                  value={ReferenceNo}
+                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  disabled
+                />
               </div>
 
               <div className="flex flex-col gap-2 relative">
@@ -816,7 +831,7 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
           </div>
         </div>
       </div>
-      <AddStockOutModel show={showStockOut} onClose={handleStockOutModelClose} stockOutPoNo={stockOutPoNo}/>
+      <AddStockOutModel show={showStockOut} onClose={handleStockOutModelClose} stockOutPoNo={stockOutPoNo} stockOutOrder={stockOutOrder}/>
     </div>
   );
 };

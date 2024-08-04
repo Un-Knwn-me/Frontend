@@ -30,7 +30,7 @@ const Main = () => {
         <HorizontalNavbar />
 
         {/* Main Content */}
-        <main className="flex-grow overflow-y-auto py-2">
+        <main className="flex-grow overflow-y-auto pt-2">
           {/* Outlet for nested routes */}
           <Outlet />
         </main>

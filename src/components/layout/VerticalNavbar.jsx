@@ -23,11 +23,11 @@ function VerticalNavbar({ isOpen, toggleSideNav }) {
   const isActiveTab = (route) => location.pathname.startsWith(route);
 
   const Menus = [
-    { title: "Dashboard", path: "/main/dashboard", icon: <RiDashboardFill className="h-6 w-6"/>, highlightedIcon: <RiDashboardFill color="yellow" className="h-6 w-6"/> },
+    { title: "Dashboard", path: "/main/dashboard", icon: <RiDashboardFill className="h-6 w-6"/>, highlightedIcon: <RiDashboardFill className="h-6 w-6 bg-[#EEBBC3] text-black"/> },
     {
       title: "Admin",
       icon: <MdAdminPanelSettings className="h-6 w-6"/>,
-      highlightedIcon: <MdAdminPanelSettings className="h-6 w-6 text-[#EEBBC3]"/>,
+      highlightedIcon: <MdAdminPanelSettings className="h-6 w-6 bg-[#EEBBC3] text-black"/>,
       submenu: true,
       submenuItems: [
         { title: "Permissions", path: "/main/permissions" },
@@ -38,7 +38,7 @@ function VerticalNavbar({ isOpen, toggleSideNav }) {
     {
       title: "Product",
       icon: <FaBoxOpen className="h-6 w-6"/>,
-      highlightedIcon: <FaBoxOpen className="h-6 w-6 text-[#EEBBC3]"/>,
+      highlightedIcon: <FaBoxOpen className="h-6 w-6 bg-[#EEBBC3] text-black"/>,
       submenu: true,
       submenuItems: [
         { title: "Product Master", path: "/main/product-master" },
@@ -49,7 +49,7 @@ function VerticalNavbar({ isOpen, toggleSideNav }) {
     {
       title: "Purchase Order",
       icon: <FaClipboardList className="h-6 w-6"/>,
-      highlightedIcon: <FaClipboardList className="h-6 w-6 text-[#EEBBC3]"/>,
+      highlightedIcon: <FaClipboardList className="h-6 w-6 bg-[#EEBBC3] text-black"/>,
       submenu: true,
       submenuItems: [
         { title: "With Po", path: "/main/withpo" },
@@ -60,7 +60,7 @@ function VerticalNavbar({ isOpen, toggleSideNav }) {
     {
       title: "Stock",
       icon: <BsClipboard2CheckFill className="h-6 w-6"/>,
-      highlightedIcon: <BsClipboard2CheckFill className="h-6 w-6 text-[#EEBBC3]"/>,
+      highlightedIcon: <BsClipboard2CheckFill className="h-6 w-6 bg-[#EEBBC3] text-black"/>,
       submenu: true,
       submenuItems: [
         { title: "Stock In", path: "/main/stock-in" },
@@ -68,9 +68,9 @@ function VerticalNavbar({ isOpen, toggleSideNav }) {
       ],
       routes: ["stock-in", "stock-out"]
     },
-    { title: "Report", path: "/main/report", icon: <RiFileList3Fill className="h-6 w-6"/>, highlightedIcon: <RiFileList3Fill color="yellow" className="h-6 w-6"/> },
-    { title: "Profile", path: "/main/profile", icon: <FaUser className="h-6 w-6"/>, highlightedIcon: <FaUser color="yellow" className="h-6 w-6"/> },
-    { title: "Logout", icon: <FaSignOutAlt className="h-6 w-6"/>, highlightedIcon: <FaSignOutAlt color="yellow" className="h-6 w-6"/> },
+    { title: "Report", path: "/main/report", icon: <RiFileList3Fill className="h-6 w-6"/>, highlightedIcon: <RiFileList3Fill color="yellow" className="h-6 w-6 bg-[#EEBBC3] text-black"/> },
+    { title: "Profile", path: "/main/profile", icon: <FaUser className="h-6 w-6"/>, highlightedIcon: <FaUser color="yellow" className="h-6 w-6 bg-[#EEBBC3] text-black"/> },
+    { title: "Logout", icon: <FaSignOutAlt className="h-6 w-6"/>, highlightedIcon: <FaSignOutAlt color="yellow" className="h-6 w-6 bg-[#EEBBC3] text-black"/> },
   ];
 
   const toggleSubmenu = (index) => {
@@ -112,7 +112,7 @@ function VerticalNavbar({ isOpen, toggleSideNav }) {
           alt="logo"
           src={logo}
           className={`bg-amber-50 rounded cursor-pointer block float-left duration-500 ${
-            !isOpen && "rotate-180"
+            !isOpen && "rotate-0"
           }`}
           onClick={toggleSideNav}
         />
@@ -128,10 +128,10 @@ function VerticalNavbar({ isOpen, toggleSideNav }) {
           <div key={index}>
             <NavLink
               to={menu.path || "#"}
-              className={`text-white text-sm flex items-center gap-x-4 cursor-pointer p-2 rounded-md mt-5 h-12 ${
+              className={`text-sm flex items-center gap-x-4 cursor-pointer p-2 rounded-md mt-5 h-12 ${
                 isActiveTab(menu.path)
-                  ? "bg-[#EEBBC3]"
-                  : "hover:bg-[#374151] hover:text-gray-300"
+                  ? "bg-[#EEBBC3] text-black"
+                  : "hover:bg-[#374151] hover:text-gray-300 text-white"
               }`}
               onClick={() => {
                 if (menu.title === "Logout") {
@@ -168,7 +168,7 @@ function VerticalNavbar({ isOpen, toggleSideNav }) {
                     to={submenuItem.path}
                     className={({ isActive }) =>
                       `text-white text-sm flex items-center gap-x-4 cursor-pointer p-2 px-8 rounded-md ${
-                        isActive ? 'bg-[#EEBBC3]' : 'hover:bg-[#374151]'
+                        isActive ? 'bg-red-500' : 'hover:bg-[#374151]'
                       }`
                     }
                   >

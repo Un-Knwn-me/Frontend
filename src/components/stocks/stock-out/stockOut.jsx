@@ -133,34 +133,34 @@ const StockOut = () => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50 w-full">
                 <tr>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-28">
+                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-12">
                     SL No
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-40">
+                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-32">
                     Date
                   </th>
-                  <th className="px-6 py-3 text-center text-md font-bold text-black uppercase">
-                    (W)PO
+                  <th className="px-6 py-3 text-center text-md font-bold text-black uppercase w-28">
+                    Purchase Order
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-28">
+                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-36">
                     Buyer
                   </th>
-                  <th className="px-6 py-3 text-center text-md font-bold text-black uppercase">
+                  <th className="px-6 py-3 text-center text-md font-bold text-black uppercase w-14">
                     Style NO
                   </th>
-                  <th className="px-6 py-3 text-center text-md font-bold text-black uppercase">
+                  <th className="px-6 py-3 text-center text-md font-bold text-black uppercase w-14">
                     Ref No
                   </th>
-                  <th className="px-6 py-3 text-center text-md font-bold text-black uppercase w-40">
+                  <th className="px-6 py-3 text-center text-md font-bold text-black uppercase w-14">
                     Stock Out Bundle
                   </th>
-                  <th className="px-6 py-3 text-center text-md font-bold text-black uppercase">
+                  <th className="px-6 py-3 text-center text-md font-bold text-black uppercase w-14">
                     Total Stock Out Pcs
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-28">
+                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-12">
                     Action
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-20">
+                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-8">
                     <input
                       type="checkbox"
                       className="form-checkbox"
@@ -174,9 +174,9 @@ const StockOut = () => {
                       checked={checkedIds.length === initialData.length}
                     />
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-8">
+                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-12">
                     <button onClick={handleDelete} className="text-red-500">
-                      <img src={deleteIcon} alt="Delete" className="h-6 w-6" />
+                      <img src={deleteIcon} alt="Delete" className="h-5 w-5" />
                     </button>
                   </th>
                 </tr>
@@ -187,30 +187,30 @@ const StockOut = () => {
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-12">
                       {startIndex + index + 1}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-32">
                       {" "}
                       {row.created_at}
                     </td>
-                    <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black flex-grow">
+                    <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black w-28">
                       {row.PurchaseOrder.purchase_order_number}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-36">
                       {row.PurchaseOrder.Buyer.name},{" "}
                       {row.PurchaseOrder.Buyer.location}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-40">
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-14">
                       {row.Stock.Product.style_no}
                     </td>
-                    <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black flex-grow">
+                    <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black w-14">
                       {row.Stock.Product.Reference.reference_no}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-14">
                       {row.stockOut_bundle}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-14">
                       {row.total_stockOut_pcs}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-16">
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-12">
                       {editIndex === startIndex + index ? (
                         <button
                           onClick={handleSaveClick}
@@ -228,7 +228,7 @@ const StockOut = () => {
                         </button>
                       )}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap w-12 text-center">
+                    <td className="px-2 py-3 whitespace-nowrap w-8 text-center">
                       <input
                         type="checkbox"
                         className="form-checkbox"
@@ -236,6 +236,14 @@ const StockOut = () => {
                         onChange={() => handleCheckboxChange(row.id)}
                       />
                     </td>
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-12">
+                  <button
+                    onClick={() => handleDelete(row.id)}
+                    className="text-red-500"
+                  >
+                    <img src={deleteIcon} alt="Delete" className="h-4 w-5" />
+                  </button>
+                </td>
                   </tr>
                 ))}
               </tbody>

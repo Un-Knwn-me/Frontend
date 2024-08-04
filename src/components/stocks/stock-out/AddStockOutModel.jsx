@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import closeIcon from "../../../assets/close-modal-icon.svg";
 import apiService from '../../../apiService';
 
-const AddStockOutModel = ({ show, onClose, stockOutPoNo }) => {
+const AddStockOutModel = ({ show, onClose, stockOutPoNo, stockOutOrder }) => {
   const [styleNumber, setStyleNumber] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedProductId, setSelectedProductId] = useState(null);
@@ -19,11 +19,12 @@ const AddStockOutModel = ({ show, onClose, stockOutPoNo }) => {
   const [orderInnerTotals, setOrderInnerTotals] = useState(null);
   const [orderOuterTotals, setOrderOuterTotals] = useState(null);
   const [stockOutBundle, setStockOutBundle] = useState(null);
+  const [totalPcs, setTotalPcs] = useState(null);
 
   useEffect(() => {
-    console.log(stockOutPoNo)
+    console.log('stockorder: ', stockOutOrder)
     setOrderNumber(stockOutPoNo);
-  },[stockOutPoNo]);
+  },[stockOutPoNo, stockOutOrder]);
 
   // fetch styleNo
   const fetchStyleSuggestions = async (style_no) => {
@@ -39,42 +40,6 @@ const AddStockOutModel = ({ show, onClose, stockOutPoNo }) => {
       console.error("Error fetching Product:", error);
     }
   };
-
-  // const handleStyleChange = (e) => {
-  //   const styleInput = e.target.value;
-  //   if (styleInput.length > 0) {
-  //   setStyleNumber(styleInput);
-  //   setStyleDropdown(true);
-  //   fetchStyleSuggestions(styleInput);
-  //   } else {
-  //     setStyleNumber("");
-  //     setStyleDropdown(false);
-  //     setSelectedProduct(null);
-  //     setCheckSame(null);
-  //     setProductInfo(null);
-  //     setOrderInfo(null);
-  //   }
-  // };
-
-  // const handleStyleSelect = (e) => {
-  //   setStyleNumber(e.product_style_number);
-  //   setSelectedProduct(e);
-  //   setSelectedProductId(e.id);
-  //   setStyleSuggestions([]);
-  //   setStyleDropdown(false);
-  //   setStyleSuggestions([]);
-  //   setStyleDropdown(false);
-  //   checkIfStyleNumbersMatch(e, selectedOrder);
-  //   console.log(e.Product.style_no)
-  // };
-
-  // const handleAddNewStyleNo = () => {
-  //   // Implement the logic to add a new buyer here
-  //   console.log("Adding new style no:", styleNumber);
-  //   // Close the dropdown after adding the buyer
-  //   setStyleDropdown(false);
-  // };
-
 
   // fetch orderNo
   const fetchOrderSuggestions = async (orderInput) => {
@@ -145,13 +110,20 @@ const AddStockOutModel = ({ show, onClose, stockOutPoNo }) => {
     setOrderDropdown(false);
   };
 
-  const handleBundleChange = async(e) => {
+  const handleBundleChange = async (e) => {
     try {
-      const setBundle = setStockOutBundle(e.target.value);
+      const bundleQty = e.target.value;
+      setStockOutBundle(bundleQty);
+
+      const totalPcs = productInfo?.stock_by_size.reduce((sum, item) => {
+        return sum + (item.innerPcs * item.outerPcs * bundleQty);
+      }, 0);
+
+      setTotalPcs(totalPcs);
     } catch (error) {
-      
+      console.error("Error handling bundle change:", error);
     }
-  }
+  };
 
   const calculateTotalInnerPcs = (data) => {
     return data.reduce((total, item) => total + item.innerPcs, 0);
@@ -166,7 +138,7 @@ const AddStockOutModel = ({ show, onClose, stockOutPoNo }) => {
       const stockData = {
       stock_id: productInfo.id,
       stockOut_by_size: orderInfo.purchase_by_size,
-      stockOut_bundle: stockOutBundle,
+      stockOut_bundle: totalPcs,
       total_stockOut_pcs: orderInfo.req_purchase_qty,
       product_style_number: productInfo.product_style_number,
       product_id: productInfo.Product.id,
@@ -258,32 +230,9 @@ const AddStockOutModel = ({ show, onClose, stockOutPoNo }) => {
                   type="text"
                   id="styleNo"
                   value={styleNumber}
-                  // onChange={handleStyleChange}
                   className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
                   disabled
                 />
-                {/* {styleDropdown && styleNumber && (
-                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg">
-                    {styleSuggestions.length > 0 ? (
-                      styleSuggestions.map((suggestion) => (
-                        <li
-                          key={suggestion.id}
-                          className="px-4 py-2 cursor-pointer hover:bg-gray-200"
-                          onClick={() => handleStyleSelect(suggestion)}
-                        >
-                          {suggestion.product_style_number}
-                        </li>
-                      ))
-                    ) : (
-                      <li
-                        className="px-4 py-2 cursor-pointer text-sm text-blue-600 hover:bg-gray-200"
-                        onClick={handleAddNewStyleNo}
-                      >
-                        Add New Style: "{styleNumber}"
-                      </li>
-                    )}
-                  </ul>
-                )} */}
               </div>
               </div>
 
@@ -752,7 +701,15 @@ const AddStockOutModel = ({ show, onClose, stockOutPoNo }) => {
               onChange={handleBundleChange}
               placeholder="Enter Bundle Value"
             />
+            {totalPcs !== null && (
+              <div className="flex justify-center my-2">
+                <p className="text-lg text-green-500 font-medium">
+                  Total Pieces: {totalPcs}
+                </p>
+              </div>
+            )}
           </div>
+          
 
           <div className="flex justify-center px-20 mt-5">
             <button
