@@ -2,10 +2,8 @@ import React, { useEffect, useState } from 'react'
 import closeIcon from "../../../assets/close-modal-icon.svg";
 import apiService from '../../../apiService';
 
-const AddStockOutModel = ({ show, onClose }) => {
+const AddStockOutModel = ({ show, onClose, stockOutPoNo }) => {
   const [styleNumber, setStyleNumber] = useState("");
-  const [styleDropdown, setStyleDropdown] = useState(false);
-  const [styleSuggestions, setStyleSuggestions] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedProductId, setSelectedProductId] = useState(null);
   const [orderNumber, setOrderNumber] = useState("");
@@ -22,58 +20,60 @@ const AddStockOutModel = ({ show, onClose }) => {
   const [orderOuterTotals, setOrderOuterTotals] = useState(null);
   const [stockOutBundle, setStockOutBundle] = useState(null);
 
+  useEffect(() => {
+    console.log(stockOutPoNo)
+    setOrderNumber(stockOutPoNo);
+  },[stockOutPoNo]);
+
   // fetch styleNo
-  const fetchStyleSuggestions = async (styleInput) => {
+  const fetchStyleSuggestions = async (style_no) => {
     try {
-      if (styleInput.length > 0) {
-        const response = await apiService.get("/stocks/stockIn/all");
-        const filteredProduct = response.data.filter((e) =>
-          e.product_style_number.toLowerCase().startsWith(styleInput.toLowerCase())
-        );
-        console.log(filteredProduct);
-        setStyleSuggestions(filteredProduct);
-      } else {
-        setStyleSuggestions([]);
-      }
+        const response = await apiService.get(`/stocks/${style_no}`);
+
+        setProductInfo(response.data);
+        const totalStockInnerPcs = calculateTotalInnerPcs(response.data.stock_by_size);
+        setProductInnerTotals(totalStockInnerPcs);
+        const totalStockOuterPcs = calculateTotalOuterPcs(response.data.stock_by_size);
+        setProductOuterTotals(totalStockOuterPcs);
     } catch (error) {
       console.error("Error fetching Product:", error);
     }
   };
 
-  const handleStyleChange = (e) => {
-    const styleInput = e.target.value;
-    if (styleInput.length > 0) {
-    setStyleNumber(styleInput);
-    setStyleDropdown(true);
-    fetchStyleSuggestions(styleInput);
-    } else {
-      setStyleNumber("");
-      setStyleDropdown(false);
-      setSelectedProduct(null);
-      setCheckSame(null);
-      setProductInfo(null);
-      setOrderInfo(null);
-    }
-  };
+  // const handleStyleChange = (e) => {
+  //   const styleInput = e.target.value;
+  //   if (styleInput.length > 0) {
+  //   setStyleNumber(styleInput);
+  //   setStyleDropdown(true);
+  //   fetchStyleSuggestions(styleInput);
+  //   } else {
+  //     setStyleNumber("");
+  //     setStyleDropdown(false);
+  //     setSelectedProduct(null);
+  //     setCheckSame(null);
+  //     setProductInfo(null);
+  //     setOrderInfo(null);
+  //   }
+  // };
 
-  const handleStyleSelect = (e) => {
-    setStyleNumber(e.product_style_number);
-    setSelectedProduct(e);
-    setSelectedProductId(e.id);
-    setStyleSuggestions([]);
-    setStyleDropdown(false);
-    setStyleSuggestions([]);
-    setStyleDropdown(false);
-    checkIfStyleNumbersMatch(e, selectedOrder);
-    console.log(e.Product.style_no)
-  };
+  // const handleStyleSelect = (e) => {
+  //   setStyleNumber(e.product_style_number);
+  //   setSelectedProduct(e);
+  //   setSelectedProductId(e.id);
+  //   setStyleSuggestions([]);
+  //   setStyleDropdown(false);
+  //   setStyleSuggestions([]);
+  //   setStyleDropdown(false);
+  //   checkIfStyleNumbersMatch(e, selectedOrder);
+  //   console.log(e.Product.style_no)
+  // };
 
-  const handleAddNewStyleNo = () => {
-    // Implement the logic to add a new buyer here
-    console.log("Adding new style no:", styleNumber);
-    // Close the dropdown after adding the buyer
-    setStyleDropdown(false);
-  };
+  // const handleAddNewStyleNo = () => {
+  //   // Implement the logic to add a new buyer here
+  //   console.log("Adding new style no:", styleNumber);
+  //   // Close the dropdown after adding the buyer
+  //   setStyleDropdown(false);
+  // };
 
 
   // fetch orderNo
@@ -111,19 +111,31 @@ const AddStockOutModel = ({ show, onClose }) => {
       setCheckSame(null);
       setProductInfo(null);
       setOrderInfo(null);
+
+      setStyleNumber("");
+      setSelectedProduct(null);
+      setCheckSame(null);
+      setProductInfo(null);
+      setOrderInfo(null);
     }
   };
 
   const handleOrderSelect = (e) => {
     setOrderNumber(e.purchase_order_number);
     setSelectedOrder(e);
+    setOrderInfo(e);
     setSelectedOrderId(e.id);
     setOrderSuggestions([]);
     setOrderDropdown(false);
     setOrderSuggestions([]);
     setOrderDropdown(false);
-    checkIfStyleNumbersMatch(selectedProduct, e);
-    console.log(e.Product.style_no)
+    console.log('orderSelect: ', e.purchase_by_size);
+    const totalOrderInnerPcs = calculateTotalInnerPcs(e.purchase_by_size);
+    setOrderInnerTotals(totalOrderInnerPcs);
+    const totalOrderOuterPcs = calculateTotalOuterPcs(e.purchase_by_size);
+    setOrderOuterTotals(totalOrderOuterPcs);
+    setStyleNumber(e.product_style_number)
+    fetchStyleSuggestions(e.product_style_number);
   };
 
   const handleAddNewOrderNo = () => {
@@ -147,28 +159,6 @@ const AddStockOutModel = ({ show, onClose }) => {
   
   const calculateTotalOuterPcs = (data) => {
     return data.reduce((total, item) => total + item.outerPcs, 0);
-  };
-
-  const checkIfStyleNumbersMatch = (product, order) => {
-    if (product && order) {
-      if (product.Product.style_no === order.Product.style_no) {
-        setCheckSame(true);
-        setProductInfo(product);
-        const totalStockInnerPcs = calculateTotalInnerPcs(product.stock_by_size);
-        setProductInnerTotals(totalStockInnerPcs);
-        const totalStockOuterPcs = calculateTotalOuterPcs(product.stock_by_size);
-        setProductOuterTotals(totalStockOuterPcs);
-        setOrderInfo(order);
-        const totalOrderInnerPcs = calculateTotalInnerPcs(order.purchase_by_size);
-        setOrderInnerTotals(totalOrderInnerPcs);
-        const totalOrderOuterPcs = calculateTotalOuterPcs(order.purchase_by_size);
-        setOrderOuterTotals(totalOrderOuterPcs);
-        console.log('product: ', product);
-        console.log('order: ', order);
-      } else {
-        setCheckSame(false);
-      }
-    }
   };
   
   const handleSubmit = async () => {
@@ -220,7 +210,7 @@ const AddStockOutModel = ({ show, onClose }) => {
           <hr className="my-2" />
           <div className="px-10">
 
-          <div className="flex justify-between items-center my-6 relative">
+          <div className="flex justify-between items-center my-6 relative gap-4">
 
             <div className="">
             <div className="grid grid-cols-2 gap-4">
@@ -268,11 +258,11 @@ const AddStockOutModel = ({ show, onClose }) => {
                   type="text"
                   id="styleNo"
                   value={styleNumber}
-                  onChange={handleStyleChange}
+                  // onChange={handleStyleChange}
                   className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
-                  placeholder="Enter Style No"
+                  disabled
                 />
-                {styleDropdown && styleNumber && (
+                {/* {styleDropdown && styleNumber && (
                   <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg">
                     {styleSuggestions.length > 0 ? (
                       styleSuggestions.map((suggestion) => (
@@ -293,7 +283,7 @@ const AddStockOutModel = ({ show, onClose }) => {
                       </li>
                     )}
                   </ul>
-                )}
+                )} */}
               </div>
               </div>
 
@@ -612,7 +602,7 @@ const AddStockOutModel = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="buyer"
-                  value={`${orderInfo?.Buyer.name}, ${orderInfo?.Buyer.location}` || ''}
+                  value={`${orderInfo?.Buyer?.name}, ${orderInfo?.Buyer?.location}` || ''}
                   className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
                   disabled
                 />

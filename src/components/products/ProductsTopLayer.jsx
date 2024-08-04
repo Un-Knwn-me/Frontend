@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import dropdownIcon from "../../assets/dropdown-icon.svg";
-import StyleNo from "./StyleNo";
+import ReferenceNo from './ReferenceNo';
 
 import Brand from "./Brand";
 import Fabric from "./Fabric";
@@ -35,7 +35,7 @@ const ProductsTopLayer = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const presets = [
-    { id: "pr1", value: "1", label: "Style No", component: StyleNo },
+    { id: "pr1", value: "1", label: "Reference No", component: ReferenceNo },
     { id: "pr2", value: "2", label: "Category", component: Category,},
     { id: "pr3", value: "3", label: "Brand", component: Brand },
     { id: "pr4", value: "4", label: "Fabric", component: Fabric },

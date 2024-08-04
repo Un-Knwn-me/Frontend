@@ -282,7 +282,7 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
     checkedIds.length > 0 && checkedIds.length === data.length;
 
   return (
-    <div className="px-4 py-2 sm:px-6 lg:px-8">
+    <div className="py-2">
       <div className="shadow border-b border-gray-200 sm:rounded-lg overflow-hidden">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50 w-full">
@@ -326,10 +326,10 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
           <tbody className="bg-white divide-y divide-gray-200">
             {currentData.map((row, index) => (
               <tr key={row.id} style={{ maxHeight: "50px" }}>
-                <td className="px-3 py-3 whitespace-nowrap text-md text-center text-black">
+                <td className="px-3 py-3 whitespace-nowrap text-md text-center text-black w-1/12">
                   {startIndex + index + 1}
                 </td>
-                <td className="px-2 py-3 whitespace-nowrap text-md text-left text-black">
+                <td className="px-2 py-3 whitespace-nowrap text-md text-left text-black w-1/12">
                       <div className="flex justify-left items-center">
                         <img
                           src={row.sample_size_file}
@@ -338,18 +338,18 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
                         />
                       </div>
                     </td>
-                <td className="px-3 py-3 whitespace-nowrap text-md text-left text-black">
+                <td className="px-3 py-3 whitespace-nowrap text-md text-left text-black w-1/12">
                   {row.name}
                 </td>
-                <td className="px-3 py-3 whitespace-nowrap text-md text-left text-black">
+                <td className="px-3 py-3 whitespace-nowrap text-md text-left text-black w-4">
                   {row.sizes ? Object.keys(row.sizes).map((key) => (
                     <span key={key}>[{key}: {row.sizes[key]}], </span>
                   )) : null}
                 </td>
-                <td className="px-3 py-3 whitespace-nowrap text-md text-left text-black">
+                <td className="px-3 py-3 whitespace-nowrap text-md text-left text-black w-1/12">
                   {row.category}
                 </td>
-                <td className="px-6 py-3 whitespace-nowrap text-md text-right text-black flex-grow">
+                <td className="px-6 py-3 whitespace-nowrap text-md text-right text-black w-1/12">
                   <button
                     onClick={() =>
                       handleStatusToggle({ id: row.id, isActive: row.isActive })
@@ -377,7 +377,7 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
                     </div>
                   </button>
                 </td>
-                <td className="px-3 py-3 whitespace-nowrap text-md text-center text-black w-32">
+                <td className="px-3 py-3 whitespace-nowrap text-md text-center text-black w-1/12">
                   <button
                     onClick={() => handleEditClick(index)}
                     className="text-blue-500"
@@ -385,7 +385,7 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
                     <img src={editIcon} alt="Edit" className="h-5 w-5" />
                   </button>
                 </td>
-                <td className="px-3 py-3 whitespace-nowrap text-md text-center text-black w-32">
+                <td className="px-3 py-3 whitespace-nowrap text-md text-center text-black w-1/12">
                   <input
                     type="checkbox"
                     className="form-checkbox"
@@ -393,7 +393,7 @@ const MeasurementChart = ({ searchQuery, isModalOpen, onClose }) => {
                     checked={checkedIds.includes(row.id)}
                   />
                 </td>
-                <td className="px-3 py-3 whitespace-nowrap text-md text-center text-black w-32">
+                <td className="px-3 py-3 whitespace-nowrap text-md text-center text-black w-1/12">
                   <button onClick={() => handleDelete(row.id)}>
                     <img src={deleteIconRed} alt="Delete" className="h-5 w-5" />
                   </button>

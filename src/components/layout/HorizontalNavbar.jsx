@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { useLocation } from "react-router-dom"; // Import useLocation hook
 import profile from "../../assets/profile-image.png";
 import logoutIcon from "../../assets/logout-icon.svg";
+import { FaBell } from "react-icons/fa";
 
 const HorizontalNavbar = () => {
   const location = useLocation();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(3);
     
   const routeNames = {
     "/main/dashboard": "Dashboard",
@@ -31,29 +34,55 @@ const HorizontalNavbar = () => {
     return routeNames[path] || (lastSegment ? lastSegment.charAt(0).toUpperCase() + lastSegment.slice(1) : "Dashboard");
   };
 
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
   return (
-    <>
-      <div className="flex justify-between items-center py-4 px-10 bg-black">
-        <div className="py-2 rounded-full flex relative">
-          <h1 className="text-4xl font-medium text-white">{getRouteName()}</h1>
-        </div>
-        <div className="flex items-center">
-          <img
-            className="h-8 w-8 rounded-full mr-4 cursor-pointer hover:scale-105 ease-in-out duration-300"
-            src={profile}
-            alt="Profile"
+    <div className="flex justify-between items-center bg-white p-4 shadow-md relative px-10">
+      <div className="text-black text-4xl font-semibold">{getRouteName()}</div>
+      <div className="flex items-center gap-4">
+        <div className="relative">
+          <FaBell
+            className="text-black text-xl cursor-pointer mr-4"
+            onClick={toggleDropdown}
           />
-          <div className="flex ml-2 cursor-pointer hover:scale-105 ease-in-out duration-300">
-            <h1 className="text-lg text-white mr-1">Logout</h1>
-            <img
-              className="h-5 w-5 mr-4 mt-1"
-              src={logoutIcon}
-              alt="Profile"
-            />
-          </div>
+          {notificationCount > 0 && (
+            <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full mr-4">
+              {notificationCount}
+            </span>
+          )}
+          {dropdownOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-50">
+              <a
+                href="#"
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >
+                Notification 1
+              </a>
+              <a
+                href="#"
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >
+                Notification 2
+              </a>
+              <a
+                href="#"
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >
+                Notification 3
+              </a>
+            </div>
+          )}
         </div>
+
+        <img
+          alt="profile"
+          src={profile}
+          className="w-10 h-10 rounded-full object-cover"
+        />
       </div>
-    </>
+    </div>
   );
 };
 

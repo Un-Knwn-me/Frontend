@@ -24,6 +24,10 @@ const Permission = () => {
   const [selectedPermission, setSelectedPermission] = useState(null);
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
   const [searchQuery, setSearchQuery] = useState("");
+  const [addModuleModalVisible, setAddModuleModalVisible] = useState(false);
+  const [newModuleName, setNewModuleName] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -69,7 +73,7 @@ const Permission = () => {
     "STOCK IN",
     "STOCK OUT",
     "PRODUCT MASTER",
-    "REPORTS"
+    "REPORTS",
   ];
 
   const openModal = (e, permission) => {
@@ -86,10 +90,26 @@ const Permission = () => {
     );
     setUsers(usersWithPermission);
   };
-  
+
   const closeModal = () => {
     setModalVisible(false);
     setSelectedPermission(null);
+  };
+
+  const openAddModuleModal = () => {
+    setAddModuleModalVisible(true);
+  };
+
+  const closeAddModuleModal = () => {
+    setAddModuleModalVisible(false);
+    setNewModuleName("");
+  };
+
+  const addNewModule = () => {
+    if (newModuleName.trim() !== "") {
+      permissions.push(newModuleName.toUpperCase());
+      closeAddModuleModal();
+    }
   };
 
   return (
@@ -98,12 +118,13 @@ const Permission = () => {
         isAddButton={true}
         addButtonText="Add Module"
         addButtonIcon={plusIcon}
+        onAddButtonClick={openAddModuleModal}
       />
-      <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4 mt-4">
+      <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4 mt-4 px-6">
         {permissions.map((permission, permIndex) => (
           <div
             key={permIndex}
-            className="md:max-w-[350px] min-w-[200px] lg:min-w-[340px] max-w-screen min-h-[200px] min-w-screen rounded-lg overflow-hidden shadow-lg p-4 border bg-white relative"
+            className="rounded-lg overflow-hidden shadow-lg p-4 border bg-white relative"
           >
             <div className="flex items-center mb-10 relative">
               <img
@@ -140,8 +161,9 @@ const Permission = () => {
                         />
                       ) : (
                         <div
-                          className={`w-10 h-10 rounded-full flex items-center justify-center text-white border-2 ${bgColors[index % bgColors.length]
-                            }`}
+                          className={`w-10 h-10 rounded-full flex items-center justify-center text-white border-2 ${
+                            bgColors[index % bgColors.length]
+                          }`}
                         >
                           {user.name.charAt(0).toUpperCase()}
                         </div>
@@ -189,22 +211,23 @@ const Permission = () => {
                         <input type="checkbox" className="mr-2" />
                       </label>
                       <div className="text-center">
-                        <button className="bg-sky-600 w-full py-1 px-5 text-white font-bold rounded-md">Update</button>
+                        <button className="bg-sky-600 w-full py-1 px-5 text-white font-bold rounded-md">
+                          Update
+                        </button>
                       </div>
                     </div>
                   </div>
                 </div>
               )}
-
               {users.filter((user) => user.permissions.includes(permission))
                 .length > 4 && (
-                  <div className="flex whitespace-nowrap items-center justify-center ml-5">
-                    +
-                    {users.filter((user) => user.permissions.includes(permission))
-                      .length - 4}{" "}
-                    more
-                  </div>
-                )}
+                <div className="flex whitespace-nowrap items-center justify-center ml-5">
+                  +
+                  {users.filter((user) => user.permissions.includes(permission))
+                    .length - 4}{" "}
+                  more
+                </div>
+              )}
             </div>
           </div>
         ))}
@@ -221,18 +244,18 @@ const Permission = () => {
               <img src={closeIcon} alt="" className="h-5 w-5" />
             </button>
           </div>
-          <div className="flex justify-between px-2" >
+          <div className="flex justify-between px-2">
             <input
               type="text"
               placeholder="Search by username..."
               className="px-3 py-2 mb-4 border rounded-md w-60"
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <button className="flex ml-10 text-center" >
+            <button className="flex ml-10 text-center">
               <img src={addUserIcon} alt="" className="h-8 w-8" />
-              <span className="mt-1 ml-1" >Add users</span>
+              <span className="mt-1 ml-1">Add users</span>
             </button>
-          </div>          
+          </div>
           <div className="flex flex-col flex-wrap gap-4">
             {users
               .filter((user) =>
@@ -251,8 +274,9 @@ const Permission = () => {
                     />
                   ) : (
                     <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center text-white ${bgColors[index % bgColors.length]
-                        }`}
+                      className={`w-10 h-10 rounded-full flex items-center justify-center text-white ${
+                        bgColors[index % bgColors.length]
+                      }`}
                     >
                       {user.name.charAt(0).toUpperCase()}
                     </div>
@@ -263,9 +287,59 @@ const Permission = () => {
           </div>
         </div>
       )}
+
+      {addModuleModalVisible && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="fixed inset-0 bg-black opacity-50"
+            onClick={closeAddModuleModal}
+          ></div>
+          <div className="relative bg-white rounded-lg shadow-lg pb-6 px-4 overflow-y-auto lg:overflow-hidden">
+            <div className="p-5 flex flex-col">
+              <div>
+                <div className="flex justify-center">
+                  <h2 className="text-2xl font-bold">Add New Module</h2>
+                  <button
+                    className="absolute right-5 cursor-pointer"
+                    onClick={closeAddModuleModal}
+                  >
+                    <img src={closeIcon} alt="Close" className="mt-2" />
+                  </button>
+                </div>
+                <hr className="w-full mt-3" />
+              </div>
+              <div className="flex flex-col items-center">
+                <input
+                  className="bg-gray-200 rounded w-80 py-3 px-4 text-gray-700 focus:outline-none focus:shadow-outline my-5 text-lg text-center"
+                  type="text"
+                  placeholder="Enter module name"
+                  value={newModuleName}
+                  onChange={(e) => setNewModuleName(e.target.value)}
+                />
+                {successMessage && (
+              <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 my-4">
+                <p>{successMessage}</p>
+              </div>
+            )}
+            {errorMessage && (
+              <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 my-4">
+                <p>{errorMessage}</p>
+              </div>
+            )}
+                <button
+                  className="bg-sky-600 w-80 py-3 text-white rounded-lg font-bold text-lg mt-3"
+                  onClick={() => addNewModule()}
+                >
+                  Update
+                </button>
+ 
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
 
 export default Permission;
-

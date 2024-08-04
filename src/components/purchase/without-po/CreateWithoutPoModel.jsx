@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import closeIcon from "../../../assets/close-modal-icon.svg";
 import apiService from "../../../apiService";
+import AddStockOutModel from "../../stocks/stock-out/AddStockOutModel";
 
 const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
   const [buyer, setBuyer] = useState("");
@@ -42,6 +43,8 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
   const [totalOuterPcs, setTotalOuterPcs] = useState(0);
   const [totalInnerPcsPerBundle, setTotalInnerPcsPerBundle] = useState(0);
   const [totalProducts, setTotalProducts] = useState(0);
+  const [stockOutPoNo, setStockOutPoNo] = useState('');
+  const [showStockOut, setShowStockOut] = useState(false);
 
   const handleDeliveryDateChange = (e) => {
     const inputDate = e.target.value;
@@ -257,7 +260,7 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
       const response = await apiService.post("/purchases/create", purchaseData);
 
       if (response.status === 201) {
-        getAllPurchaseOrder();
+        // getAllPurchaseOrder();
         setStyleNumber("");
         setStyleDropdown(false);
         setReferenceNo("");
@@ -282,7 +285,9 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
         setShortDescription("");
         setFullDescription("");
         setSelectedProduct(null);
-        onClose();
+        setStockOutPoNo(response.data.purchase_order_number);
+        handleStockOutModelShow();
+        // onClose();
       } else {
         console.error("Error creating Purchase order:", response.data);
       }
@@ -290,6 +295,18 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
       console.error("Error creating Purchase order:", error);
     }
   };
+
+  const handleStockOutModelShow = () => {
+    if(stockOutPoNo == null) {
+      setShowStockOut(false);
+    } else {
+    setShowStockOut(true);
+    }
+  }
+
+  const handleStockOutModelClose = () => {
+    setShowStockOut(false);
+  }
 
   if (!show) return null;
 
@@ -799,6 +816,7 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
           </div>
         </div>
       </div>
+      <AddStockOutModel show={showStockOut} onClose={handleStockOutModelClose} stockOutPoNo={stockOutPoNo}/>
     </div>
   );
 };

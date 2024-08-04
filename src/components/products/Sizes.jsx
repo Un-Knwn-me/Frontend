@@ -398,7 +398,7 @@ const Sizes = ({ searchQuery, isModalOpen, onClose }) => {
             className="fixed inset-0 bg-black opacity-50"
             onClick={onClose}
           ></div>
-          <div className="relative bg-white rounded-lg shadow-lg w-full max-w-[35vw] h-screen overflow-y-auto lg:overflow-hidden">
+          <div className="relative bg-white rounded-lg shadow-lg w-full max-w-[35vw] py-6 px-10 h-fit overflow-y-auto lg:overflow-hidden">
             <div className="py-2 flex flex-col">
               <div>
                 <div className="flex justify-center">

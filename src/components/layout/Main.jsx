@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import HorizontalNavbar from "./HorizontalNavbar";
 import VerticalNavbar from "./VerticalNavbar";
 
 const Main = () => {
+  const [sideNavOpen, setSideNavOpen] = useState(true);
   const location = useLocation();
 
   const formattedRoute =
@@ -13,24 +14,23 @@ const Main = () => {
       .join(" > ");
 
   return (
-    <div className="h-screen w-screen flex">
+    <div className="flex h-screen">
       {/* Vertical Navbar */}
-      <div className="w-56 bg-gray-200 fixed h-full">
-        <VerticalNavbar />
+      <div
+        className={`fixed h-full bg-gray-200 duration-300 ${sideNavOpen ? "w-56" : "w-20"}`}
+      >
+        <VerticalNavbar isOpen={sideNavOpen} toggleSideNav={() => setSideNavOpen(!sideNavOpen)} />
       </div>
 
       {/* Content Area */}
-      <div className="flex flex-col flex-grow ml-56">
+      <div
+        className={`flex flex-col flex-grow duration-300 ${sideNavOpen ? "ml-56" : "ml-20"}`}
+      >
         {/* Horizontal Navbar */}
         <HorizontalNavbar />
 
-        {/* Route Breadcrumb */}
-        <span className="p-4 text-sm text-start font-light">
-          {formattedRoute.substring(2, formattedRoute.length)}
-        </span>
-
         {/* Main Content */}
-        <main className="flex-grow overflow-y-auto pb-5">
+        <main className="flex-grow overflow-y-auto py-2">
           {/* Outlet for nested routes */}
           <Outlet />
         </main>
