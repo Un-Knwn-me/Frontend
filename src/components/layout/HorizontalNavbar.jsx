@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom"; // Import useLocation hook
 import profile from "../../assets/profile-image.png";
 import logoutIcon from "../../assets/logout-icon.svg";
@@ -8,6 +8,7 @@ const HorizontalNavbar = () => {
   const location = useLocation();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(3);
+  const [profileImg, setProfileImg] = useState('');
     
   const routeNames = {
     "/main/dashboard": "Dashboard",
@@ -24,6 +25,11 @@ const HorizontalNavbar = () => {
    
   };
 
+  useEffect(() => {
+    const profile = localStorage.getItem('profile');
+    setProfileImg(profile);
+  },[]);
+
   // Function to extract route name from pathname
   const getRouteName = () => {
     const path = location.pathname;
@@ -39,8 +45,8 @@ const HorizontalNavbar = () => {
   };
 
   return (
-    <div className="flex justify-between items-center bg-white p-4 shadow-md relative px-10">
-      <div className="text-black text-4xl font-semibold">{getRouteName()}</div>
+    <div className="flex justify-between items-center bg-white p-2 shadow-md relative px-10">
+      <div className="text-black text-2xl font-semibold">{getRouteName()}</div>
       <div className="flex items-center gap-4">
         <div className="relative">
           <FaBell
@@ -78,7 +84,7 @@ const HorizontalNavbar = () => {
 
         <img
           alt="profile"
-          src={profile}
+          src={profileImg || 'https://img.freepik.com/free-vector/purple-man-with-blue-hair_24877-82003.jpg?t=st=1722805107~exp=1722808707~hmac=ddf9dffbe6b4df23a57f7a9b5629d3e6ee805e8f427062967e011b996d966b21&w=740'}
           className="w-10 h-10 rounded-full object-cover"
         />
       </div>

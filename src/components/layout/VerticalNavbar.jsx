@@ -23,11 +23,12 @@ function VerticalNavbar({ isOpen, toggleSideNav }) {
   const isActiveTab = (route) => location.pathname.startsWith(route);
 
   const Menus = [
-    { title: "Dashboard", path: "/main/dashboard", icon: <RiDashboardFill className="h-6 w-6"/>, highlightedIcon: <RiDashboardFill className="h-6 w-6 bg-[#EEBBC3] text-black"/> },
+    { title: "Dashboard", path: "/main/dashboard", icon: <RiDashboardFill className="h-6 w-6"/>, 
+      highlightedIcon: <RiDashboardFill className="h-6 w-6 text-[#EEBBC3]"/> },
     {
       title: "Admin",
       icon: <MdAdminPanelSettings className="h-6 w-6"/>,
-      highlightedIcon: <MdAdminPanelSettings className="h-6 w-6 bg-[#EEBBC3] text-black"/>,
+      highlightedIcon: <MdAdminPanelSettings className="h-6 w-6 text-[#EEBBC3]"/>,
       submenu: true,
       submenuItems: [
         { title: "Permissions", path: "/main/permissions" },
@@ -38,7 +39,7 @@ function VerticalNavbar({ isOpen, toggleSideNav }) {
     {
       title: "Product",
       icon: <FaBoxOpen className="h-6 w-6"/>,
-      highlightedIcon: <FaBoxOpen className="h-6 w-6 bg-[#EEBBC3] text-black"/>,
+      highlightedIcon: <FaBoxOpen className="h-6 w-6 text-[#EEBBC3]"/>,
       submenu: true,
       submenuItems: [
         { title: "Product Master", path: "/main/product-master" },
@@ -49,7 +50,7 @@ function VerticalNavbar({ isOpen, toggleSideNav }) {
     {
       title: "Purchase Order",
       icon: <FaClipboardList className="h-6 w-6"/>,
-      highlightedIcon: <FaClipboardList className="h-6 w-6 bg-[#EEBBC3] text-black"/>,
+      highlightedIcon: <FaClipboardList className="h-6 w-6 text-[#EEBBC3]"/>,
       submenu: true,
       submenuItems: [
         { title: "With Po", path: "/main/withpo" },
@@ -60,7 +61,7 @@ function VerticalNavbar({ isOpen, toggleSideNav }) {
     {
       title: "Stock",
       icon: <BsClipboard2CheckFill className="h-6 w-6"/>,
-      highlightedIcon: <BsClipboard2CheckFill className="h-6 w-6 bg-[#EEBBC3] text-black"/>,
+      highlightedIcon: <BsClipboard2CheckFill className="h-6 w-6 text-[#EEBBC3]"/>,
       submenu: true,
       submenuItems: [
         { title: "Stock In", path: "/main/stock-in" },
@@ -68,9 +69,12 @@ function VerticalNavbar({ isOpen, toggleSideNav }) {
       ],
       routes: ["stock-in", "stock-out"]
     },
-    { title: "Report", path: "/main/report", icon: <RiFileList3Fill className="h-6 w-6"/>, highlightedIcon: <RiFileList3Fill color="yellow" className="h-6 w-6 bg-[#EEBBC3] text-black"/> },
-    { title: "Profile", path: "/main/profile", icon: <FaUser className="h-6 w-6"/>, highlightedIcon: <FaUser color="yellow" className="h-6 w-6 bg-[#EEBBC3] text-black"/> },
-    { title: "Logout", icon: <FaSignOutAlt className="h-6 w-6"/>, highlightedIcon: <FaSignOutAlt color="yellow" className="h-6 w-6 bg-[#EEBBC3] text-black"/> },
+    { title: "Report", path: "/main/report", icon: <RiFileList3Fill className="h-6 w-6"/>, 
+      highlightedIcon: <RiFileList3Fill className="h-6 w-6 text-[#EEBBC3]"/> },
+    { title: "Profile", path: "/main/profile", icon: <FaUser className="h-6 w-6"/>, 
+      highlightedIcon: <FaUser className="h-6 w-6 text-[#EEBBC3]"/> },
+    { title: "Logout", icon: <FaSignOutAlt className="h-6 w-6"/>, 
+      highlightedIcon: <FaSignOutAlt className="h-6 w-6 text-[#EEBBC3]"/> },
   ];
 
   const toggleSubmenu = (index) => {
@@ -167,8 +171,8 @@ function VerticalNavbar({ isOpen, toggleSideNav }) {
                     key={subIndex}
                     to={submenuItem.path}
                     className={({ isActive }) =>
-                      `text-white text-sm flex items-center gap-x-4 cursor-pointer p-2 px-8 rounded-md ${
-                        isActive ? 'bg-red-500' : 'hover:bg-[#374151]'
+                      `text-sm flex items-center gap-x-4 cursor-pointer p-2 px-8 rounded-md ${
+                        isActive ? 'bg-[#EEBBC3] text-black' : 'hover:bg-[#374151] text-white'
                       }`
                     }
                   >

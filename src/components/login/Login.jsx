@@ -47,6 +47,7 @@ const Login = () => {
       if (response.status === 200) {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userId", JSON.stringify(response.data.userId));
+        localStorage.setItem("profile", response.data.profile);
         // Navigate to the dashboard
       navigate("/main/dashboard"); 
       }
