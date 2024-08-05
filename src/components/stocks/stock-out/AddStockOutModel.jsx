@@ -195,7 +195,7 @@ const AddStockOutModel = ({ show, onClose, stockOutPoNo, stockOutOrder }) => {
                   id="purchaseOrderNo"
                   value={orderNumber}
                   onChange={handleOrderChange}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  className="border border-gray-300 hover:border-cyan-300 active:boder-cyan-300 focus:border-cyan-300 rounded-md px-2 py-2"
                   placeholder="Enter PO number"
                 />
                 {orderDropdown && orderNumber && (
@@ -695,7 +695,7 @@ const AddStockOutModel = ({ show, onClose, stockOutPoNo, stockOutOrder }) => {
               Enter Stock Out Bundle:
             </label>
             <input
-              className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200 w-40 "
+              className="border border-gray-300 hover:border-cyan-300 active:boder-cyan-300 focus:border-cyan-300 rounded-md px-2 py-2 w-40 "
               type="number"
               value={stockOutBundle}
               onChange={handleBundleChange}

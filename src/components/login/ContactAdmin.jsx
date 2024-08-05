@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import loginBg from "../../assets/login_bg.png";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/logo.jpg";
 import boxes from "../../assets/login_box_image.png";
 
 

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import loginBg from "../../assets/login_bg.png";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/logo.jpg";
 import userIcon from "../../assets/user-icon.svg";
 import apiService from "../../apiService.js";
 import boxes from "../../assets/login_box_image.png";

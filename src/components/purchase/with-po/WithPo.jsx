@@ -112,10 +112,10 @@ const WithPo = () => {
           isSearch={true}
           onSearch={handleSearch}
           showDropdown={true}
-          options={['BrandA', 'BrandB', 'BrandC']}
+          options={initialData.map(item => item.Product?.style_no || '')}
           selectedOption=""
           setSelectedOption={(option) => {
-            const filtered = initialData.filter(item => item.brand === option);
+            const filtered = initialData.filter(item => item.Product?.style_no === option);
             setFilteredData(filtered);
             setCurrentPage(1);
           }}

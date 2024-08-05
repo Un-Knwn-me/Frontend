@@ -48,7 +48,7 @@ function VerticalNavbar({ isOpen, toggleSideNav }) {
       routes: ["product-master", "add-products"]
     },
     {
-      title: "Purchase Order",
+      title: "Orders",
       icon: <FaClipboardList className="h-6 w-6"/>,
       highlightedIcon: <FaClipboardList className="h-6 w-6 text-[#EEBBC3]"/>,
       submenu: true,
@@ -115,7 +115,7 @@ function VerticalNavbar({ isOpen, toggleSideNav }) {
         <img
           alt="logo"
           src={logo}
-          className={`bg-amber-50 rounded cursor-pointer block float-left duration-500 ${
+          className={`bg-amber-50 rounded h-8 cursor-pointer block float-left duration-500 ${
             !isOpen && "rotate-0"
           }`}
           onClick={toggleSideNav}
@@ -123,7 +123,7 @@ function VerticalNavbar({ isOpen, toggleSideNav }) {
         <img
           alt="brand"
           src={brandImage}
-          className={`h-8 w-auto duration-300 ${!isOpen && "scale-0"}`}
+          className={`h-8 ml-4 w-auto duration-300 ${!isOpen && "scale-0"}`}
         />
       </div>
 
