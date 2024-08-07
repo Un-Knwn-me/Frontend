@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import loginBg from "../../assets/login_bg.png";
-import logo from "../../assets/Quco Logo.png";
+import logo from "../../assets/logo.jpg";
 import eyeIcon from "../../assets/eye-icon.svg";
 import eyeSlashIcon from "../../assets/eye-slash-icon.svg";
 import keyIcon from "../../assets/key-icon.svg";
@@ -48,6 +48,7 @@ const Login = () => {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("userId", JSON.stringify(response.data.userId));
         localStorage.setItem("profile", response.data.profile);
+        localStorage.setItem("userName", response.data.userName);
         // Navigate to the dashboard
       navigate("/main/dashboard"); 
       }
@@ -69,7 +70,7 @@ const Login = () => {
         backgroundImage: `url(${loginBg})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        height: "100vh",
+        // height: "100vh",
         width: "100%",
         display: "flex",
         justifyContent: "center",
@@ -79,12 +80,12 @@ const Login = () => {
     >
       
       <div>
-        <img alt="boxes" src={boxes} className="p-14 mt-10" />
+        <img alt="boxes" src={boxes} className="p-14" />
       </div>
       <div className="flex flex-col items-end justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 lg:mr-28 z-10 relative">
         <div className="w-full bg-white rounded-lg border border-gray-200 shadow-2xl dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-1 space-y-1 md:space-y-1 sm:p-8 mt-10 justify-center items-center min-w-[350px] min-h-[500px] md:w-[450px] flex flex-col relative">
-            <img src={logo} alt="" className="self-center h-20 -mt-20" />
+            <img src={logo} alt="" className="self-center h-16 -mt-20" />
             <h1 className="text-xl pt-4 font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white text-center">
               Welcome!
             </h1>

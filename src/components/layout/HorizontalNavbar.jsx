@@ -9,6 +9,7 @@ const HorizontalNavbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(3);
   const [profileImg, setProfileImg] = useState('');
+  const [user, setUser] = useState('');
     
   const routeNames = {
     "/main/dashboard": "Dashboard",
@@ -27,7 +28,9 @@ const HorizontalNavbar = () => {
 
   useEffect(() => {
     const profile = localStorage.getItem('profile');
+    const userName = localStorage.getItem('userName');
     setProfileImg(profile);
+    setUser(userName);
   },[]);
 
   // Function to extract route name from pathname
@@ -82,11 +85,17 @@ const HorizontalNavbar = () => {
           )}
         </div>
 
-        <img
-          alt="profile"
-          src={profileImg || 'https://img.freepik.com/free-vector/purple-man-with-blue-hair_24877-82003.jpg?t=st=1722805107~exp=1722808707~hmac=ddf9dffbe6b4df23a57f7a9b5629d3e6ee805e8f427062967e011b996d966b21&w=740'}
-          className="w-10 h-10 rounded-full object-cover"
-        />
+        {profileImg ? (
+          <img
+            alt="profile"
+            src={profileImg}
+            className="w-10 h-10 rounded-full object-cover"
+          />
+        ) : (
+          <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-xl font-bold text-gray-600">
+            {user.charAt(0).toUpperCase()}
+          </div>
+        )}
       </div>
     </div>
   );

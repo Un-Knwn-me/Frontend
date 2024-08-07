@@ -71,9 +71,9 @@ const EditUsersModal = ({ user, onClose, onUpdate, permissions }) => {
                             </button>
                         </div>
                         <div className="flex items-center mb-4">
-                            {user.avatar ? (
+                            {user.profile ? (
                                 <img
-                                    src={user.avatar}
+                                    src={user.profile}
                                     alt={user.full_name}
                                     className="w-16 h-16 rounded-full object-cover mr-4"
                                 />

@@ -60,7 +60,7 @@ const Dashboard = () => {
   }, [totalProducts]);
 
   return (
-    <div className="grid grid-rows-4 h-screen mt-2">
+    <div className="grid grid-rows-4 mt-2">
       <div className="grid-rows-1">
         <div className="col-span-1 p-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

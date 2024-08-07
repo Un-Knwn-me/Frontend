@@ -9,24 +9,20 @@ const AddUserModal = ({ isOpen, onClose, onUpdate }) => {
     phoneNumber: "",
     email: "",
     password: "",
-    profile: null, // Store file object here
+    profile: null, 
+    isAdmin: false
   });
-
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setUserData((prevData) => ({
-  //     ...prevData,
-  //     [name]: value,
-  //   }));
-  // };
+  const [previewUrl, setPreviewUrl] = useState(null);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === "profile") {
+    if (name === "profile" && files.length > 0) {
+      const file = files[0];
       setUserData((prevData) => ({
         ...prevData,
-        profile: files[0], // Handle file input
+        profile: file, // Handle file input
       }));
+      setPreviewUrl(URL.createObjectURL(file)); // Set preview URL
     } else {
       setUserData((prevData) => ({
         ...prevData,
@@ -35,14 +31,13 @@ const AddUserModal = ({ isOpen, onClose, onUpdate }) => {
     }
   };
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   // Perform validation or other actions before updating
-  //   // Call the onUpdate function with the user data
-  //   onUpdate(userData);
-  //   // Close the modal
-  //   onClose();
-  // };
+  const handleRemoveImage = () => {
+    setUserData((prevData) => ({
+      ...prevData,
+      profile: null,
+    }));
+    setPreviewUrl(null);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -53,15 +48,12 @@ const AddUserModal = ({ isOpen, onClose, onUpdate }) => {
     formData.append("phone_number", userData.phoneNumber);
     formData.append("email", userData.email);
     formData.append("password", userData.password);
-    formData.append("is_admin", "true"); // or "false" based on your requirement
-
-    const token = localStorage.getItem("token");
+    formData.append("is_admin", userData.isAdmin);
 
     try {
       const response = await apiService.post("/users/create", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
         },
       });
       console.log(response.data);
@@ -73,11 +65,17 @@ const AddUserModal = ({ isOpen, onClose, onUpdate }) => {
     }
   };
 
+
+  const handleToggle = () => {
+    setUserData((prevData) => ({
+      ...prevData,
+      isAdmin: !prevData.isAdmin,
+    }));
+  };
+
   return (
     <div
-      className={`fixed inset-0 z-50 overflow-y-auto flex items-center justify-center bg-black bg-opacity-50 bg-transparent"${
-        isOpen ? "block" : "hidden"
-      }`}
+      className={`fixed inset-0 z-50 overflow-y-auto flex items-center justify-center bg-black bg-opacity-50 ${isOpen ? "block" : "hidden"}`}
     >
       <div className="bg-white p-8 rounded-lg shadow-lg relative min-h-[450px] min-w-[350px]">
         <form onSubmit={handleSubmit}>
@@ -91,19 +89,34 @@ const AddUserModal = ({ isOpen, onClose, onUpdate }) => {
                 <img src={closeIcon} alt="" />
               </button>
             </div>
-            <div className="flex">
-              <label className="flex items-center">
-                <img
-                  src={addUserPhotoIcon}
-                  alt=""
-                  className="bg-gray-200 rounded-full p-4 mr-4"
-                />
+            <div className="flex justify-center">
+              <label className="flex items-center cursor-pointer">
+                {previewUrl ? (
+                  <div className="relative">
+                    <img
+                      src={previewUrl}
+                      alt="Profile Preview"
+                      className="rounded-full w-20 h-20 mr-4"
+                    />
+                    <button
+                      type="button"
+                      className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                      onClick={handleRemoveImage}
+                    >
+                      &times;
+                    </button>
+                  </div>
+                ) : (
+                  <img
+                    src={addUserPhotoIcon}
+                    alt=""
+                    className="bg-gray-200 rounded-full p-4 mr-4"
+                  />
+                )}
                 <div className="flex flex-col">
                   <span className="relative py-2 mr-2 text-md text-left text-blue-500 underline min-w-28 max-w-24 cursor-pointer">
-                    Upload Photo
-                    <span className="text-blue-500 absolute top-1 right-0">
-                      *
-                    </span>
+                    {previewUrl ? "Change Photo" : "Upload Photo"}
+                    <span className="text-blue-500 absolute top-1 right-0">*</span>
                   </span>
                   <p className="text-xs text-gray-400">
                     The photo should be Png, Jpeg below 1mb in size
@@ -122,7 +135,7 @@ const AddUserModal = ({ isOpen, onClose, onUpdate }) => {
             {/* Username */}
             <div>
               <label className="block mb-2 text-sm font-medium text-gray-700">
-                Username
+                Username:
               </label>
               <input
                 type="text"
@@ -136,7 +149,7 @@ const AddUserModal = ({ isOpen, onClose, onUpdate }) => {
             {/* Phone number */}
             <div>
               <label className="block mb-2 text-sm font-medium text-gray-700">
-                Phone Number
+                Phone Number:
               </label>
               <input
                 type="text"
@@ -150,7 +163,7 @@ const AddUserModal = ({ isOpen, onClose, onUpdate }) => {
             {/* Email */}
             <div>
               <label className="block mb-2 text-sm font-medium text-gray-700">
-                Email
+                Email:
               </label>
               <input
                 type="email"
@@ -164,7 +177,7 @@ const AddUserModal = ({ isOpen, onClose, onUpdate }) => {
             {/* Set Password */}
             <div>
               <label className="block mb-2 text-sm font-medium text-gray-700">
-                Set Password
+                Set Password:
               </label>
               <input
                 type="password"
@@ -175,6 +188,19 @@ const AddUserModal = ({ isOpen, onClose, onUpdate }) => {
                 className="w-full border border-gray-200 text-center py-1.5 bg-gray-200 rounded-md shadow-sm "
               />
             </div>
+            <div className="mt-4">
+            <label className="block mb-2 text-sm font-medium text-gray-700">
+                Admin:
+            </label>
+            <div
+            className={`w-14 h-8 flex items-center rounded-full p-1 cursor-pointer transition-colors duration-300 ${userData.isAdmin ? 'bg-green-500' : 'bg-gray-300'}`}
+            onClick={handleToggle}
+          >
+            <div
+              className={`bg-white w-6 h-6 rounded-full shadow-md transform transition-transform duration-300 ${userData.isAdmin ? 'translate-x-6' : ''}`}
+            ></div>
+          </div>
+          </div>
           </div>
           {/* Update button */}
           <div className="text-right absolute bottom-5 right-10">

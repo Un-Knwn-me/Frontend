@@ -115,7 +115,7 @@ function VerticalNavbar({ isOpen, toggleSideNav }) {
         <img
           alt="logo"
           src={logo}
-          className={`bg-amber-50 rounded h-8 cursor-pointer block float-left duration-500 ${
+          className={`rounded h-9 cursor-pointer block float-left duration-500 ${
             !isOpen && "rotate-0"
           }`}
           onClick={toggleSideNav}
@@ -123,7 +123,7 @@ function VerticalNavbar({ isOpen, toggleSideNav }) {
         <img
           alt="brand"
           src={brandImage}
-          className={`h-8 ml-4 w-auto duration-300 ${!isOpen && "scale-0"}`}
+          className={`h-8 ml-2 w-auto duration-300 ${!isOpen && "scale-0"}`}
         />
       </div>
 
