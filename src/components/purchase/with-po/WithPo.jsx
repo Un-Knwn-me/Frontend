@@ -128,17 +128,17 @@ const WithPo = () => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50 w-full">
                 <tr>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-28">SL No</th>
+                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-12">SL No</th>
                   <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-40">Date</th>
                   <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-40">PO No</th>
                   <th className="px-6 py-3 text-center text-md font-bold text-black uppercase">Buyer</th>
                   <th className="px-6 py-3 text-center text-md font-bold text-black uppercase w-40">Style No</th>
                   <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-28">Brand</th>
-                  <th className="px-6 py-3 text-center text-md font-bold text-black uppercase">Category</th>
-                  <th className="px-6 py-3 text-center text-md font-bold text-black uppercase">Type</th>
+                  <th className="px-6 py-3 text-center text-md font-bold text-black uppercase w-28">Category</th>
+                  <th className="px-6 py-3 text-center text-md font-bold text-black uppercase w-28">Type</th>
                   <th className="px-6 py-3 text-center text-md font-bold text-black uppercase">Total Pcs</th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-28">Action</th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-20">
+                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-20">Action</th>
+                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-12">
                     <input
                       type="checkbox"
                       className="form-checkbox"
@@ -148,9 +148,9 @@ const WithPo = () => {
                       checked={checkedIds.length === initialData.length}
                     />
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-8">
+                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-16">
                     <button onClick={handleDelete} className="text-red-500">
-                      <img src={deleteIcon} alt="Delete" className='h-6 w-6' />
+                      <img src={deleteIcon} alt="Delete" className='h-5 w-5' />
                     </button>
                   </th>
                 </tr>
@@ -164,10 +164,10 @@ const WithPo = () => {
                     <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black flex-grow">{row.Buyer.name}, {row.Buyer.location}</td>
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">{row.Product.style_no}</td>
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">{row.Product.Brand.brandName}</td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-40">{row.Product.Category.categoryName}</td>
-                    <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black flex-grow">{row.Product.ProductType.product}</td>
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">{row.Product.Category.categoryName}</td>
+                    <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black w-28">{row.Product.ProductType.product}</td>
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">{row.req_purchase_qty}</td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-16">
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-20">
                       {editIndex === startIndex + index ? (
                         <button onClick={handleSaveClick} className="bg-green-200 border border-green-500 px-2 py-1 rounded-lg flex">
                           <img src={tickIcon} alt="" className='mt-1 mr-2' />
@@ -187,7 +187,7 @@ const WithPo = () => {
                         onChange={() => handleCheckboxChange(row.id)}
                       />
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-12">
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-16">
                   <button
                     onClick={() => handleDelete(row.id)}
                     className="text-red-500"

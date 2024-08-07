@@ -28,8 +28,9 @@ const StockIn = ({ searchQuery }) => {
           'Content-Type': 'application/json',
         },
       });
+      const data = response.data.filter(item => item.total_pcs > 0);
       // Format the created_at date
-    const formattedData = response.data.map(stock => ({
+    const formattedData = data.map(stock => ({
       ...stock,
       created_at: new Date(stock.created_at).toLocaleDateString('en-GB')
     }));
@@ -123,7 +124,7 @@ const StockIn = ({ searchQuery }) => {
               (item) => item.brand === option
             );
             setFilteredData(filtered);
-            setCurrentPage(1); // Reset to first page on new filter
+            setCurrentPage(1); 
           }}
           isAddButton={true}
           addButtonText="Add Product"
@@ -134,28 +135,40 @@ const StockIn = ({ searchQuery }) => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50 w-full">
                 <tr>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-16">
-                    Sin. No
+                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-10">
+                    Si No
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-20">
+                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-24">
                     Image
                   </th>
                   <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-20">
                     Date
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-36">
+                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-20">
                     Style No
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-32">
+                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-20">
                     Reference No
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-16">
+                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-20">
+                    Brand
+                  </th>
+                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-24">
                     Size
                   </th>
                   <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-16">
-                    Bundles
+                    Category
                   </th>
                   <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-20">
+                    Type
+                  </th>
+                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-12">
+                    Bundles
+                  </th>
+                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-14">
+                    Total Pcs
+                  </th>
+                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-16">
                     Action
                   </th>
                   <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-16">
@@ -180,10 +193,10 @@ const StockIn = ({ searchQuery }) => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {currentData.map((row, index) => (
                   <tr key={row.id} style={{ maxHeight: "50px" }}>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-12">
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-10">
                       {startIndex + index + 1}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-20">
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-24">
                       <div className="flex justify-center items-center">
                         <img
                           src={row.Product.images[0] || 'https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?t=st=1722163869~exp=1722167469~hmac=37361beb0ca1a1c652d36c9ca94818f793a54d21822edab80e80c6e43a9b7b37&w=740'}
@@ -192,22 +205,34 @@ const StockIn = ({ searchQuery }) => {
                         />
                       </div>
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black flex-grow">
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-20">
                       {row.created_at}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-36">
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-20">
                       {row.Product.style_no}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-32">
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-20">
                       {row.Product.Reference.reference_no}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-16">
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-20">
+                      {row.Product.Brand.brandName}
+                    </td>
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-24">
                       {row.Product.Size.sizes.join(", ")}
                     </td>
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-16">
-                      {row.no_bundles}
+                      {row.Product.Category.categoryName}
                     </td>
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-20">
+                      {row.Product.ProductType.product}
+                    </td>
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-12">
+                      {row.no_bundles}
+                    </td>
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-12">
+                      {row.total_pcs}
+                    </td>
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-16">
                       <button
                         onClick={() => handleEditClick(row.id)}
                         className="text-blue-500 text-center"
