@@ -32,7 +32,8 @@ const StockIn = ({ searchQuery }) => {
       // Format the created_at date
     const formattedData = data.map(stock => ({
       ...stock,
-      created_at: new Date(stock.created_at).toLocaleDateString('en-GB')
+      created_at: new Date(stock.created_at).toLocaleDateString('en-GB'),
+      days_since_created: Math.floor((new Date() - new Date(stock.created_at)) / (1000 * 60 * 60 * 24))
     }));
 
     console.log(formattedData);
@@ -153,20 +154,23 @@ const StockIn = ({ searchQuery }) => {
                   <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-20">
                     Brand
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-24">
+                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-20">
                     Size
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-16">
+                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-20">
                     Category
                   </th>
                   <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-20">
                     Type
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-12">
+                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-20">
                     Bundles
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-14">
+                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-20">
                     Total Pcs
+                  </th>
+                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-20">
+                    Age
                   </th>
                   <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-16">
                     Action
@@ -217,21 +221,24 @@ const StockIn = ({ searchQuery }) => {
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-20">
                       {row.Product.Brand.brandName}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-24">
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-20">
                       {row.Product.Size.sizes.join(", ")}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-16">
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-20">
                       {row.Product.Category.categoryName}
                     </td>
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-20">
                       {row.Product.ProductType.product}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-12">
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-20">
                       {row.no_bundles}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-12">
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-20">
                       {row.total_pcs}
                     </td>
+                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-20">
+                      {row.days_since_created}
+                    </td>   
                     <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-16">
                       <button
                         onClick={() => handleEditClick(row.id)}

@@ -9,6 +9,7 @@ import apiService from "../../apiService";
 import tickIcon from "../../assets/tick-icon.svg";
 import deleteIcon from "../../assets/delete-icon.svg";
 import { TbLockAccess } from "react-icons/tb";
+import { CiEdit } from "react-icons/ci";
 
 const UsersTable = ({searchQuery}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -165,22 +166,25 @@ const UsersTable = ({searchQuery}) => {
       <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50 w-full">
             <tr>
-              <th className="px-6 py-3 text-center text-md font-medium text-black uppercase w-20">
+              <th className="px-6 py-2 text-center text-md font-medium text-black uppercase w-20">
                 Si No
               </th>
-              <th className="px-6 py-3 text-left text-md font-medium text-black uppercase w-28">
+              <th className="px-6 py-2 text-left text-md font-medium text-black uppercase w-28">
                 Profile
               </th>
-              <th className="px-6 py-3 text-left text-md font-medium text-black uppercase w-64">
+              <th className="px-6 py-2 text-left text-md font-medium text-black uppercase w-64">
                 User Name
               </th>
-              <th className="px-6 py-3 text-left text-md font-medium text-black uppercase">
+              <th className="px-6 py-2 text-left text-md font-medium text-black uppercase">
                 Module Access
               </th>
-              <th className="px-6 py-3 text-center text-md font-medium text-black uppercase w-40">
+              <th className="px-6 py-2 text-center text-md font-medium text-black uppercase w-40">
                 Permission
               </th>
-              <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-32">
+              <th className="px-6 py-2 text-center text-md font-medium text-black uppercase w-40">
+                Action
+              </th>
+              <th className="px-2 py-2 text-center text-md font-bold text-black uppercase w-32">
                 <button onClick={handleDelete} className="text-red-500">
                   <img src={deleteIcon} alt="Delete" className="h-5 w-5" />
                 </button>
@@ -190,10 +194,10 @@ const UsersTable = ({searchQuery}) => {
           <tbody className="bg-white divide-y divide-gray-200">
             {users?.map((row, index) => (
               <tr key={row.id} style={{ maxHeight: "50px" }}>
-                <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-20">
+                <td className="px-2 py-2 whitespace-nowrap text-md text-center text-black w-20">
                   {startIndex + index + 1}
                 </td>
-                <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">
+                <td className="px-2 py-2 whitespace-nowrap text-md text-center text-black w-28">
                       <div className="flex justify-center items-center">
                       {row.profile ? (
                                 <img
@@ -210,17 +214,17 @@ const UsersTable = ({searchQuery}) => {
                             )}
                       </div>
                     </td>
-                <td className="px-6 py-3 whitespace-nowrap text-md text-left text-black w-64">
+                <td className="px-6 py-2 whitespace-nowrap text-md text-left text-black w-64">
                     {row.full_name}
                 </td>
-                <td className="px-6 py-10 text-left text-lg font-medium text-black content-center uppercase flex items-center gap-2">
+                <td className="px-6 py-6 text-left text-lg font-medium text-black content-center uppercase flex items-center gap-2">
                   {row.is_admin ? 
                     <span className="p-2 bg-blue-200 text-black rounded-md font-semibold text-xs">
                       Admin
                     </span>
                     : ''}
                 </td>
-                <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-40">
+                <td className="px-2 py-2 whitespace-nowrap text-md text-center text-black w-40">
                   {editIndex === row.id ? (
                     <button
                       onClick={() => handleSaveClick(index, row.id)}
@@ -240,11 +244,33 @@ const UsersTable = ({searchQuery}) => {
                       className="text-blue-500 text-center"
                     >
                     <TbLockAccess color="black" className="h-6 w-7"/>
-                      {/* <img src={LiaExpeditedssl} alt="Edit" className="h-5 w-5" /> */}
                     </button>
                   )}
                 </td>
-                <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-32">
+                <td className="px-2 py-2 whitespace-nowrap text-md text-center text-black w-40">
+                  {editIndex === row.id ? (
+                    <button
+                      onClick={() => handleSaveClick(index, row.id)}
+                      className="bg-green-200 border border-green-500 px-2 py-1 rounded-lg flex"
+                    >
+                      <img src={tickIcon} alt="" className="mt-1 mr-2" />
+                      <span className="text-xs">Update</span>
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() =>
+                        openEditModal({
+                          id: row.id,
+                          brandName: row.brandName,
+                        })
+                      }
+                      className="text-blue-500 text-center"
+                    >
+                    <CiEdit color="black" className="h-6 w-7"/>
+                    </button>
+                  )}
+                </td>
+                <td className="px-2 py-2 whitespace-nowrap text-md text-center text-black w-32">
                   <button
                     onClick={() => handleDelete(row.id)}
                     className="text-red-500"
@@ -256,67 +282,6 @@ const UsersTable = ({searchQuery}) => {
             ))}
           </tbody>
         </table>
-
-        {/* <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-200">
-            <tr>
-              <th className="px-6 py-3 text-center text-lg font-medium text-black uppercase w-28">
-                Si No
-              </th>
-              <th className="px-6 py-3 text-left text-lg font-medium text-black uppercase w-64">
-                User
-              </th>
-              <th className="px-6 py-3 text-left text-lg font-medium text-black uppercase">
-                Module Access
-              </th>
-              <th className="px-6 py-3 text-center text-lg font-medium text-black uppercase w-64">
-                Edit Permission
-              </th>
-              <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-48">
-                <button onClick={handleDelete} className="text-red-500">
-                  <img src={deleteIcon} alt="Delete" className="h-5 w-5" />
-                </button>
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-gray-50 divide-y divide-gray-200 max-h-[80vh]">
-            {users?.map((user, index) => (
-              <tr key={user.id}>
-                <td className="px-6 py-4 text-center whitespace-nowrap">
-                  {index + 1}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">{user.full_name}</td>
-                {/* <td className="px-6 py-4 text-center">
-                  <span className="flex gap-2">
-                    {user.moduleAccess.map((module, idx) => (
-                      <span
-                        key={idx}
-                        className="px-2 py-1 bg-blue-200 text-black rounded-md font-semibold text-xs"
-                      >
-                        {module}
-                      </span>
-                    ))}
-                  </span>
-                </td> */}
-                {/* <td className="px-6 py-4 text-left">
-                {user.is_admin? 
-                <span className="p-2 bg-blue-200 text-black rounded-md font-semibold text-xs">
-                  Admin 
-                </span>
-                : ''}
-                </td> */}
-                {/* <td className="px-6 py-4 text-center">
-                  <button
-                    onClick={() => openEditModal(user)}
-                    className="text-blue-500"
-                  >
-                    <img src={editIcon} alt="" className="w-6 h-6" />
-                  </button>
-                </td> */}
-              {/* </tr>
-            ))}
-          </tbody>
-        </table>  */}
 
       </div>
     </>
