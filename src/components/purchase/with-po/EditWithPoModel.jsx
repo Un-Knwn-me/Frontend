@@ -206,16 +206,28 @@ const EditPoModal = ({ show, onClose, productId }) => {
                 />
               </div>
               <div className="flex flex-col gap-2 mt-3">
-                <label className="font-semibold" htmlFor="referenceNo">
+                <label className="font-semibold" htmlFor="buyer">
                   Buyer:
                 </label>
                 <input
                   type="text"
                   id="buyer"
-                  value={purchaseOrder.buyer || ""}
-                  onChange={(e) => setBuyer(e.target.value)}
+                  value={purchaseOrder?.Buyer?.name || ""}
+                  // onChange={(e) => setBuyer(e.target.value)}
                   className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
                   placeholder="Enter buyer"
+                />
+              </div>
+              <div className="flex flex-col gap-2 mt-3">
+                <label className="font-semibold" htmlFor="location">
+                  Location
+                </label>
+                <input
+                  type="text"
+                  id="location"
+                   value={purchaseOrder.Buyer.location}
+                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  disabled
                 />
               </div>
               <div className="flex flex-col gap-2 mt-3">
@@ -231,30 +243,17 @@ const EditPoModal = ({ show, onClose, productId }) => {
                   placeholder="Enter delivery date"
                 />
               </div>
-              <div className="flex flex-col gap-2 mt-3">
-                <label className="font-semibold" htmlFor="diameter">
-                  Diameter:
-                </label>
-                <input
-                  type="number"
-                  id="diameter"
-                  value={purchaseOrder.diameter || ""}
-                  onChange={(e) => setDia(Number(e.target.value))}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
-                  placeholder="Enter bundle dia"
-                />
-              </div>
               <div className="flex flex-col gap-2 mt-3 relative">
-                <label className="font-semibold" htmlFor="fabric">
-                  Reference No:
+                <label className="font-semibold" htmlFor="styleNo">
+                  Style No:
                 </label>
                 <input
                   type="text"
-                  id="referenceNumber"
-                  value={purchaseOrder.product_reference_no || ""}
+                  id="styleNo"
+                  value={purchaseOrder.product_style_number || ""}
                   onChange={handleInputChange}
                   className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
-                  placeholder="Enter Fabric"
+                  placeholder="Enter Style No"
                 />
                 {referenceDropdown && referenceNumber && (
                   <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg">

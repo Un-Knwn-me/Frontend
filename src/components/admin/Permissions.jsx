@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import permissionUserIcon from "../../assets/permission-user-icon.svg";
+import { FcDepartment } from "react-icons/fc";
 import editIcon from "../../assets/edit-icon.svg";
 import TopLayer from "../shared/TopLayer";
 import plusIcon from "../../assets/add-icon.svg";
 import profileImage from "../../assets/profile-image.png";
 import closeIcon from "../../assets/close-modal-icon.svg";
 import addUserIcon from "../../assets/add-users-icon.svg";
+import apiService from "../../apiService";
 
 // Utility function to shuffle an array
 const shuffleArray = (array) => {
@@ -25,24 +27,28 @@ const Permission = () => {
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
   const [searchQuery, setSearchQuery] = useState("");
   const [addModuleModalVisible, setAddModuleModalVisible] = useState(false);
-  const [newModuleName, setNewModuleName] = useState("");
+  const [departmentName, setDepartmentName] = useState("");
+  const [department, setDepartment] = useState([]);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      const response = await fetch("/users.json"); // Fetching from the public folder
-      const data = await response.json();
-      setUsers(
-        data.map((user) => ({
-          ...user,
-          permissions: shuffleArray(user.permissions),
-        }))
-      );
-    };
-
-    fetchUsers();
+    fetchDepartments();
   }, []);
+
+  // Fetch all departments
+  const fetchDepartments = async () => {
+    try {
+      const response = await apiService.get("/users/dept/getall");
+      if(response.status === 200){
+       setDepartment(response.data);
+       console.log(response.data);
+      }      
+    } catch (error) {
+      console.error("Error fetching Modles:", error);
+    }
+
+  };
 
   const bgColors = [
     "bg-blue-500",
@@ -102,13 +108,47 @@ const Permission = () => {
 
   const closeAddModuleModal = () => {
     setAddModuleModalVisible(false);
-    setNewModuleName("");
   };
 
-  const addNewModule = () => {
-    if (newModuleName.trim() !== "") {
-      permissions.push(newModuleName.toUpperCase());
-      closeAddModuleModal();
+  const addNewModule = async() => {
+    try {
+      const response = await apiService.post("/users/newDepartment", {departmentName: departmentName}, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log(response.data);
+      if (response.status === 201) {
+        setDepartmentName("");
+        setSuccessMessage("Module added successfully.");
+        setErrorMessage("");
+        fetchDepartments();
+
+        // Clear messages after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 409) {
+        setErrorMessage("Module already exists.");
+
+        // Clear messages after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
+      } else {
+        setErrorMessage("Error adding brand.");
+
+        // Clear messages after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage("");
+          setErrorMessage("");
+        }, 5000);
+      }
+      setSuccessMessage("");
     }
   };
 
@@ -121,31 +161,32 @@ const Permission = () => {
         onAddButtonClick={openAddModuleModal}
       />
       <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4 mt-4 px-6">
-        {permissions.map((permission, permIndex) => (
+        {department.map((dept, index) => (
           <div
-            key={permIndex}
+            key={index}
             className="rounded-lg overflow-hidden shadow-lg p-4 border bg-white relative"
           >
             <div className="flex items-center mb-10 relative">
-              <img
+            {/* <FcDepartment className="h-10 w-16"/> */}
+              {/* <img
                 src={permissionUserIcon}
                 alt="Permission Icon"
                 className="h-16 w-16"
-              />
+              /> */}
               <div className="flex-1 text-lg font-medium ml-1">
-                {permission}
+                {dept.departmentName}
               </div>
               <img
                 src={editIcon}
                 alt="Edit Icon"
                 className="w-6 h-6 absolute right-3 cursor-pointer"
-                onClick={(e) => openModal(e, permission)}
+                onClick={(e) => openModal(e, dept.id)}
               />
             </div>
             <div className="flex items-center relative bottom-4 flex-col">
-              <div className="flex -space-x-3 absolute left-0">
+              {/* <div className="flex -space-x-3 absolute left-0">
                 {users
-                  .filter((user) => user.permissions.includes(permission))
+                  .filter((user) => department.includes(departmentName))
                   .slice(0, 4)
                   .map((user, index) => (
                     <div
@@ -170,14 +211,14 @@ const Permission = () => {
                       )}
                     </div>
                   ))}
-              </div>
-              {tooltipStates[permission] && (
+              </div> */}
+              {tooltipStates[department] && (
                 <div
                   className="absolute"
                   style={{
                     zIndex: 1000,
-                    top: tooltipStates[permission].top,
-                    left: tooltipStates[permission].left,
+                    top: tooltipStates[department].top,
+                    left: tooltipStates[department].left,
                     position: "fixed",
                   }}
                 >
@@ -219,11 +260,11 @@ const Permission = () => {
                   </div>
                 </div>
               )}
-              {users.filter((user) => user.permissions.includes(permission))
+              {users.filter((user) => user.permissions.includes(department))
                 .length > 4 && (
                 <div className="flex whitespace-nowrap items-center justify-center ml-5">
                   +
-                  {users.filter((user) => user.permissions.includes(permission))
+                  {users.filter((user) => user.permissions.includes(department))
                     .length - 4}{" "}
                   more
                 </div>
@@ -313,8 +354,8 @@ const Permission = () => {
                   className="bg-gray-200 rounded w-80 py-3 px-4 text-gray-700 focus:outline-none focus:shadow-outline my-5 text-lg text-center"
                   type="text"
                   placeholder="Enter module name"
-                  value={newModuleName}
-                  onChange={(e) => setNewModuleName(e.target.value)}
+                  value={departmentName}
+                  onChange={(e) => setDepartmentName(e.target.value)}
                 />
                 {successMessage && (
               <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 my-4">
