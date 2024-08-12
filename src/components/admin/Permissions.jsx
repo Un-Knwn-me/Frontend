@@ -8,6 +8,7 @@ import profileImage from "../../assets/profile-image.png";
 import closeIcon from "../../assets/close-modal-icon.svg";
 import addUserIcon from "../../assets/add-users-icon.svg";
 import apiService from "../../apiService";
+import UserByDepartments from "./UserByDepartments";
 
 // Utility function to shuffle an array
 const shuffleArray = (array) => {
@@ -47,7 +48,6 @@ const Permission = () => {
     } catch (error) {
       console.error("Error fetching Modles:", error);
     }
-
   };
 
   const bgColors = [
@@ -160,31 +160,31 @@ const Permission = () => {
         addButtonIcon={plusIcon}
         onAddButtonClick={openAddModuleModal}
       />
-      <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4 mt-4 px-6">
+      <div className="grid gap-4 px-6 mt-4 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
         {department.map((dept, index) => (
           <div
             key={index}
-            className="rounded-lg overflow-hidden shadow-lg p-4 border bg-white relative"
+            className="relative p-4 overflow-hidden bg-white border rounded-lg shadow-lg"
           >
-            <div className="flex items-center mb-10 relative">
-            {/* <FcDepartment className="h-10 w-16"/> */}
-              {/* <img
+            <div className="relative flex items-center mb-10">
+            {/* <FcDepartment className="w-16 h-10"/> */}
+              <img
                 src={permissionUserIcon}
                 alt="Permission Icon"
-                className="h-16 w-16"
-              /> */}
-              <div className="flex-1 text-lg font-medium ml-1">
+                className="w-16 h-16"
+              />
+              <div className="flex-1 ml-1 text-lg font-medium">
                 {dept.departmentName}
               </div>
               <img
                 src={editIcon}
                 alt="Edit Icon"
-                className="w-6 h-6 absolute right-3 cursor-pointer"
+                className="absolute w-6 h-6 cursor-pointer right-3"
                 onClick={(e) => openModal(e, dept.id)}
               />
             </div>
-            <div className="flex items-center relative bottom-4 flex-col">
-              {/* <div className="flex -space-x-3 absolute left-0">
+            <div className="relative flex flex-col items-center bottom-4">
+              {/* <div className="absolute left-0 flex -space-x-3">
                 {users
                   .filter((user) => department.includes(departmentName))
                   .slice(0, 4)
@@ -198,7 +198,7 @@ const Permission = () => {
                         <img
                           src={user.avatar}
                           alt={user.name}
-                          className="w-10 h-10 rounded-full object-cover border-2"
+                          className="object-cover w-10 h-10 border-2 rounded-full"
                         />
                       ) : (
                         <div
@@ -223,10 +223,10 @@ const Permission = () => {
                   }}
                 >
                   <div
-                    className="bg-white p-2 border rounded-tl-none rounded-tr-2xl rounded-br-2xl rounded-bl-2xl shadow-2xl flex flex-col gap-3 w-48"
+                    className="flex flex-col w-48 gap-3 p-2 bg-white border rounded-tl-none shadow-2xl rounded-tr-2xl rounded-br-2xl rounded-bl-2xl"
                     onMouseLeave={hideToolTip}
                   >
-                    <div className="flex gap-5 justify-center items-center">
+                    <div className="flex items-center justify-center gap-5">
                       <img src={profileImage} alt="" className="h-14 w-14" />
                       <span className="text-lg font-semibold">Ram Kumar</span>
                     </div>
@@ -252,7 +252,7 @@ const Permission = () => {
                         <input type="checkbox" className="mr-2" />
                       </label>
                       <div className="text-center">
-                        <button className="bg-sky-600 w-full py-1 px-5 text-white font-bold rounded-md">
+                        <button className="w-full px-5 py-1 font-bold text-white rounded-md bg-sky-600">
                           Update
                         </button>
                       </div>
@@ -262,7 +262,7 @@ const Permission = () => {
               )}
               {users.filter((user) => user.permissions.includes(department))
                 .length > 4 && (
-                <div className="flex whitespace-nowrap items-center justify-center ml-5">
+                <div className="flex items-center justify-center ml-5 whitespace-nowrap">
                   +
                   {users.filter((user) => user.permissions.includes(department))
                     .length - 4}{" "}
@@ -279,10 +279,10 @@ const Permission = () => {
           className="absolute bg-white rounded-lg p-4 shadow-lg z-50 overflow-y-auto max-h-[400px] min-w-[300px] max-w-[600px]"
           style={{ top: modalPosition.top, left: modalPosition.left }}
         >
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold">Users</h2>
             <button onClick={closeModal} className="font-bold">
-              <img src={closeIcon} alt="" className="h-5 w-5" />
+              <img src={closeIcon} alt="" className="w-5 h-5" />
             </button>
           </div>
           <div className="flex justify-between px-2">
@@ -293,7 +293,7 @@ const Permission = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
             <button className="flex ml-10 text-center">
-              <img src={addUserIcon} alt="" className="h-8 w-8" />
+              <img src={addUserIcon} alt="" className="w-8 h-8" />
               <span className="mt-1 ml-1">Add users</span>
             </button>
           </div>
@@ -311,7 +311,7 @@ const Permission = () => {
                     <img
                       src={user.avatar}
                       alt={user.name}
-                      className="w-10 h-10 rounded-full object-cover"
+                      className="object-cover w-10 h-10 rounded-full"
                     />
                   ) : (
                     <div
@@ -335,13 +335,13 @@ const Permission = () => {
             className="fixed inset-0 bg-black opacity-50"
             onClick={closeAddModuleModal}
           ></div>
-          <div className="relative bg-white rounded-lg shadow-lg pb-6 px-4 overflow-y-auto lg:overflow-hidden">
-            <div className="p-5 flex flex-col">
+          <div className="relative px-4 pb-6 overflow-y-auto bg-white rounded-lg shadow-lg lg:overflow-hidden">
+            <div className="flex flex-col p-5">
               <div>
                 <div className="flex justify-center">
                   <h2 className="text-2xl font-bold">Add New Module</h2>
                   <button
-                    className="absolute right-5 cursor-pointer"
+                    className="absolute cursor-pointer right-5"
                     onClick={closeAddModuleModal}
                   >
                     <img src={closeIcon} alt="Close" className="mt-2" />
@@ -351,24 +351,24 @@ const Permission = () => {
               </div>
               <div className="flex flex-col items-center">
                 <input
-                  className="bg-gray-200 rounded w-80 py-3 px-4 text-gray-700 focus:outline-none focus:shadow-outline my-5 text-lg text-center"
+                  className="px-4 py-3 my-5 text-lg text-center text-gray-700 bg-gray-200 rounded w-80 focus:outline-none focus:shadow-outline"
                   type="text"
                   placeholder="Enter module name"
                   value={departmentName}
                   onChange={(e) => setDepartmentName(e.target.value)}
                 />
                 {successMessage && (
-              <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 my-4">
+              <div className="p-4 my-4 text-green-700 bg-green-100 border-l-4 border-green-500">
                 <p>{successMessage}</p>
               </div>
             )}
             {errorMessage && (
-              <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 my-4">
+              <div className="p-4 my-4 text-red-700 bg-red-100 border-l-4 border-red-500">
                 <p>{errorMessage}</p>
               </div>
             )}
                 <button
-                  className="bg-sky-600 w-80 py-3 text-white rounded-lg font-bold text-lg mt-3"
+                  className="py-3 mt-3 text-lg font-bold text-white rounded-lg bg-sky-600 w-80"
                   onClick={() => addNewModule()}
                 >
                   Update
@@ -379,6 +379,7 @@ const Permission = () => {
           </div>
         </div>
       )}
+      <UserByDepartments />
     </>
   );
 };

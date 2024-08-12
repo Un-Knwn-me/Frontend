@@ -11,7 +11,7 @@ import apiService from "../../../apiService";
 
 const StockIn = ({ searchQuery }) => {
   const [initialData, setInitialData] = useState([]);
-
+  const [sortedData, setSortedData] = useState([]);
   const [filteredData, setFilteredData] = useState(initialData);
   const [editIndex, setEditIndex] = useState(null);
   const [checkedIds, setCheckedIds] = useState([]);
@@ -39,6 +39,7 @@ const StockIn = ({ searchQuery }) => {
     console.log(formattedData);
     setInitialData(formattedData);
     setFilteredData(formattedData);
+    setSortedData(formattedData);
     } catch (error) {
       console.error('Error fetching products:', error);
     }
@@ -48,6 +49,19 @@ const StockIn = ({ searchQuery }) => {
     getAllStocks();
   }, []);
 
+  // handle sort
+  const handleSort = (sortOption) => {
+    let sortedArray = [...initialData];
+    
+    if (sortOption === "newest") {
+      sortedArray.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    } else if (sortOption === "oldest") {
+      sortedArray.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    }
+
+    setSortedData(sortedArray);
+    setCurrentPage(1); // Reset to first page after sorting
+  };
 
   const handleSearch = (searchValue) => {
     const filtered = initialData.filter((item) =>
@@ -118,14 +132,14 @@ const StockIn = ({ searchQuery }) => {
           isSearch={true}
           onSearch={handleSearch}
           showDropdown={true}
-          options={["BrandA", "BrandB", "BrandC"]}
+          options={["Sort by Newest", "Sort by Oldest"]}
           selectedOption=""
           setSelectedOption={(option) => {
-            const filtered = initialData.filter(
-              (item) => item.brand === option
-            );
-            setFilteredData(filtered);
-            setCurrentPage(1); 
+            if (option === "Sort by Newest") {
+              handleSort("newest");
+            } else if (option === "Sort by Oldest") {
+              handleSort("oldest");
+            }
           }}
           isAddButton={true}
           addButtonText="Add Product"
