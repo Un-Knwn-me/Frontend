@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import closeIcon from "../../../assets/close-modal-icon.svg";
 import apiService from '../../../apiService';
 
-const AddStockOutModel = ({ show, onClose }) => {
+const StockOutWPO = ({ show, onClose }) => {
   const [styleNumber, setStyleNumber] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedProductId, setSelectedProductId] = useState(null);
@@ -721,4 +721,4 @@ const AddStockOutModel = ({ show, onClose }) => {
   )
 }
 
-export default AddStockOutModel
+export default StockOutWPO

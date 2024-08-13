@@ -4,6 +4,7 @@ import closeIcon from "../../../assets/close-modal-icon.svg";
 import apiService from "../../../apiService";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useParams } from "react-router-dom";
+import { error } from "pdf-lib";
 
 const EditProductModal = ({ show, onClose, productId }) => {
   const [productData, setProductData] = useState({
@@ -1158,13 +1159,11 @@ const EditProductModal = ({ show, onClose, productId }) => {
   };
 
   useEffect(() => {
-    console.log("Product ID:", productId); // Log the productId
-    if (productId) {
-      fetchProductData();
-    }
+    console.log("Product ID:", productId);
+      fetchProductData(productId);
   }, [productId]);
 
-  const fetchProductData = async () => {
+  const fetchProductData = async (productId) => {
     try {
       const response = await apiService.get(`/products/${productId}`);
       setProductData(response.data);
@@ -1234,20 +1233,20 @@ const EditProductModal = ({ show, onClose, productId }) => {
       });
       console.log(response);
 
-      fetchProductData();
+      fetchProductData(id);
       
-     // Fetch the updated product data after removing the image
-    const updatedProduct = await apiService.get(`/products/${productId}`);
+    //  // Fetch the updated product data after removing the image
+    // const updatedProduct = await apiService.get(`/products/${productId}`);
     
-    // Update the images and previews states with the new product data
-    const newImages = updatedProduct.images.map(image => ({
-      file: null, // Since the image is from the server, there's no file associated with it
-      url: image.url,
-    }));
-    setImages(newImages);
+    // // Update the images and previews states with the new product data
+    // const newImages = updatedProduct.images.map(image => ({
+    //   file: null, // Since the image is from the server, there's no file associated with it
+    //   url: image.url,
+    // }));
+    // setImages(newImages);
 
-    const newPreviews = newImages.map(image => image.url);
-    setPreviews(newPreviews);
+    // const newPreviews = newImages.map(image => image.url);
+    // setPreviews(newPreviews);
     } catch (error) {
       console.error("Error removing image:", error);
     }
@@ -1323,7 +1322,6 @@ const EditProductModal = ({ show, onClose, productId }) => {
 
   const handleUpdate = async () => {
     try {
-      console.log(updatedProductData);
       const formData = new FormData();
 
        // Append the product data
@@ -1343,24 +1341,24 @@ const EditProductModal = ({ show, onClose, productId }) => {
         formData.append(key, value);
       });
 
-    
-
-      const response = await apiService.put(
-        `/products/${productId}`,
-        formData,
+      const response = await apiService.put(`/products/${productId}`,formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         }
       );
-      console.log(" updated successfully:", response.data);
+      
+      if(response.statusCode === 200){
+        onClose();
+        console.log(" updated successfully:", response.data);
+      } else {
+        console.log(response.error)
+      }
     } catch (error) {
       console.error("Error updating :", error);
     }
   };
-
-
 
 
   if (!show) return null;
@@ -1416,8 +1414,8 @@ const EditProductModal = ({ show, onClose, productId }) => {
                         >
                           {previews.map((preview, index) => (
                               <Draggable
-                                key={preview.url} // Use a unique value as the key
-                                draggableId={preview.url} // Ensure draggableId is unique and non-null
+                                key={preview.url} 
+                                draggableId={preview.url} 
                                 index={index}
                               >
                                 {(provided) => (
@@ -1477,7 +1475,7 @@ const EditProductModal = ({ show, onClose, productId }) => {
               </div>
 
               <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="RefNo">
+                <label className="font-semibold" htmlFor="ReferenceNo">
                   Reference Number:
                 </label>
                 <input

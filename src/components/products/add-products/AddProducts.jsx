@@ -30,6 +30,8 @@ const AddProducts = ({ searchQuery }) => {
           'Content-Type': 'application/json',
         },
       });
+      console.log(response.data);
+      
       setInitialData(response.data);
       setFilteredData(response.data);
     } catch (error) {
@@ -160,39 +162,42 @@ const AddProducts = ({ searchQuery }) => {
           addButtonText="Add Product"
           onAddButtonClick={() => setShowAddModal(true)}
         />
-        <div className=" mx-auto p-4 bg-white mt-5">
+        <div className="p-4 mx-auto mt-5 bg-white ">
           <div className="min-h-[60vh] max-h-[60vh] overflow-y-auto">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50 w-full">
+              <thead className="w-full bg-gray-50">
                 <tr>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-28">
+                  <th className="w-10 px-2 py-3 font-bold text-center text-black uppercase text-md">
                     Si No
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-40">
+                  <th className="px-2 py-3 font-bold text-center text-black uppercase w-28 text-md">
                     Image
                   </th>
-                  <th className="px-6 py-3 text-center text-md font-bold text-black uppercase flex-grow">
+                  <th className="w-24 px-6 py-3 font-bold text-center text-black uppercase text-md">
                     Style No
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-28">
-                    Product
+                  <th className="w-24 px-6 py-3 font-bold text-center text-black uppercase text-md">
+                    Reference No
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-40">
+                  <th className="w-24 px-2 py-3 font-bold text-center text-black uppercase text-md">
+                    Type
+                  </th>
+                  <th className="w-40 px-2 py-3 font-bold text-center text-black uppercase text-md">
                     Brand
                   </th>
-                  <th className="px-6 py-3 text-center text-md font-bold text-black uppercase flex-grow">
+                  <th className="flex-grow px-6 py-3 font-bold text-center text-black uppercase text-md">
                     Fabric
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-28">
+                  <th className="px-2 py-3 font-bold text-center text-black uppercase text-md w-28">
                     Color
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-28">
+                  <th className="px-2 py-3 font-bold text-center text-black uppercase text-md w-28">
                     Size
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-28">
+                  <th className="px-2 py-3 font-bold text-center text-black uppercase text-md w-28">
                     Action
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-20">
+                  <th className="w-20 px-2 py-3 font-bold text-center text-black uppercase text-md">
                     <input
                       type="checkbox"
                       className="form-checkbox"
@@ -206,9 +211,9 @@ const AddProducts = ({ searchQuery }) => {
                       checked={checkedIds.length === initialData.length}
                     />
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-8">
+                  <th className="w-8 px-2 py-3 font-bold text-center text-black uppercase text-md">
                     <button onClick={handleDelete} className="text-red-500">
-                      <img src={deleteIcon} alt="Delete" className="h-6 w-6" />
+                      <img src={deleteIcon} alt="Delete" className="w-6 h-6" />
                     </button>
                   </th>
                 </tr>
@@ -216,11 +221,11 @@ const AddProducts = ({ searchQuery }) => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {currentData.map((row, index) => (
                   <tr key={row.id} style={{ maxHeight: "50px" }}>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-10">
+                    <td className="w-10 px-2 py-3 text-center text-black whitespace-nowrap text-md">
                       {startIndex + index + 1}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">
-                      <div className="flex justify-center items-center">
+                    <td className="px-2 py-3 text-center text-black whitespace-nowrap text-md w-28">
+                      <div className="flex items-center justify-center">
                         <img
                           src={row.images[0]}
                           alt="Product"
@@ -228,29 +233,32 @@ const AddProducts = ({ searchQuery }) => {
                         />
                       </div>
                     </td>
-                    <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black w-32">
+                    <td className="w-24 px-6 py-3 text-center text-black whitespace-nowrap text-md">
                       {row.style_no}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-32">
+                    <td className="w-24 px-6 py-3 text-center text-black whitespace-nowrap text-md">
+                      {row.Reference.reference_no}
+                    </td>
+                    <td className="w-24 px-2 py-3 text-center text-black whitespace-nowrap text-md">
                       {row.ProductType.product}
                     </td>
-                    <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black w-32">
+                    <td className="w-32 px-6 py-3 text-center text-black whitespace-nowrap text-md">
                       {row.Brand.brandName}
                     </td>
-                    <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black w-32">
+                    <td className="w-32 px-6 py-3 text-center text-black whitespace-nowrap text-md">
                       {row.Fabric.fabricName}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">
+                    <td className="px-2 py-3 text-center text-black whitespace-nowrap text-md w-28">
                       {row.Color.colorName}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">
+                    <td className="px-2 py-3 text-center text-black whitespace-nowrap text-md w-28">
                       {row.Size.sizes.join(", ")}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-16">
+                    <td className="w-16 px-2 py-3 text-center text-black whitespace-nowrap text-md">
                       {editIndex === startIndex + index ? (
                         <button
                           onClick={handleSaveClick}
-                          className="bg-green-200 border border-green-500 px-2 py-1 rounded-lg flex"
+                          className="flex px-2 py-1 bg-green-200 border border-green-500 rounded-lg"
                         >
                           <img src={tickIcon} alt="" className="mt-1 mr-2" />
                           <span className="text-xs">Update</span>
@@ -258,13 +266,13 @@ const AddProducts = ({ searchQuery }) => {
                       ) : (
                         <button
                           onClick={() => handleEditClick(row.id)}
-                          className="text-blue-500 text-center w-16"
+                          className="w-16 text-center text-blue-500"
                         >
-                          <img src={editIcon} alt="Edit" className="h-6 w-6" />
+                          <img src={editIcon} alt="Edit" className="w-6 h-6" />
                         </button>
                       )}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap w-12 text-center">
+                    <td className="w-12 px-2 py-3 text-center whitespace-nowrap">
                       <input
                         type="checkbox"
                         className="form-checkbox"
@@ -279,12 +287,12 @@ const AddProducts = ({ searchQuery }) => {
                         }}
                       />
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-8">
+                    <td className="w-8 px-2 py-3 text-center text-black whitespace-nowrap text-md">
                   <button
                     onClick={() => handleDelete(row.id)}
                     className="text-red-500"
                   >
-                    <img src={deleteIcon} alt="Delete" className="h-5 w-5" />
+                    <img src={deleteIcon} alt="Delete" className="w-5 h-5" />
                   </button>
                 </td>
                   </tr>
@@ -292,9 +300,9 @@ const AddProducts = ({ searchQuery }) => {
               </tbody>
             </table>
           </div>
-          <div className="flex justify-between items-center mt-4">
+          <div className="flex items-center justify-between mt-4">
             <div>
-              <span className="text-md text-black">
+              <span className="text-black text-md">
                 {recordsPerPage} records per page
               </span>
             </div>
@@ -302,7 +310,7 @@ const AddProducts = ({ searchQuery }) => {
               <select
                 value={recordsPerPage}
                 onChange={handleRecordsPerPageChange}
-                className="border border-gray-300 rounded-md px-3 py-2"
+                className="px-3 py-2 border border-gray-300 rounded-md"
               >
                 <option value={5}>Records per page: 5</option>
                 <option value={10}>Records per page: 10</option>
@@ -310,16 +318,16 @@ const AddProducts = ({ searchQuery }) => {
               </select>
               <button
                 onClick={() => handlePageChange("prev")}
-                className="px-2 py-1 text-md rounded-md"
+                className="px-2 py-1 rounded-md text-md"
               >
                 <img src={leftArrowIcon} alt="Previous" />
               </button>
-              <span className="text-md text-black">
+              <span className="text-black text-md">
                 {currentPage}/{Math.ceil(filteredData.length / recordsPerPage)}
               </span>
               <button
                 onClick={() => handlePageChange("next")}
-                className="px-2 py-1 text-md rounded-md"
+                className="px-2 py-1 rounded-md text-md"
               >
                 <img src={rightArrowIcon} alt="Next" />
               </button>
