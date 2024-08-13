@@ -2,109 +2,256 @@ import React, { useEffect, useState } from 'react'
 import closeIcon from "../../../assets/close-modal-icon.svg";
 import apiService from '../../../apiService';
 
-const StockOutWPO = ({ show, onClose }) => {
+const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
+  const [buyer, setBuyer] = useState("");
+  const [buyerLocation, setBuyerLocation] = useState("");
+  const [deliveryDate, setDeliveryDate] = useState(new Date().toISOString());
   const [styleNumber, setStyleNumber] = useState("");
+  const [styleDropdown, setStyleDropdown] = useState(false);
+  const [styleSuggestions, setStyleSuggestions] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedProductId, setSelectedProductId] = useState(null);
-  const [orderNumber, setOrderNumber] = useState("");
-  const [orderDropdown, setOrderDropdown] = useState(false);
-  const [orderSuggestions, setOrderSuggestions] = useState([]);
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  const [selectedOrderId, setSelectedOrderId] = useState(null);
-  const [checkSame, setCheckSame] = useState(null);
-  const [productInfo, setProductInfo] = useState(null);
+  const [productInfo, setProductInfo] = useState({});
   const [orderInfo, setOrderInfo] = useState(null);
   const [productInnerTotals, setProductInnerTotals] = useState(null);
   const [productOuterTotals, setProductOuterTotals] = useState(null);
-  const [orderInnerTotals, setOrderInnerTotals] = useState(null);
-  const [orderOuterTotals, setOrderOuterTotals] = useState(null);
+  const [assortmentType, setAssortmentType] = useState("assorted");
+  const [innerPcs, setInnerPcs] = useState({});
+  const [outerPcs, setOuterPcs] = useState({});
   const [stockOutBundle, setStockOutBundle] = useState(null);
+  const [totalInnerPcs, setTotalInnerPcs] = useState(0);
+  const [totalOuterPcs, setTotalOuterPcs] = useState(0);
+  const [totalInnerPcsPerBundle, setTotalInnerPcsPerBundle] = useState(0);
+  const [totalProducts, setTotalProducts] = useState(0);
   const [totalPcs, setTotalPcs] = useState(null);
+  const [notes, setNotes] = useState("");
+
+  const [ReferenceNo, setReferenceNo] = useState("");
+  const [category, setCategory] = useState("");
+  const [productType, setProductType] = useState("");
+  const [brand, setBrand] = useState("");
+  const [fabric, setFabric] = useState("");
+  const [fabricFinish, setFabricFinish] = useState("");
+  const [gsm, setGsm] = useState(null);
+  const [knitType, setKnitType] = useState("");
+  const [colors, setColors] = useState("");
+  const [sizes, setSizes] = useState([]);
+  const [decoration, setDecoration] = useState("");
+  const [printOrEmb, setPrintOrEmb] = useState("");
+  const [stitch, setStitch] = useState("");
+  const [neck, setNeck] = useState("");
+  const [sleeve, setSleeve] = useState("");
+  const [length, setLength] = useState("");
+  const [measurementChart, setMeasurementChart] = useState("");
+  const [selectedMeasurementImage, setSelectedMeasurementImage] = useState(null);
+  const [packingMethod, setPackingMethod] = useState("");
+  const [packingInfo, setPackingInfo] = useState('');
+  const [shortDescription, setShortDescription] = useState("");
+  const [fullDescription, setFullDescription] = useState("");
+  const [images, setImages] = useState("");
+
+   // Suggestion buyer states
+ const [buyerDropdown, setBuyerDropdown] = useState(false);
+ const [buyerSuggestions, setBuyerSuggestions] = useState([]);
+ const [selectedBuyerId, setSelectedBuyerId] = useState(null);
 
   // fetch styleNo
-  const fetchStyleSuggestions = async (style_no) => {
+  const fetchStyleSuggestions = async (styleInput) => {
     try {
-        const response = await apiService.get(`/stocks/${style_no}`);
-
-        setProductInfo(response.data);
-        const totalStockInnerPcs = calculateTotalInnerPcs(response.data.stock_by_size);
-        setProductInnerTotals(totalStockInnerPcs);
-        const totalStockOuterPcs = calculateTotalOuterPcs(response.data.stock_by_size);
-        setProductOuterTotals(totalStockOuterPcs);
+        if (styleInput.length > 0) {
+        const response = await apiService.get(`/stocks/stockIn/all`);
+        const filteredProduct = response.data.filter((e) =>
+            e.product_style_number.toLowerCase().startsWith(styleInput.toLowerCase())
+          );
+          console.log(response.data);
+          setStyleSuggestions(filteredProduct);
+        } else {
+          setStyleSuggestions([]);
+        }
     } catch (error) {
       console.error("Error fetching Product:", error);
     }
   };
 
-  // fetch orderNo
-  const fetchOrderSuggestions = async (orderInput) => {
-    try {
-      if (orderInput.length > 0) {
-        const response = await apiService.get("/purchases/all");
-        const filteredProduct = response.data.filter(
-          (e) =>
-            e.purchase_order_number &&
-            e.purchase_order_number.toLowerCase().startsWith(orderInput.toLowerCase())
-        );
-        const formattedData = filteredProduct.map(order => ({
-          ...order,
-          delivery_date: new Date(order.delivery_date).toLocaleDateString('en-GB')
-        }));       
-        setOrderSuggestions(formattedData);
-      } else {
-        setOrderSuggestions([]);
-      }
-    } catch (error) {
-      console.error("Error fetching Purchase order:", error);
-    }
-  };
-
-  const handleOrderChange = (e) => {
-    const orderInput = e.target.value;
-    if (orderInput.length > 0) {
-    setOrderNumber(orderInput);
-    setOrderDropdown(true);
-    fetchOrderSuggestions(orderInput);
+  const handleStyleChange = (e) => {
+    const styleInput = e.target.value;
+    if (styleInput.length > 0) {
+    setStyleNumber(styleInput);
+    setStyleDropdown(true);
+    fetchStyleSuggestions(styleInput);
     } else {
-      setOrderNumber("");
-      setOrderDropdown(false);
-      setSelectedOrder(null);
-      setCheckSame(null);
-      setProductInfo(null);
-      setOrderInfo(null);
-
       setStyleNumber("");
+      setStyleDropdown(false);
+      setProductInfo(null)
       setSelectedProduct(null);
-      setCheckSame(null);
-      setProductInfo(null);
-      setOrderInfo(null);
+      setReferenceNo("");
+      setCategory("");
+      setProductType("");
+      setBrand("");
+      setFabric("");
+      setFabricFinish("");
+      setGsm("");
+      setKnitType("");
+      setColors("");
+      setSizes([]);
+      setDecoration("");
+      setPrintOrEmb("");
+      setStitch("");
+      setLength("");
+      setNeck("");
+      setSleeve("");
+      setMeasurementChart("");
+      setSelectedMeasurementImage("");
+      setPackingMethod("");
+      setShortDescription("");
+      setFullDescription("");
+      setImages("");
     }
   };
 
-  const handleOrderSelect = (e) => {
-    setOrderNumber(e.purchase_order_number);
-    setSelectedOrder(e);
-    setOrderInfo(e);
-    setSelectedOrderId(e.id);
-    setOrderSuggestions([]);
-    setOrderDropdown(false);
-    setOrderSuggestions([]);
-    setOrderDropdown(false);
-    console.log('orderSelect: ', e.purchase_by_size);
-    const totalOrderInnerPcs = calculateTotalInnerPcs(e.purchase_by_size);
-    setOrderInnerTotals(totalOrderInnerPcs);
-    const totalOrderOuterPcs = calculateTotalOuterPcs(e.purchase_by_size);
-    setOrderOuterTotals(totalOrderOuterPcs);
-    setStyleNumber(e.product_style_number)
-    fetchStyleSuggestions(e.product_style_number);
+  const handleStyleSelect = async(e) => {
+    console.log("handleStyleSelect: ", e);
+    setStyleNumber(e.Product.style_no);
+    setSelectedProduct(e);
+    setSelectedProductId(e.id);
+    setStyleSuggestions([]);
+    setStyleDropdown(false);
+    setProductInfo(e)
+    setImages(e.Product.images[0]);
+    setReferenceNo(e.Product.Reference.reference_no);
+    setCategory(e.Product.Category.categoryName);
+    setProductType(e.Product.ProductType.product);
+    setBrand(e.Product.Brand.brandName);
+    setFabric(e.Product.Fabric.fabricName);
+    setFabricFinish(e.Product.FabricFinish.fabricFinishName);
+    setGsm(e.Product.Gsm.gsmValue);
+    setKnitType(e.Product.KnitType.knitType);
+    setColors(e.Product.Color.colorName);
+    setDecoration(e.Product.Decoration.decorationName);
+    setPrintOrEmb(e.Product.PrintEmbName.printType);
+    setStitch(e.Product.StitchDetail.stictchDetail);
+    setNeck(e.Product.Neck.neckType);
+    setLength(e.Product.Length.lengthType);
+    setSleeve(e.Product.Sleeve.sleeveName);
+    setPackingMethod(e.Product.PackingMethod.packingType);
+    setMeasurementChart(e.Product.MeasurementChart.name);
+    setSelectedMeasurementImage(e.Product.MeasurementChart.sample_size_file);
+    setShortDescription(e.Product.short_description);
+    setFullDescription(e.Product.full_description);
+    setSizes(e.Product.Size.sizes);
+    setPackingInfo(e.packing_type)
+    const totalStockInnerPcs = await calculateTotalInnerPcs(e.stock_by_size);
+    setProductInnerTotals(totalStockInnerPcs);
+    const totalStockOuterPcs = await calculateTotalOuterPcs(e.stock_by_size);
+    setProductOuterTotals(totalStockOuterPcs);
   };
 
-  const handleAddNewOrderNo = () => {
+  const handleAddNewStyleNo = () => {
     // Implement the logic to add a new buyer here
-    console.log("Adding new purchase order no:", orderNumber);
+    console.log("Adding new style no:", styleNumber);
     // Close the dropdown after adding the buyer
-    setOrderDropdown(false);
+    setStyleDropdown(false);
   };
+
+    // handle size quantity change
+    const handleAssortmentTypeChange = (e) => {
+        const selectedType = e.target.value;
+        setAssortmentType(selectedType);
+      
+        if (selectedType === "solid" && selectedProduct) {
+          const initialInnerPcs = selectedProduct.Product.Size.sizes.reduce((acc, size) => {
+            acc[size] = selectedProduct.stock_by_size.find(stock => stock.size === size)?.innerPcs || 0;
+            return acc;
+          }, {});
+          setInnerPcs(initialInnerPcs);
+        } else if (selectedType === "assorted") {
+          setInnerPcs(selectedProduct.Product.Size.sizes.reduce((acc, size) => {
+            acc[size] = 0; // Resetting to 0 for assorted
+            return acc;
+          }, {}));
+        }
+      };      
+    
+      const handleInnerPcsChange = (size, value) => {
+        setInnerPcs((prev) => ({
+          ...prev,
+          [size]: Number(value)
+        }));
+      };
+    
+      const handleOuterPcsChange = (size, value) => {
+        setOuterPcs((prev) => ({
+          ...prev,
+          [size]: Number(value)
+        }));
+      };
+
+    useEffect(() => {
+    const totalInner = Object.values(innerPcs).reduce((sum, pcs) => sum + Number(pcs || 0), 0);
+    const totalOuter = Object.values(outerPcs).reduce((sum, pcs) => sum + Number(pcs || 0), 0);
+    setTotalInnerPcs(totalInner);
+    setTotalOuterPcs(totalOuter);
+
+    const totalInnerPerBundle = sizes.reduce((sum, size) => {
+        const inner = innerPcs[size] || 0;
+        const outer = outerPcs[size] || 0;
+        return sum + (inner * outer);
+    }, 0);
+
+    setTotalInnerPcsPerBundle(totalInnerPerBundle);
+    const totalProducts = totalInnerPerBundle * stockOutBundle;
+    setTotalProducts(totalProducts);
+    }, [innerPcs, outerPcs, stockOutBundle, sizes]);
+
+ // Fetch buyer suggestions
+ const fetchBuyerSuggestions = async (buyerInput) => {
+   try {
+     if (buyerInput.length > 0) {
+       const response = await apiService.get("/buyers/getall");
+       const filteredBuyers = response.data.filter((b) =>
+         b.name.toLowerCase().startsWith(buyerInput.toLowerCase())
+       );
+       console.log(filteredBuyers);
+       setBuyerSuggestions(filteredBuyers);
+     } else {
+       setBuyerSuggestions([]);
+     }
+   } catch (error) {
+     console.error("Error fetching buyers:", error);
+   }
+ };
+
+ const handleBuyerChange = (e) => {
+   const buyerInput = e.target.value;
+   setBuyer(buyerInput);
+   setBuyerDropdown(true);
+   fetchBuyerSuggestions(buyerInput);
+   if (buyerInput === "") {
+     setBuyerLocation("");
+     setSelectedBuyerId(null);
+   }
+ };
+
+ const handleBuyerSelect = (buyer) => {
+   setBuyer(buyer.name);
+   setBuyerLocation(buyer.location);
+   setSelectedBuyerId(buyer.id);
+   setBuyerSuggestions([]);
+   setBuyerDropdown(false);
+ };
+
+ const handleAddNewBuyer = () => {
+   // Implement the logic to add a new buyer here
+   console.log("Adding new buyer:", buyer);
+   // Close the dropdown after adding the buyer
+   setBuyerDropdown(false);
+ };
+
+//  handle date
+const handleDeliveryDateChange = (e) => {
+    const inputDate = e.target.value;
+    setDeliveryDate(new Date(inputDate).toISOString());
+};
 
   const handleBundleChange = async (e) => {
     try {
@@ -132,22 +279,29 @@ const StockOutWPO = ({ show, onClose }) => {
   const handleSubmit = async () => {
     try {
       const stockData = {
-      stock_id: productInfo.id,
-      stockOut_by_size: orderInfo.purchase_by_size,
-      stockOut_bundle: totalPcs,
-      total_stockOut_pcs: orderInfo.req_purchase_qty,
-      product_style_number: productInfo.product_style_number,
-      product_id: productInfo.Product.id,
-      purchase_order_number: orderInfo.purchase_order_number,
-      purchase_order_id: orderInfo.id,
+        order_type: "Without Purchase Order",
+        buyer_id: selectedBuyerId,
+        delivery_date: deliveryDate,
+        product_style_number: productInfo.product_style_number,
+        product_id: productInfo.Product.id,
+        notes,
+        packing_type: assortmentType,
+        purchase_by_size: sizes.map((size) => ({
+            size,
+            innerPcs: innerPcs[size],
+            outerPcs: outerPcs[size],
+          })),
+        req_bundle: stockOutBundle,
+        req_purchase_qty: totalProducts,
       }
 
       console.log('Stock out: ', stockData);
 
-      const response = await apiService.post("/stockOut/create", stockData);
+      const response = await apiService.post("/stockOut/createWPO/stockout", stockData);
 
-      if (response.status === 200) {
+      if (response.status === 201) {
       console.log("Stock created:", response.data);
+      fetchStockOut();
       onClose();
       } 
 
@@ -167,7 +321,7 @@ const StockOutWPO = ({ show, onClose }) => {
       <div className="relative bg-white rounded-lg shadow-lg w-full max-w-[80vw] h-screen max-h-[90vh] overflow-auto">
         <div className="px-10 py-5">
           <div className="flex justify-center">
-            <h2 className="text-xl font-bold">Create Stock Out</h2>
+            <h2 className="text-xl font-bold">Create WPO Stock Out</h2>
             <button
               className="absolute cursor-pointer right-5"
               onClick={onClose}
@@ -182,40 +336,68 @@ const StockOutWPO = ({ show, onClose }) => {
 
             <div className="">
             <div className="grid grid-cols-2 gap-4">
-              <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="styleNo">
-                  Purchase Order No:
+            
+            <div className="relative flex flex-col gap-2">
+                <label className="font-semibold" htmlFor="buyer">
+                  Buyer Name:
                 </label>
                 <input
                   type="text"
-                  id="purchaseOrderNo"
-                  value={orderNumber}
-                  onChange={handleOrderChange}
+                  id="buyer"
+                  value={buyer}
+                  onChange={handleBuyerChange}
                   className="px-2 py-2 border border-gray-300 rounded-md hover:border-cyan-300 active:boder-cyan-300 focus:border-cyan-300"
-                  placeholder="Enter PO number"
+                  placeholder="Enter Buyer Name"
                 />
-                {orderDropdown && orderNumber && (
+                {buyerDropdown && buyer && (
                   <ul className="absolute left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg top-full">
-                    {orderSuggestions.length > 0 ? (
-                      orderSuggestions.map((suggestion) => (
+                    {buyerSuggestions.length > 0 ? (
+                      buyerSuggestions.map((suggestion) => (
                         <li
                           key={suggestion.id}
                           className="px-4 py-2 cursor-pointer hover:bg-gray-200"
-                          onClick={() => handleOrderSelect(suggestion)}
+                          onClick={() => handleBuyerSelect(suggestion)}
                         >
-                          {suggestion.purchase_order_number}
+                          {suggestion.name}
                         </li>
                       ))
                     ) : (
                       <li
                         className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
-                        onClick={handleAddNewOrderNo}
+                        onClick={handleAddNewBuyer}
                       >
-                        Add New Purchase order: "{orderNumber}"
+                        Add New Buyer: "{buyer}"
                       </li>
                     )}
                   </ul>
                 )}
+              </div>
+
+              <div className="relative flex flex-col gap-2">
+                <label className="font-semibold" htmlFor="location">
+                  Buyer Location
+                </label>
+                <input
+                  type="text"
+                  id="location"
+                  value={buyerLocation}
+                  className="px-2 py-2 border border-gray-300 rounded-md hover:border-cyan-300 active:boder-cyan-300 focus:border-cyan-300"
+                  disabled
+                />
+              </div>
+
+              <div className="relative flex flex-col gap-2">
+                <label className="font-semibold" htmlFor="deliveryDate">
+                  Delivery date:
+                </label>
+                <input
+                  type="date"
+                  id="deliveryDate"
+                  value={deliveryDate.split("T")[0]}
+                  onChange={handleDeliveryDateChange}
+                  className="px-2 py-2 border border-gray-300 rounded-md hover:border-cyan-300 active:boder-cyan-300 focus:border-cyan-300"
+                  placeholder="Enter delivery date"
+                />
               </div>
 
               <div className="relative flex flex-col gap-2">
@@ -226,21 +408,34 @@ const StockOutWPO = ({ show, onClose }) => {
                   type="text"
                   id="styleNo"
                   value={styleNumber}
-                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
-                  disabled
+                  onChange={handleStyleChange}
+                  className="px-2 py-2 border border-gray-300 rounded-md hover:border-cyan-300 active:boder-cyan-300 focus:border-cyan-300"
+                  placeholder="Enter Style number"
                 />
-              </div>
-              </div>
-
-                <div className="relative flex items-center my-4">
-                    {checkSame !== null && (
-                      <div className="mt-4 text-lg font-semibold text-center">
-                        {checkSame
-                          ? <span className='text-green-600'>"The Style number on Purchase order and Stock is SAME!"</span>
-                          : <span className='text-red-600'>"The Style number on Purchase order and Stock is NOT the same!"</span> }
-                      </div>
+                {styleDropdown && styleNumber && (
+                  <ul className="absolute left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg top-full">
+                    {styleSuggestions.length > 0 ? (
+                      styleSuggestions.map((suggestion) => (
+                        <li
+                          key={suggestion.id}
+                          className="px-4 py-2 cursor-pointer hover:bg-gray-200"
+                          onClick={() => handleStyleSelect(suggestion)}
+                        >
+                          {suggestion.Product.style_no}
+                        </li>
+                      ))
+                    ) : (
+                      <li
+                        className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
+                        onClick={handleAddNewStyleNo}
+                      >
+                        Add New Style: "{styleNumber}"
+                      </li>
                     )}
-                </div>
+                  </ul>
+                )}
+              </div>
+              </div>
             </div>
 
             <div className='grid grid-cols-2 gap-10'>
@@ -248,7 +443,7 @@ const StockOutWPO = ({ show, onClose }) => {
               <h3 className="my-2 text-lg font-medium">Product Image:</h3>
             <div className="flex items-center justify-center border border-gray-400 max-w-48">
               <img
-                src={productInfo?.Product.images[0] || 'https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?t=st=1722163869~exp=1722167469~hmac=37361beb0ca1a1c652d36c9ca94818f793a54d21822edab80e80c6e43a9b7b37&w=740'}
+                src={images || 'https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?t=st=1722163869~exp=1722167469~hmac=37361beb0ca1a1c652d36c9ca94818f793a54d21822edab80e80c6e43a9b7b37&w=740'}
                 alt='Product'
                 className="object-cover h-40 rounded"
               />
@@ -258,7 +453,7 @@ const StockOutWPO = ({ show, onClose }) => {
               <h3 className="my-2 text-lg font-medium">Measurement Chart:</h3>
             <div className="flex items-center justify-center border border-gray-400 max-w-48">
               <img
-                src={productInfo?.Product.MeasurementChart.sample_size_file || 'https://img.freepik.com/premium-vector/fashion-designer-flat-design-illustration_169137-4015.jpg?w=1380'}
+                src={selectedMeasurementImage || 'https://img.freepik.com/premium-vector/fashion-designer-flat-design-illustration_169137-4015.jpg?w=1380'}
                 alt='Product'
                 className="object-cover h-40 rounded"
               />
@@ -280,7 +475,7 @@ const StockOutWPO = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="reference"
-                  value={productInfo?.Product.Reference.reference_no || ""}
+                  value={ReferenceNo || ""}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -293,7 +488,7 @@ const StockOutWPO = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="Category"
-                  value={productInfo?.Product.Category.categoryName || ""}
+                  value={category || ""}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -306,7 +501,7 @@ const StockOutWPO = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="productType"
-                  value={productInfo?.Product.ProductType.product || ''}
+                  value={productType || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -319,7 +514,7 @@ const StockOutWPO = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="brand"
-                  value={productInfo?.Product.Brand.brandName || ''}
+                  value={brand || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -332,7 +527,7 @@ const StockOutWPO = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="color"
-                  value={productInfo?.Product.Color.colorName || ''}
+                  value={colors || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -345,7 +540,7 @@ const StockOutWPO = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="decoration"
-                  value={productInfo?.Product.Decoration.decorationName || ''}
+                  value={decoration || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -358,7 +553,7 @@ const StockOutWPO = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="fabric"
-                  value={productInfo?.Product.Fabric.fabricName || ''}
+                  value={fabric || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -371,7 +566,7 @@ const StockOutWPO = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="fabric fabric"
-                  value={productInfo?.Product.FabricFinish.fabricFinishName || ''}
+                  value={fabricFinish || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -384,7 +579,7 @@ const StockOutWPO = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="gsm"
-                  value={productInfo?.Product.Gsm.gsmValue || ''}
+                  value={gsm || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -397,7 +592,7 @@ const StockOutWPO = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="knitType"
-                  value={productInfo?.Product.KnitType.knitType || ''}
+                  value={knitType || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -410,7 +605,7 @@ const StockOutWPO = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="length"
-                  value={productInfo?.Product.Length.lengthType || ''}
+                  value={length || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -423,7 +618,7 @@ const StockOutWPO = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="neck"
-                  value={productInfo?.Product.Neck.neckType || ''}
+                  value={neck || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -436,7 +631,7 @@ const StockOutWPO = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="packingMethod"
-                  value={productInfo?.Product.PackingMethod.packingType || ''}
+                  value={packingMethod || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -449,7 +644,7 @@ const StockOutWPO = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="print"
-                  value={productInfo?.Product.PrintEmbName.printType || ''}
+                  value={printOrEmb || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -462,7 +657,7 @@ const StockOutWPO = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="size"
-                  value={productInfo?.Product.Size.sizes || ''}
+                  value={sizes || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -475,7 +670,7 @@ const StockOutWPO = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="sleeve"
-                  value={productInfo?.Product.Sleeve.sleeveName || ''}
+                  value={sleeve || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -488,7 +683,7 @@ const StockOutWPO = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="stitchDetails"
-                  value={productInfo?.Product.StitchDetail.stictchDetail || ''}
+                  value={stitch || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -501,7 +696,7 @@ const StockOutWPO = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="measurementChart"
-                  value={productInfo?.Product.MeasurementChart.name || ''}
+                  value={measurementChart || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -514,71 +709,51 @@ const StockOutWPO = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="packing"
-                  value={productInfo?.packing_type || ''}
+                  value={packingInfo || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
               </div>
             </div>
 
+            <div className="flex flex-col gap-2 mt-3">
+              <label className="font-semibold" htmlFor="shortDescription">
+                Short Description:
+              </label>
+              <textarea
+                id="shortDescription"
+                value={shortDescription}
+                className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                rows="1"
+                disabled
+              />
+            </div>
 
-            <div className="flex items-center gap-2 mt-10">
-                <h3 className="text-lg font-medium">ORDER INFO:</h3>
-              </div>
-            <div className="grid grid-cols-2 gap-4 mt-5 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
-                
-            <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="orderType">
-                  Order Type:
-                </label>
-                <input
-                  type="text"
-                  id="orderType"
-                  value={orderInfo?.order_type || ""}
-                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
-                  disabled
-                />
-              </div>
-              {orderInfo && (
-              <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="buyer">
-                  Buyer:
-                </label>
-                <input
-                  type="text"
-                  id="buyer"
-                  value={`${orderInfo?.Buyer?.name}, ${orderInfo?.Buyer?.location}` || ''}
-                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
-                  disabled
-                />
-              </div>
-             ) }
-              <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="deliveryDate">
-                  Delivery Date:
-                </label>
-                <input
-                  type="text"
-                  id="deliveryDate"
-                  value={orderInfo?.delivery_date || ''}
-                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
-                  disabled
-                />
-              </div>
-
-              <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="packing">
-                  Packing Information:
-                </label>
-                <input
-                  type="text"
-                  id="packing"
-                  value={orderInfo?.packing_type || ''}
-                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
-                  disabled
-                />
-              </div>
-
+            <div className="flex flex-col gap-2 mt-3">
+              <label className="font-semibold" htmlFor="fullDescription">
+                Full Description:
+              </label>
+              <textarea
+                id="fullDescription"
+                value={fullDescription}
+                className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                rows="2"
+                disabled
+              />
+            </div>
+            
+            <div className="flex flex-col gap-2 mt-3">
+              <label className="font-semibold" htmlFor="notes">
+                Notes:
+              </label>
+              <textarea
+                id="notes"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                className="px-2 py-2 border border-gray-300 rounded-md hover:border-cyan-300 active:boder-cyan-300 focus:border-cyan-300"
+                placeholder="Enter additional notes"
+                rows="3"
+              />
             </div>
 
             <div className="grid grid-cols-1 gap-10 mt-10 md:grid-cols-2">
@@ -634,48 +809,58 @@ const StockOutWPO = ({ show, onClose }) => {
             </div>
             
             <div className="text-center">
-              <h3 className="text-lg font-semibold">Ordered Quantities:</h3>
-              {orderInfo?.purchase_by_size ? (
+              <h3 className="text-lg font-semibold">Order Quantities:</h3>
+              {sizes ? (
                 <>
-                  <div className=''>
-                    <table className="min-w-full mt-6 bg-white border border-gray-300 rounded-md">
-                      <thead>
-                        <tr>
-                          <th className="px-4 py-2 border-b">Size</th>
-                          <th className="px-4 py-2 border-b">Inner Pieces</th>
-                          <th className="px-4 py-2 border-b">Outer Pieces</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {orderInfo.purchase_by_size.map((stock, index) => (
-                          <tr key={index}>
-                            <td className="px-4 py-2 border-b">{stock.size}</td>
-                            <td className="px-4 py-2 border-b">{stock.innerPcs}</td>
-                            <td className="px-4 py-2 border-b">{stock.outerPcs}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  <div className="my-4">
-              <h3 className="text-lg font-bold">Order Totals</h3>
-              <div className="grid grid-cols-4 gap-4 mt-4">
-                <div className="p-2 border rounded-lg">
-                  <h4 className="font-semibold">Total Bundle:</h4>
-                  <p>{orderInfo?.req_bundle}</p>
-                </div>
-                <div className="p-2 border rounded-lg">
-                  <h4 className="font-semibold">Total Inner Pcs:</h4>
-                  <p>{orderInnerTotals}</p>
-                </div>
-                <div className="p-2 border rounded-lg">
-                  <h4 className="font-semibold">Total Outer Pcs:</h4>
-                  <p>{orderOuterTotals}</p>
-                </div>
-                <div className="p-2 border rounded-lg">
-                  <h4 className="font-semibold">Total Pieces:</h4>
-                  <p>{orderInfo?.req_purchase_qty}</p>
-                </div>
+                <div className="my-4">
+          <label className="font-semibold">Packaging Type:</label>
+          <div className="gap-4 mt-2">
+            <label>
+              <input
+                type="radio"
+                value="assorted"
+                checked={assortmentType === "assorted"}
+                onChange={handleAssortmentTypeChange}
+                className="mx-1"
+              />
+               Assorted
+            </label>
+            <label className='ml-2'>
+              <input
+                type="radio"
+                value="solid"
+                checked={assortmentType === "solid"}
+                onChange={handleAssortmentTypeChange}
+                className="mx-1"
+              />
+               Solid
+            </label>
+          </div>
+        </div>
+
+                <div className="p-4 rounded-lg">
+              <h4 className="mb-4 text-sm font-medium">Quantity per size:</h4>
+              <div className="flex flex-col gap-4">
+              {sizes.map((size, index) => (
+            <div key={index} className="flex items-center justify-center gap-4 mb-2">
+              <div className="w-16">{size}: </div>
+              <input
+                type="number"
+                value={innerPcs[size] || ''}
+                onChange={(e) => handleInnerPcsChange(size, e.target.value)}
+                placeholder="Inner Pcs"
+                className="w-24 px-2 py-1 border border-gray-300 rounded-md"
+                disabled={assortmentType === "solid"}
+              />
+              <input
+                type="number"
+                value={outerPcs[size] || ''}
+                onChange={(e) => handleOuterPcsChange(size, e.target.value)}
+                placeholder="Outer Pcs"
+                className="w-24 px-2 py-1 border border-gray-300 rounded-md"
+              />
+            </div>
+          ))}
               </div>
             </div>
                 </>
@@ -697,14 +882,36 @@ const StockOutWPO = ({ show, onClose }) => {
               onChange={handleBundleChange}
               placeholder="Enter Bundle Value"
             />
-            {totalPcs !== null && (
-              <div className="flex justify-center my-2">
-                <p className="text-lg font-medium text-green-500">
-                  Total Pieces: {totalPcs}
-                </p>
-              </div>
-            )}
           </div>
+
+          <div className="flex items-center justify-center my-8" >
+              <div className="flex flex-col gap-4 p-5 bg-gray-100 w-fit">
+                <div className="flex justify-between gap-5">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Total Inner Pcs
+                  </label>
+                  <span>{totalInnerPcs}</span>
+                </div>
+                <div className="flex justify-between gap-5">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Total Outer Pcs
+                  </label>
+                  <span>{totalOuterPcs}</span>
+                </div>
+                <div className="flex justify-between gap-5">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Total Pcs per Bundle
+                  </label>
+                  <span>{totalInnerPcsPerBundle}</span>
+                </div>
+                <div className="flex justify-between gap-5">
+                  <label className="block font-bold text-gray-700 text-md">
+                    Total Pcs
+                  </label>
+                  <span className='font-bold text-md'>{totalProducts}</span>
+                </div>
+              </div>
+            </div>
           
 
           <div className="flex justify-center px-20 mt-5">

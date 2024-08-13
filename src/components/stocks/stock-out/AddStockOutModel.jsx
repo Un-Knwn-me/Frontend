@@ -521,6 +521,31 @@ const AddStockOutModel = ({ show, onClose }) => {
               </div>
             </div>
 
+            <div className="flex flex-col gap-2 mt-3">
+              <label className="font-semibold" htmlFor="shortDescription">
+                Short Description:
+              </label>
+              <textarea
+                id="shortDescription"
+                value={productInfo?.Product.short_description || ''}
+                className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                rows="1"
+                disabled
+              />
+            </div>
+
+            <div className="flex flex-col gap-2 mt-3">
+              <label className="font-semibold" htmlFor="fullDescription">
+                Full Description:
+              </label>
+              <textarea
+                id="fullDescription"
+                value={productInfo?.Product.full_description || ''}
+                className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                rows="2"
+                disabled
+              />
+            </div>
 
             <div className="flex items-center gap-2 mt-10">
                 <h3 className="text-lg font-medium">ORDER INFO:</h3>

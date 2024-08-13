@@ -286,8 +286,6 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
         setShortDescription("");
         setFullDescription("");
         setSelectedProduct(null);
-        setStockOutPoNo(response.data.purchase_order_number);
-        setStockOutOrder(response.data)
         handleStockOutModelShow();
         // onClose();
       } else {
@@ -323,7 +321,7 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
           <div className="flex justify-center">
             <h2 className="text-xl font-bold">Create Without Purchase Order</h2>
             <button
-              className="absolute right-5 cursor-pointer"
+              className="absolute cursor-pointer right-5"
               onClick={onClose}
             >
               <img src={closeIcon} alt="Close" />
@@ -331,7 +329,7 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
           </div>
           <hr className="my-2" />
           <div className="px-20">
-            <div className="mt-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 gap-4 mt-10 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
               <div className="flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="styleNo">
                   Purchase Order No:
@@ -340,12 +338,12 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                   type="text"
                   id="purchaseOrderNo"
                   value={"Without purchase order"}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
               </div>
 
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="buyer">
                   Buyer Name:
                 </label>
@@ -354,11 +352,11 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                   id="buyer"
                   value={buyer}
                   onChange={handleBuyerChange}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Buyer Name"
                 />
                 {buyerDropdown && buyer && (
-                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                  <ul className="absolute left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg top-full">
                     {buyerSuggestions.length > 0 ? (
                       buyerSuggestions.map((suggestion) => (
                         <li
@@ -371,7 +369,7 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                       ))
                     ) : (
                       <li
-                        className="px-4 py-2 cursor-pointer text-sm text-blue-600 hover:bg-gray-200"
+                        className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
                         onClick={handleAddNewBuyer}
                       >
                         Add New Buyer: "{buyer}"
@@ -389,7 +387,7 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                   type="text"
                   id="location"
                   value={buyerLocation}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
               </div>
@@ -403,12 +401,12 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                   id="deliveryDate"
                   value={deliveryDate.split("T")[0]}
                   onChange={handleDeliveryDateChange}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter delivery date"
                 />
               </div>
 
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="styleNo">
                   Style No:
                 </label>
@@ -417,11 +415,11 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                   id="styleNo"
                   value={styleNumber}
                   onChange={handleStyleChange}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Style No"
                 />
                 {styleDropdown && styleNumber && (
-                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                  <ul className="absolute left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg top-full">
                     {styleSuggestions.length > 0 ? (
                       styleSuggestions.map((suggestion) => (
                         <li
@@ -434,7 +432,7 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                       ))
                     ) : (
                       <li
-                        className="px-4 py-2 cursor-pointer text-sm text-blue-600 hover:bg-gray-200"
+                        className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
                         onClick={handleAddNewStyleNo}
                       >
                         Add New Style: "{styleNumber}"
@@ -444,7 +442,7 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                 )}
               </div>
 
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="referenceNo">
                   Reference No:
                 </label>
@@ -452,12 +450,12 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                   type="text"
                   id="referenceNo"
                   value={ReferenceNo}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
               </div>
 
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="brand">
                   Brand Name:
                 </label>
@@ -465,12 +463,12 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                   type="text"
                   id="brand"
                   value={brand}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
               </div>
 
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="fabric">
                   Fabric:
                 </label>
@@ -478,12 +476,12 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                   type="text"
                   id="fabric"
                   value={fabric}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
               </div>
 
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="fabricFinish">
                   Fabric Finish:
                 </label>
@@ -491,12 +489,12 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                   type="text"
                   id="fabricFinish"
                   value={fabricFinish}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
               </div>
 
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="gsm">
                   GSM:
                 </label>
@@ -504,12 +502,12 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                   type="number"
                   id="gsm"
                   value={gsm}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
               </div>
 
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="knitType">
                   Knit Type:
                 </label>
@@ -517,12 +515,12 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                   type="text"
                   id="knitType"
                   value={knitType}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
               </div>
 
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="category">
                   Category:
                 </label>
@@ -530,12 +528,12 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                   type="text"
                   id="category"
                   value={category}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
               </div>
 
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="color">
                   Color:
                 </label>
@@ -543,12 +541,12 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                   type="text"
                   id="color"
                   value={colors}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
               </div>
 
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="size">
                   Size:
                 </label>
@@ -556,12 +554,12 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                   type="text"
                   id="size"
                   value={sizes}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
               </div>
 
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="decoration">
                   Decorations:
                 </label>
@@ -569,12 +567,12 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                   type="text"
                   id="decoration"
                   value={decoration}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
               </div>
 
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="print">
                   Print or Embed:
                 </label>
@@ -582,12 +580,12 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                   type="text"
                   id="print"
                   value={printOrEmb}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
               </div>
 
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="stitch">
                   Stitch Details:
                 </label>
@@ -595,12 +593,12 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                   type="text"
                   id="stitch"
                   value={stitch}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
               </div>
 
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="neck">
                   Neck:
                 </label>
@@ -608,12 +606,12 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                   type="text"
                   id="neck"
                   value={neck}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
               </div>
 
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="sleeve">
                   Sleeve:
                 </label>
@@ -621,12 +619,12 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                   type="text"
                   id="sleeve"
                   value={sleeve}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
               </div>
 
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="length">
                   Length:
                 </label>
@@ -634,12 +632,12 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                   type="text"
                   id="length"
                   value={length}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
               </div>
 
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="packing">
                   Packing Method:
                 </label>
@@ -647,12 +645,12 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                   type="text"
                   id="packing"
                   value={packingMethod}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
               </div>
 
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="product-type">
                   Product Type:
                 </label>
@@ -660,12 +658,12 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                   type="text"
                   id="product-type"
                   value={productType}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
               </div>
 
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="measurement-chart">
                   Measurement chart:
                 </label>
@@ -673,7 +671,7 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                   type="text"
                   id="measurement-chart"
                   value={measurementChart}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
               </div>
@@ -688,7 +686,7 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
               <textarea
                 id="shortDescription"
                 value={shortDescription}
-                className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                 rows="1"
                 disabled
               />
@@ -701,7 +699,7 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
               <textarea
                 id="fullDescription"
                 value={fullDescription}
-                className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                 rows="2"
                 disabled
               />
@@ -715,7 +713,7 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                 id="notes"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                 placeholder="Enter additional notes"
                 rows="3"
               />
@@ -751,9 +749,9 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
               <div className="flex items-center gap-2 mb-4">
                 <h3 className="text-lg font-medium">Order Info:</h3>
               </div>
-              <div className="flex gap-4 border border-gray-400 px-5 justify-between">
+              <div className="flex justify-between gap-4 px-5 border border-gray-400">
             <div className="p-4 rounded-lg">
-              <h4 className="text-sm font-medium mb-4">Quantity per size:</h4>
+              <h4 className="mb-4 text-sm font-medium">Quantity per size:</h4>
               <div className="flex flex-col gap-4">
               {sizes.map((size, index) => (
             <div key={index} className="flex items-center gap-4 mb-2">
@@ -763,7 +761,7 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                 value={innerPcs[size] || ''}
                 onChange={(e) => handleInnerPcsChange(size, e.target.value)}
                 placeholder="Inner Pcs"
-                className="border border-gray-300 rounded-md px-2 py-1 w-24"
+                className="w-24 px-2 py-1 border border-gray-300 rounded-md"
                 disabled={assortmentType === "solid"}
               />
               <input
@@ -771,45 +769,45 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                 value={outerPcs[size] || ''}
                 onChange={(e) => handleOuterPcsChange(size, e.target.value)}
                 placeholder="Outer Pcs"
-                className="border border-gray-300 rounded-md px-2 py-1 w-24"
+                className="w-24 px-2 py-1 border border-gray-300 rounded-md"
               />
             </div>
           ))}
               </div>
             </div>
 
-            <div className="px-20 content-center">
+            <div className="content-center px-20">
           <label className="font-semibold">Number of Bundles: </label>
           <input
             type="number"
             value={bundles}
             onChange={(e) => setBundles(Number(e.target.value))}
             placeholder="Bundles"
-            className="border border-gray-300 rounded-md px-2 py-1 w-24"
+            className="w-24 px-2 py-1 border border-gray-300 rounded-md"
           />
         </div>
 
-        <div className="p-4 bg-gray-100 flex items-center justify-center mt-8 mb-8">
+        <div className="flex items-center justify-center p-4 mt-8 mb-8 bg-gray-100">
               <div className="flex flex-col gap-4">
-                <div className="flex gap-5 justify-between">
+                <div className="flex justify-between gap-5">
                   <label className="block text-sm font-medium text-gray-700">
                     Total Inner Pcs
                   </label>
                   <span>{totalInnerPcs}</span>
                 </div>
-                <div className="flex gap-5 justify-between">
+                <div className="flex justify-between gap-5">
                   <label className="block text-sm font-medium text-gray-700">
                     Total Outer Pcs
                   </label>
                   <span>{totalOuterPcs}</span>
                 </div>
-                <div className="flex gap-5 justify-between">
+                <div className="flex justify-between gap-5">
                   <label className="block text-sm font-medium text-gray-700">
                     Total Pcs per Bundle
                   </label>
                   <span>{totalInnerPcsPerBundle}</span>
                 </div>
-                <div className="flex gap-5 justify-between">
+                <div className="flex justify-between gap-5">
                   <label className="block text-sm font-medium text-gray-700">
                     Total Pcs
                   </label>
@@ -824,14 +822,13 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
           <div className="flex justify-center px-20 mt-5">
             <button
               onClick={handleSubmit}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+              className="px-4 py-2 font-semibold text-white bg-blue-500 rounded hover:bg-blue-600"
             >
               CREATE WITHOUT PURCHASE ORDER
             </button>
           </div>
         </div>
       </div>
-      <AddStockOutModel show={showStockOut} onClose={handleStockOutModelClose} stockOutPoNo={stockOutPoNo} stockOutOrder={stockOutOrder}/>
     </div>
   );
 };
