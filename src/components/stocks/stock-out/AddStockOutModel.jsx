@@ -90,7 +90,7 @@ const AddStockOutModel = ({ show, onClose }) => {
     setOrderDropdown(false);
     setOrderSuggestions([]);
     setOrderDropdown(false);
-    console.log('orderSelect: ', e.purchase_by_size);
+    console.log('orderSelect: ', e);
     const totalOrderInnerPcs = calculateTotalInnerPcs(e.purchase_by_size);
     setOrderInnerTotals(totalOrderInnerPcs);
     const totalOrderOuterPcs = calculateTotalOuterPcs(e.purchase_by_size);
@@ -134,8 +134,8 @@ const AddStockOutModel = ({ show, onClose }) => {
       const stockData = {
       stock_id: productInfo.id,
       stockOut_by_size: orderInfo.purchase_by_size,
-      stockOut_bundle: totalPcs,
-      total_stockOut_pcs: orderInfo.req_purchase_qty,
+      stockOut_bundle: stockOutBundle,
+      total_stockOut_pcs: totalPcs,
       product_style_number: productInfo.product_style_number,
       product_id: productInfo.Product.id,
       purchase_order_number: orderInfo.purchase_order_number,
@@ -280,7 +280,7 @@ const AddStockOutModel = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="reference"
-                  value={productInfo?.Product.Reference.reference_no || ""}
+                  value={productInfo?.Product?.Reference?.reference_no || ""}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -293,7 +293,7 @@ const AddStockOutModel = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="Category"
-                  value={productInfo?.Product.Category.categoryName || ""}
+                  value={productInfo?.Product?.Category.categoryName || ""}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -306,7 +306,7 @@ const AddStockOutModel = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="productType"
-                  value={productInfo?.Product.ProductType.product || ''}
+                  value={productInfo?.Product?.ProductType.product || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -319,7 +319,7 @@ const AddStockOutModel = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="brand"
-                  value={productInfo?.Product.Brand.brandName || ''}
+                  value={productInfo?.Product?.Brand.brandName || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -332,7 +332,7 @@ const AddStockOutModel = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="color"
-                  value={productInfo?.Product.Color.colorName || ''}
+                  value={productInfo?.Product?.Color.colorName || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -345,7 +345,7 @@ const AddStockOutModel = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="decoration"
-                  value={productInfo?.Product.Decoration.decorationName || ''}
+                  value={productInfo?.Product?.Decoration.decorationName || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -358,7 +358,7 @@ const AddStockOutModel = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="fabric"
-                  value={productInfo?.Product.Fabric.fabricName || ''}
+                  value={productInfo?.Product?.Fabric.fabricName || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -371,7 +371,7 @@ const AddStockOutModel = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="fabric fabric"
-                  value={productInfo?.Product.FabricFinish.fabricFinishName || ''}
+                  value={productInfo?.Product?.FabricFinish.fabricFinishName || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -384,7 +384,7 @@ const AddStockOutModel = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="gsm"
-                  value={productInfo?.Product.Gsm.gsmValue || ''}
+                  value={productInfo?.Product?.Gsm.gsmValue || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -397,7 +397,7 @@ const AddStockOutModel = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="knitType"
-                  value={productInfo?.Product.KnitType.knitType || ''}
+                  value={productInfo?.Product?.KnitType.knitType || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -410,7 +410,7 @@ const AddStockOutModel = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="length"
-                  value={productInfo?.Product.Length.lengthType || ''}
+                  value={productInfo?.Product?.Length.lengthType || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -423,7 +423,7 @@ const AddStockOutModel = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="neck"
-                  value={productInfo?.Product.Neck.neckType || ''}
+                  value={productInfo?.Product?.Neck.neckType || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -436,7 +436,7 @@ const AddStockOutModel = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="packingMethod"
-                  value={productInfo?.Product.PackingMethod.packingType || ''}
+                  value={productInfo?.Product?.PackingMethod.packingType || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -449,7 +449,7 @@ const AddStockOutModel = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="print"
-                  value={productInfo?.Product.PrintEmbName.printType || ''}
+                  value={productInfo?.Product?.PrintEmbName.printType || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -462,7 +462,7 @@ const AddStockOutModel = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="size"
-                  value={productInfo?.Product.Size.sizes || ''}
+                  value={productInfo?.Product?.Size.sizes || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -475,7 +475,7 @@ const AddStockOutModel = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="sleeve"
-                  value={productInfo?.Product.Sleeve.sleeveName || ''}
+                  value={productInfo?.Product?.Sleeve.sleeveName || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -488,7 +488,7 @@ const AddStockOutModel = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="stitchDetails"
-                  value={productInfo?.Product.StitchDetail.stictchDetail || ''}
+                  value={productInfo?.Product?.StitchDetail.stictchDetail || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -501,7 +501,7 @@ const AddStockOutModel = ({ show, onClose }) => {
                 <input
                   type="text"
                   id="measurementChart"
-                  value={productInfo?.Product.MeasurementChart.name || ''}
+                  value={productInfo?.Product?.MeasurementChart.name || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -527,7 +527,7 @@ const AddStockOutModel = ({ show, onClose }) => {
               </label>
               <textarea
                 id="shortDescription"
-                value={productInfo?.Product.short_description || ''}
+                value={productInfo?.Product?.short_description || ''}
                 className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                 rows="1"
                 disabled
@@ -540,7 +540,7 @@ const AddStockOutModel = ({ show, onClose }) => {
               </label>
               <textarea
                 id="fullDescription"
-                value={productInfo?.Product.full_description || ''}
+                value={productInfo?.Product?.full_description || ''}
                 className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                 rows="2"
                 disabled
@@ -604,6 +604,19 @@ const AddStockOutModel = ({ show, onClose }) => {
                 />
               </div>
 
+            </div>
+
+            <div className="flex flex-col gap-2 mt-3">
+              <label className="font-semibold" htmlFor="notes">
+                Notes:
+              </label>
+              <textarea
+                id="notes"
+                value={orderInfo?.notes || ''}
+                className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                rows="3"
+                disabled
+              />
             </div>
 
             <div className="grid grid-cols-1 gap-10 mt-10 md:grid-cols-2">

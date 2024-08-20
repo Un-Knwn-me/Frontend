@@ -72,6 +72,7 @@ const StockIn = ({ searchQuery }) => {
   };
 
   const handleEditClick = (id) => {
+    setEditIndex(id);
     setShowModal(true);
   };
 
@@ -317,8 +318,7 @@ const StockIn = ({ searchQuery }) => {
           </div>
         </div>
       </div>
-      <EditStockInModal showModal={showModal} close={handleCloseModal} />
-      {/* <SuccessAlert show={showModal} onClose={handleCloseModal} /> */}
+      <EditStockInModal showModal={showModal} close={handleCloseModal} editIndex={editIndex} stockInData={currentData.find((item) => item.id === editIndex)} />
       <AddStockModal show={showAddModal} onClose={handleAddModalClose} getAllStocks={getAllStocks} />
     </>
   );

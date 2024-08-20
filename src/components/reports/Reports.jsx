@@ -325,7 +325,7 @@ const Reports = () => {
                         {startIndex + categoryIndex + 1}
                       </td>
                       <td className="px-2 py-3 text-center text-black whitespace-nowrap text-md w-28">
-                        {selectedPreset === 'Category wise' ? category.categoryName : selectedPreset === 'Style wise' ? category.style_no : selectedPreset === 'Print wise' ? category.printType : selectedPreset === 'Brand wise' ? category.brandName : selectedPreset === 'Size wise' ? category.sizes : product.productName}
+                        {selectedPreset === 'Category wise' ? category.categoryName : selectedPreset === 'Style wise' ? category.style_no : selectedPreset === 'Print wise' ? category.printType : selectedPreset === 'Brand wise' ? category.brandName : selectedPreset === 'Size wise' ? category.sizes : selectedPreset === 'Overall Stocks' ? category.stockType : product.productName}
                       </td>
                       <td className="w-20 px-2 py-3 text-center text-black whitespace-nowrap text-md">
                         <button 
