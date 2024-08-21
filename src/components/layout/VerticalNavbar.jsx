@@ -53,8 +53,8 @@ function VerticalNavbar({ isOpen, toggleSideNav }) {
       highlightedIcon: <FaClipboardList className="h-6 w-6 text-[#EEBBC3]"/>,
       submenu: true,
       submenuItems: [
-        { title: "With Po", path: "/main/withpo" },
-        { title: "Without Po", path: "/main/withoutpo" },
+        { title: "Create PO", path: "/main/withpo" },
+        { title: "Without PO List", path: "/main/withoutpo" },
       ],
       routes: ["withpo", "withoutpo"]
     },

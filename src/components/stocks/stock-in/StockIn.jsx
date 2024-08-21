@@ -143,7 +143,7 @@ const StockIn = ({ searchQuery }) => {
             }
           }}
           isAddButton={true}
-          addButtonText="Add Product"
+          addButtonText="Add Stock"
           onAddButtonClick={() => setShowAddModal(true)}
         />
         <div className="p-4 mx-auto mt-5 bg-white ">

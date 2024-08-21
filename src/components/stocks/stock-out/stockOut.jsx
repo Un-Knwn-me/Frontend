@@ -128,39 +128,39 @@ const StockOut = () => {
           addButtonText="Add Stock Out"
           onAddButtonClick={() => setShowAddModal(true)}
         />
-        <div className=" mx-auto p-4 bg-white mt-5">
+        <div className="p-4 mx-auto mt-5 bg-white ">
           <div className="min-h-[60vh] max-h-[60vh] overflow-y-auto">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50 w-full">
+              <thead className="w-full bg-gray-50">
                 <tr>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-12">
+                  <th className="w-12 px-2 py-3 font-bold text-center text-black uppercase text-md">
                     SL No
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-32">
+                  <th className="w-32 px-2 py-3 font-bold text-center text-black uppercase text-md">
                     Date
                   </th>
-                  <th className="px-6 py-3 text-center text-md font-bold text-black uppercase w-28">
+                  <th className="px-6 py-3 font-bold text-center text-black uppercase text-md w-28">
                     Purchase Order
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-36">
+                  <th className="px-2 py-3 font-bold text-center text-black uppercase text-md w-36">
                     Buyer
                   </th>
-                  <th className="px-6 py-3 text-center text-md font-bold text-black uppercase w-14">
+                  <th className="px-6 py-3 font-bold text-center text-black uppercase text-md w-14">
                     Style NO
                   </th>
-                  <th className="px-6 py-3 text-center text-md font-bold text-black uppercase w-14">
+                  <th className="px-6 py-3 font-bold text-center text-black uppercase text-md w-14">
                     Ref No
                   </th>
-                  <th className="px-6 py-3 text-center text-md font-bold text-black uppercase w-14">
+                  <th className="px-6 py-3 font-bold text-center text-black uppercase text-md w-14">
                     Stock Out Bundle
                   </th>
-                  <th className="px-6 py-3 text-center text-md font-bold text-black uppercase w-14">
+                  <th className="px-6 py-3 font-bold text-center text-black uppercase text-md w-14">
                     Total Stock Out Pcs
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-12">
+                  <th className="w-12 px-2 py-3 font-bold text-center text-black uppercase text-md">
                     Action
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-8">
+                  <th className="w-8 px-2 py-3 font-bold text-center text-black uppercase text-md">
                     <input
                       type="checkbox"
                       className="form-checkbox"
@@ -174,9 +174,9 @@ const StockOut = () => {
                       checked={checkedIds.length === initialData.length}
                     />
                   </th>
-                  <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-12">
+                  <th className="w-12 px-2 py-3 font-bold text-center text-black uppercase text-md">
                     <button onClick={handleDelete} className="text-red-500">
-                      <img src={deleteIcon} alt="Delete" className="h-5 w-5" />
+                      <img src={deleteIcon} alt="Delete" className="w-5 h-5" />
                     </button>
                   </th>
                 </tr>
@@ -184,37 +184,37 @@ const StockOut = () => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {currentData.map((row, index) => (
                   <tr key={row.id} style={{ maxHeight: "50px" }}>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-12">
+                    <td className="w-12 px-2 py-3 text-center text-black whitespace-nowrap text-md">
                       {startIndex + index + 1}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-32">
+                    <td className="w-32 px-2 py-3 text-center text-black whitespace-nowrap text-md">
                       {" "}
                       {row.created_at}
                     </td>
-                    <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black w-28">
+                    <td className="px-6 py-3 text-center text-black whitespace-nowrap text-md w-28">
                       {row.PurchaseOrder.purchase_order_number}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-36">
+                    <td className="px-2 py-3 text-center text-black whitespace-nowrap text-md w-36">
                       {row.PurchaseOrder.Buyer.name},{" "}
                       {row.PurchaseOrder.Buyer.location}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-14">
+                    <td className="px-2 py-3 text-center text-black whitespace-nowrap text-md w-14">
                       {row.Stock.Product.style_no}
                     </td>
-                    <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black w-14">
+                    <td className="px-6 py-3 text-center text-black whitespace-nowrap text-md w-14">
                       {row.Stock.Product.Reference.reference_no}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-14">
+                    <td className="px-2 py-3 text-center text-black whitespace-nowrap text-md w-14">
                       {row.stockOut_bundle}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-14">
+                    <td className="px-2 py-3 text-center text-black whitespace-nowrap text-md w-14">
                       {row.total_stockOut_pcs}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-12">
+                    <td className="w-12 px-2 py-3 text-center text-black whitespace-nowrap text-md">
                       {editIndex === startIndex + index ? (
                         <button
                           onClick={handleSaveClick}
-                          className="bg-green-200 border border-green-500 px-2 py-1 rounded-lg flex"
+                          className="flex px-2 py-1 bg-green-200 border border-green-500 rounded-lg"
                         >
                           <img src={tickIcon} alt="" className="mt-1 mr-2" />
                           <span className="text-xs">Update</span>
@@ -222,13 +222,13 @@ const StockOut = () => {
                       ) : (
                         <button
                           onClick={() => handleEditClick(row.id)}
-                          className="text-blue-500 text-center"
+                          className="text-center text-blue-500"
                         >
-                          <img src={editIcon} alt="Edit" className="h-6 w-6" />
+                          <img src={editIcon} alt="Edit" className="w-6 h-6" />
                         </button>
                       )}
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap w-8 text-center">
+                    <td className="w-8 px-2 py-3 text-center whitespace-nowrap">
                       <input
                         type="checkbox"
                         className="form-checkbox"
@@ -236,12 +236,12 @@ const StockOut = () => {
                         onChange={() => handleCheckboxChange(row.id)}
                       />
                     </td>
-                    <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-12">
+                    <td className="w-12 px-2 py-3 text-center text-black whitespace-nowrap text-md">
                   <button
                     onClick={() => handleDelete(row.id)}
                     className="text-red-500"
                   >
-                    <img src={deleteIcon} alt="Delete" className="h-4 w-5" />
+                    <img src={deleteIcon} alt="Delete" className="w-5 h-4" />
                   </button>
                 </td>
                   </tr>
@@ -249,9 +249,9 @@ const StockOut = () => {
               </tbody>
             </table>
           </div>
-          <div className="flex justify-between items-center mt-4">
+          <div className="flex items-center justify-between mt-4">
             <div>
-              <span className="text-md text-black">
+              <span className="text-black text-md">
                 {recordsPerPage} records per page
               </span>
             </div>
@@ -259,7 +259,7 @@ const StockOut = () => {
               <select
                 value={recordsPerPage}
                 onChange={handleRecordsPerPageChange}
-                className="border border-gray-300 rounded-md px-3 py-2"
+                className="px-3 py-2 border border-gray-300 rounded-md"
               >
                 <option value={5}>Records per page: 5</option>
                 <option value={10}>Records per page: 10</option>
@@ -267,16 +267,16 @@ const StockOut = () => {
               </select>
               <button
                 onClick={() => handlePageChange("prev")}
-                className="px-2 py-1 text-md rounded-md"
+                className="px-2 py-1 rounded-md text-md"
               >
                 <img src={leftArrowIcon} alt="Previous" />
               </button>
-              <span className="text-md text-black">
+              <span className="text-black text-md">
                 {currentPage}/{Math.ceil(filteredData.length / recordsPerPage)}
               </span>
               <button
                 onClick={() => handlePageChange("next")}
-                className="px-2 py-1 text-md rounded-md"
+                className="px-2 py-1 rounded-md text-md"
               >
                 <img src={rightArrowIcon} alt="Next" />
               </button>
@@ -287,7 +287,7 @@ const StockOut = () => {
       <EditStockOutModel
         show={showModal}
         onClose={handleCloseModal}
-        productId={selectedProductId}
+        stockOutId={selectedProductId}
       />
       {/* <AddStockOutModel show={showAddModal} onClose={handleAddModalClose} fetchStockOut={fetchStockOut}/> */}
       <StockSelectOptionModel show={showAddModal} onClose={handleAddModalClose} fetchStockOut={fetchStockOut}/>
