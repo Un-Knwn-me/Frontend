@@ -23,6 +23,7 @@ import noDataImage from "../../assets/no-data1.png";
 import Category from "./Category";
 import ProductTypes from "./ProductTypes";
 import Buyer from "./Buyer";
+import WareHouse from "./WareHouse";
 
 const ProductsTopLayer = ({
   showDropdown = true,
@@ -80,6 +81,12 @@ const ProductsTopLayer = ({
       component: ProductTypes,
     },
     { id: "pr19", value: "19", label: "Buyers", component: Buyer },
+    {
+      id: "pr20",
+      value: "20",
+      label: "Warehouse",
+      component: WareHouse,
+    }
   ];
 
   const handlePresetChange = (event) => {
@@ -111,7 +118,7 @@ const ProductsTopLayer = ({
               alt="No Data"
               className="flex flex-grow object-cover max-w-[600px]"
             />
-            <span className="mt-4 text-black font-bold text-2xl">
+            <span className="mt-4 text-2xl font-bold text-black">
               Select product category to show data
             </span>
           </div>
@@ -159,11 +166,11 @@ const ProductsTopLayer = ({
           <div className="relative mr-4">
             <span className="text-xs font-medium">Select Product Category</span>
             <div
-              className="flex items-center cursor-pointer bg-gray-200 px-4 py-2 rounded-lg relative min-w-48"
+              className="relative flex items-center px-4 py-2 bg-gray-200 rounded-lg cursor-pointer min-w-48"
               onClick={toggleDropdown}
             >
               <span
-                className="hover:underline flex items-center"
+                className="flex items-center hover:underline"
                 title="Nav Link 2"
               >
                 {getCategoryText()}
@@ -171,18 +178,18 @@ const ProductsTopLayer = ({
               <img
                 src={dropdownIcon}
                 alt="Dropdown Icon"
-                className="ml-2 w-4 h-4 absolute right-2"
+                className="absolute w-4 h-4 ml-2 right-2"
               />
             </div>
             {isDropdownOpen && (
               <ul className="list-none absolute bg-white shadow-lg rounded-md mt-2 p-2 z-10 max-h-[75vh] overflow-y-auto">
                 {presets.map((preset) => (
                   <li className="p-2 whitespace-nowrap" key={preset.id}>
-                    <label className="flex items-center justify-between space-x-2 w-full">
+                    <label className="flex items-center justify-between w-full space-x-2">
                       <span>{preset.label}</span>
                       <input
                         type="radio"
-                        className="rb hidden"
+                        className="hidden rb"
                         id={preset.id}
                         name="preset"
                         value={preset.value}
@@ -198,12 +205,12 @@ const ProductsTopLayer = ({
           </div>
         )}
         {showSearch && (
-          <div className="flex-grow mx-4 flex justify-center items-center">
+          <div className="flex items-center justify-center flex-grow mx-4">
             <div className="relative">
               <img
                 src={searchIcon}
                 alt="Search Icon"
-                className="absolute left-3 w-4 h-4 mt-3"
+                className="absolute w-4 h-4 mt-3 left-3"
               />
               <input
                 type="text"
@@ -218,7 +225,7 @@ const ProductsTopLayer = ({
         {showAddButton && (
           <div className="ml-4">
             <button
-              className="font-bold px-4 py-2 rounded-lg flex"
+              className="flex px-4 py-2 font-bold rounded-lg"
               onClick={openModal}
             >
               <img src={addIcon} alt="Add Icon" className="w-6 h-6 mr-2" />
@@ -227,7 +234,7 @@ const ProductsTopLayer = ({
           </div>
         )}
       </div>
-      <div className="mt-4 w-full">{renderSelectedComponent()}</div>
+      <div className="w-full mt-4">{renderSelectedComponent()}</div>
     </div>
   );
 };

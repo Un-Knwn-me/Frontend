@@ -244,7 +244,7 @@ const handleOuterPcsChange = (e, sizeName) => {
           </button>
         </div>
         <hr className="m-4" />
-        <div className="flex justify-between px-20 my-5 mt-6">
+        <div className="flex justify-between gap-4 px-20 my-5 mt-6">
           <div className="grid flex-col grid-cols-3 gap-2 2xl:grid-cols-5">
             <div className="flex flex-col">
               <div className="relative flex flex-col gap-2">

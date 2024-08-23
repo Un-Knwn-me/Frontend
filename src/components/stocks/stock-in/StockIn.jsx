@@ -165,7 +165,7 @@ const StockIn = ({ searchQuery }) => {
           onAddButtonClick={() => setShowAddModal(true)}
         />
         <div className="p-4 mx-auto mt-5 bg-white ">
-          <div className="min-h-[60vh] max-h-[60vh] overflow-y-auto">
+          <div className="min-h-[60vh]">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="w-full bg-gray-50">
                 <tr>
@@ -205,13 +205,13 @@ const StockIn = ({ searchQuery }) => {
                   <th className="w-16 px-2 py-3 font-bold text-center text-black uppercase text-md">
                     Age
                   </th>
-                  <th className="w-12 px-2 py-3 font-bold text-center text-black uppercase text-md">
+                  <th className="w-10 px-2 py-3 font-bold text-center text-black uppercase text-md">
                     QR code
                   </th>
-                  <th className="w-12 px-2 py-3 font-bold text-center text-black uppercase text-md">
+                  <th className="w-10 px-2 py-3 font-bold text-center text-black uppercase text-md">
                     Action
                   </th>
-                  <th className="w-10 px-2 py-3 font-bold text-center text-black uppercase text-md">
+                  <th className="w-8 px-2 py-3 font-bold text-center text-black uppercase text-md">
                     <input
                       type="checkbox"
                       className="form-checkbox"
@@ -275,10 +275,10 @@ const StockIn = ({ searchQuery }) => {
                     <td className="w-16 px-2 py-3 text-center text-black whitespace-nowrap text-md">
                       {row.days_since_created}
                     </td> 
-                    <td className="w-12 px-2 py-3 text-center text-black whitespace-nowrap text-md">
+                    <td className="w-10 px-2 py-3 text-center text-black whitespace-nowrap text-md">
                       <RiQrScan2Line className="w-6 h-6 text-center cursor-pointer" onClick={() => handleQrClick(row.id)}/>
                     </td>   
-                    <td className="w-12 px-2 py-3 text-center text-black whitespace-nowrap text-md">
+                    <td className="w-10 px-2 py-3 text-center text-black whitespace-nowrap text-md">
                       <button
                         onClick={() => handleEditClick(row.id)}
                         className="text-center text-blue-500"
@@ -286,7 +286,7 @@ const StockIn = ({ searchQuery }) => {
                         <img src={editIcon} alt="Edit" className="w-6 h-6" />
                       </button>
                     </td>
-                    <td className="w-10 px-2 py-3 text-center whitespace-nowrap">
+                    <td className="w-8 px-2 py-3 text-center whitespace-nowrap">
                       <input
                         type="checkbox"
                         className="form-checkbox"

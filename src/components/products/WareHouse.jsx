@@ -10,87 +10,87 @@ import closeIcon from "../../assets/close-modal-icon.svg";
 import excelIcon from "../../assets/excel-icon.svg";
 import apiService from "../../apiService";
 
-const FabricFinish = ({ searchQuery, isModalOpen, onClose }) => {
+const WareHouse = ({ searchQuery, isModalOpen, onClose }) => {
   const [data, setData] = useState([]);
-  const [editedfabricFinishName, setEditedFabricFinishName] = useState("");
+  const [editedWareHouseName, setEditedWareHouseName] = useState("");
   const [editIndex, setEditIndex] = useState(null);
   const [checkedIds, setCheckedIds] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(5);
   const [inputValue, setInputValue] = useState("");
-  const [addedFabricFinishes, setAddedFabricFinishes] = useState([]);
-  const [singleFabricFinishes, setSingleFabricFinishes] = useState("");
+  const [addedWareHouses, setAddedWareHouses] = useState([]);
+  const [singleWareHouses, setSingleWareHouses] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    fetchAllfabricFinishes();
+    fetchAllWareHouses();
   }, []);
 
-  const fetchAllfabricFinishes = async () => {
+  const fetchAllWareHouses = async () => {
     try {
-      const response = await apiService.get("/fabricFinishes/getall", {
-        headers:{
+      const response = await apiService.get("/warehouses/getall", {
+        headers: {
           'Content-Type': 'application/json',
-        }
+        },
       });
-      setData(response.data); // Assuming response.data contains an array of brands
+      console.log(response.data);
+      setData(response.data); 
     } catch (error) {
-      console.error("Error fetching fabricFinishes:", error);
-
+      console.error("Error fetching warehouse:", error);
     }
   };
 
-    // handle toggle button click
+  // handle toggle button click
   const handleStatusToggle = async ({ id, isActive }) => {
     try {
-      const response = await apiService.put(`/fabricFinishes/${id}`, {
+      const response = await apiService.put(`/warehouses/${id}`, {
         isActive: !isActive,
       }, {
-        headers:{
+        headers: {
           'Content-Type': 'application/json',
-        }
+        },
       });
       if (response.status === 200) {
-        fetchAllfabricFinishes();
+        fetchAllWareHouses();
       }
     } catch (error) {
-      console.error(`Error toggling status for fabric Finishes with ID ${id}:`, error);
+      console.error(`Error toggling status for warehouse with ID ${id}:`, error);
       // Handle error as needed
     }
   };
   
+
   // handle edit button click
-  const handleEditClick = ({ id, fabricFinishName }) => {
+  const handleEditClick = ({ id, warehouse}) => {
     setEditIndex(id);
-    setEditedFabricFinishName(fabricFinishName);
+    setEditedWareHouseName(warehouse);
   };
 
-    // handle input change
-    const handleInputChange = (e) => {
-      setEditedFabricFinishName(e.target.value);
-    };
+  // handle input change
+  const handleInputChange = (e) => {
+    setEditedWareHouseName(e.target.value);
+  };
 
   // handle save button click
   const handleSaveClick = async (index, id) => {
     try {
-      const response = await apiService.put(`/fabricFinishes/${id}`, {
-        fabricFinishName: editedfabricFinishName,
+      const response = await apiService.put(`/warehouses/${id}`, {
+        warehouse: editedWareHouseName,
       }, {
-        headers:{
+        headers: {
           'Content-Type': 'application/json',
-        }
+        },
       });
       if (response.status === 200) {
-        fetchAllfabricFinishes();
+        fetchAllWareHouses();
         setEditIndex(null);
       }
     } catch (error) {
-      console.error(`Error saving fabric FinishName with ID ${id}:`, error);
+      console.error(`Error saving warehouse with ID ${id}:`, error);
       // Handle error as needed
     }
   };
-
 
   const handleCheckboxChange = (id) => {
     setCheckedIds((prev) =>
@@ -98,19 +98,20 @@ const FabricFinish = ({ searchQuery, isModalOpen, onClose }) => {
     );
   };
 
+  // handle delete button click
   const handleDelete = async (id) => {
     try {
-      const response = await apiService.delete(`/fabricFinishes/${id}`, {
-        headers:{
+      const response = await apiService.delete(`/warehouses/${id}`, {
+        headers: {
           'Content-Type': 'application/json',
-        }
+        },
       });
       console.log(response);
       if (response.status === 202) {
-        fetchAllfabricFinishes();
+        fetchAllWareHouses();
       }
     } catch (error) {
-      console.error("Error deleting fabric Finishes:", error);
+      console.error("Error deleting warehouse:", error);
       // Handle error as needed
     }
   };
@@ -131,31 +132,31 @@ const FabricFinish = ({ searchQuery, isModalOpen, onClose }) => {
     setCurrentPage(1);
   };
 
-
-  const handleSingleFabricFinish = async () => {
+  const handleSingleWarehouse = async () => {
     try {
-      const response = await apiService.post("/fabricFinishes/create", {
-        fabricFinishName: singleFabricFinishes,
+      const response = await apiService.post("/warehouses/create", {
+        warehouse: singleWareHouses,
       }, {
-        headers:{
+        headers: {
           'Content-Type': 'application/json',
-        }
+        },
       });
-      if (response.status === 201) {
-        setSingleFabricFinishes("");
-        setSuccessMessage("Fabric Finish added successfully.");
-        setErrorMessage("");
-        fetchAllfabricFinishes();
 
-         // Clear messages after 5 seconds
-         setTimeout(() => {
+      if (response.status === 201) {
+        setSingleWareHouses("");
+        setSuccessMessage("warehouse added successfully.");
+        setErrorMessage("");
+        fetchAllWareHouses();
+
+        // Clear messages after 5 seconds
+        setTimeout(() => {
           setSuccessMessage("");
           setErrorMessage("");
         }, 5000);
       }
     } catch (error) {
       if (error.response && error.response.status === 409) {
-        setErrorMessage("Fabric finish already exists.");
+        setErrorMessage("warehouse already exists.");
 
         // Clear messages after 5 seconds
         setTimeout(() => {
@@ -163,7 +164,7 @@ const FabricFinish = ({ searchQuery, isModalOpen, onClose }) => {
           setErrorMessage("");
         }, 5000);
       } else {
-        setErrorMessage("Error adding Fabric finish.");
+        setErrorMessage("Error adding warehouse.");
 
         // Clear messages after 5 seconds
         setTimeout(() => {
@@ -175,61 +176,44 @@ const FabricFinish = ({ searchQuery, isModalOpen, onClose }) => {
     }
   };
 
-  const handleAddFabricFinish = async () => {
-    try {
-      if (inputValue.trim() !== "") {
-        await apiService.post("/fabricFinishes/create", {
-          FabricFinish: inputValue.trim(),
-        });
-        setAddedFabricFinishes([...addedFabricFinishes, inputValue.trim()]); // Assuming response returns the created brand object with a property like `brandName`
-        setInputValue("");
-      }
-    } catch (error) {
-      console.error("Error adding fabricFinish:", error);
-      // Handle error as needed
-    }
-  };
 
-  const handleRemoveFabricFinish = (index) => {
-    const newAddedFabricFinishes = [...addedFabricFinishes];
-    newAddedFabricFinishes.splice(index, 1);
-    setAddedFabricFinishes(newAddedFabricFinishes);
-  };
 
+  
   const handleClose = () => {
-    setSingleFabricFinishes("");
+    setSingleWareHouses("");
     onClose()
   }
 
   const filteredData = data.filter(
     (item) =>
-      item.fabricFinishName &&
-      item.fabricFinishName.toLowerCase().includes(searchQuery.toLowerCase())
+      item.warehouse &&
+      item.warehouse.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const startIndex = (currentPage - 1) * recordsPerPage;
   const endIndex = startIndex + recordsPerPage;
   const currentData = filteredData.slice(startIndex, endIndex);
 
+
   return (
-    <div className="p-4 mx-auto bg-white ">
+    <div className=" mx-auto p-4 bg-white">
       <div className="min-h-[60vh] max-h-[60vh] overflow-y-auto">
         <table className="min-w-full divide-y divide-gray-200">
-          <thead className="w-full bg-gray-50">
+          <thead className="bg-gray-50 w-full">
             <tr>
-              <th className="px-2 py-3 font-bold text-center text-black uppercase text-md w-28">
+              <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-28">
                 Si No
               </th>
-              <th className="w-40 px-2 py-3 font-bold text-center text-black uppercase text-md">
-                Fabric
+              <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-40">
+              Warehouse
               </th>
-              <th className="flex-grow px-6 py-3 font-bold text-center text-black uppercase text-md">
+              <th className="px-6 py-3 text-center text-md font-bold text-black uppercase flex-grow">
                 Status
               </th>
-              <th className="px-2 py-3 font-bold text-center text-black uppercase text-md w-28">
+              <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-28">
                 Action
               </th>
-              <th className="w-20 px-2 py-3 font-bold text-center text-black uppercase text-md">
+              <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-20">
                 <input
                   type="checkbox"
                   className="form-checkbox"
@@ -241,9 +225,9 @@ const FabricFinish = ({ searchQuery, isModalOpen, onClose }) => {
                   checked={checkedIds.length === data.length}
                 />
               </th>
-              <th className="w-8 px-2 py-3 font-bold text-center text-black uppercase text-md">
+              <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-8">
                 <button onClick={handleDelete} className="text-red-500">
-                  <img src={deleteIcon} alt="Delete" className="w-6 h-6" />
+                  <img src={deleteIcon} alt="Delete" className="h-6 w-6" />
                 </button>
               </th>
             </tr>
@@ -251,24 +235,24 @@ const FabricFinish = ({ searchQuery, isModalOpen, onClose }) => {
           <tbody className="bg-white divide-y divide-gray-200">
             {currentData?.map((row, index) => (
               <tr key={row.id} style={{ maxHeight: "50px" }}>
-                <td className="w-12 px-2 py-3 text-center text-black whitespace-nowrap text-md">
+                <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-12">
                   {startIndex + index + 1}
                 </td>
-                <td className="px-2 py-3 text-center text-black whitespace-nowrap text-md w-28">
+                <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">
                   {editIndex === row.id ? (
                     <input
                       type="text"
-                      value={editedfabricFinishName}
+                      value={editedWareHouseName}
                       onChange={handleInputChange}
-                      className="px-2 py-2 border border-gray-300 rounded-md w-28"
+                      className="border border-gray-300 rounded-md w-28 px-2 py-2"
                     />
                   ) : (
-                    row.fabricFinishName
+                    row.warehouse
                   )}
                 </td>
-                <td className="flex-grow px-6 py-3 text-center text-black whitespace-nowrap text-md">
+                <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black flex-grow">
                   <button
-                     onClick={() =>
+                    onClick={() =>
                       handleStatusToggle({ id: row.id, isActive: row.isActive })
                     }
                     className="px-2 py-1 rounded-full"
@@ -294,30 +278,30 @@ const FabricFinish = ({ searchQuery, isModalOpen, onClose }) => {
                     </div>
                   </button>
                 </td>
-                <td className="w-16 px-2 py-3 text-center text-black whitespace-nowrap text-md">
-                  {editIndex ===row.id ? (
+                <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-16">
+                  {editIndex === row.id ? (
                     <button
                       onClick={() => handleSaveClick(index, row.id)}
-                      className="flex px-2 py-1 bg-green-200 border border-green-500 rounded-lg"
+                      className="bg-green-200 border border-green-500 px-2 py-1 rounded-lg flex"
                     >
                       <img src={tickIcon} alt="" className="mt-1 mr-2" />
                       <span className="text-xs">Update</span>
                     </button>
                   ) : (
                     <button
-                    onClick={() =>
-                      handleEditClick({
-                        id: row.id,
-                        fabricFinishName: row.fabricFinishName,
-                      })
-                    }
-                      className="text-center text-blue-500"
+                      onClick={() =>
+                        handleEditClick({
+                          id: row.id,
+                          warehouse: row.warehouse,
+                        })
+                      }
+                      className="text-blue-500 text-center"
                     >
-                      <img src={editIcon} alt="Edit" className="w-6 h-6" />
+                      <img src={editIcon} alt="Edit" className="h-6 w-6" />
                     </button>
                   )}
                 </td>
-                <td className="w-12 px-2 py-3 text-center whitespace-nowrap">
+                <td className="px-2 py-3 whitespace-nowrap w-12 text-center">
                   <input
                     type="checkbox"
                     className="form-checkbox"
@@ -325,12 +309,12 @@ const FabricFinish = ({ searchQuery, isModalOpen, onClose }) => {
                     onChange={() => handleCheckboxChange(row.id)}
                   />
                 </td>
-                <td className="w-8 px-2 py-3 text-center text-black whitespace-nowrap text-md">
+                <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-8">
                   <button
                     onClick={() => handleDelete(row.id)}
                     className="text-red-500"
                   >
-                    <img src={deleteIcon} alt="Delete" className="w-6 h-6" />
+                    <img src={deleteIcon} alt="Delete" className="h-6 w-6" />
                   </button>
                 </td>
               </tr>
@@ -338,9 +322,9 @@ const FabricFinish = ({ searchQuery, isModalOpen, onClose }) => {
           </tbody>
         </table>
       </div>
-      <div className="flex items-center justify-between mt-4">
+      <div className="flex justify-between items-center mt-4">
         <div>
-          <span className="text-black text-md">
+          <span className="text-md text-black">
             {recordsPerPage} records per page
           </span>
         </div>
@@ -348,7 +332,7 @@ const FabricFinish = ({ searchQuery, isModalOpen, onClose }) => {
           <select
             value={recordsPerPage}
             onChange={handleRecordsPerPageChange}
-            className="px-3 py-2 border border-gray-300 rounded-md"
+            className="border border-gray-300 rounded-md px-3 py-2"
           >
             <option value={5}>Records per page: 5</option>
             <option value={10}>Records per page: 10</option>
@@ -356,16 +340,16 @@ const FabricFinish = ({ searchQuery, isModalOpen, onClose }) => {
           </select>
           <button
             onClick={() => handlePageChange("prev")}
-            className="px-2 py-1 rounded-md text-md"
+            className="px-2 py-1 text-md rounded-md"
           >
             <img src={leftArrowIcon} alt="Previous" />
           </button>
-          <span className="text-black text-md">
+          <span className="text-md text-black">
             {currentPage}/{Math.ceil(data.length / recordsPerPage)}
           </span>
           <button
             onClick={() => handlePageChange("next")}
-            className="px-2 py-1 rounded-md text-md"
+            className="px-2 py-1 text-md rounded-md"
           >
             <img src={rightArrowIcon} alt="Next" />
           </button>
@@ -377,13 +361,13 @@ const FabricFinish = ({ searchQuery, isModalOpen, onClose }) => {
             className="fixed inset-0 bg-black opacity-50"
             onClick={handleClose}
           ></div>
-          <div className="relative bg-white rounded-lg shadow-lg w-full max-w-[35vw] h-screen max-h-[50vh] overflow-y-auto lg:overflow-hidden">
-            <div className="flex flex-col py-2">
+          <div className="relative bg-white rounded-lg shadow-lg w-full max-w-[35vw] h-screen max-h-[40vh] overflow-y-auto lg:overflow-hidden">
+            <div className="p-5 flex flex-col">
               <div>
                 <div className="flex justify-center">
-                  <h2 className="text-2xl font-bold">Add Fabric finish</h2>
+                  <h2 className="text-2xl font-bold">Add Warehouse</h2>
                   <button
-                    className="absolute cursor-pointer right-5"
+                    className="absolute right-5 cursor-pointer"
                     onClick={handleClose}
                   >
                     <img src={closeIcon} alt="Close" className="mt-2" />
@@ -393,38 +377,39 @@ const FabricFinish = ({ searchQuery, isModalOpen, onClose }) => {
               </div>
               <div className="flex flex-col items-center">
                 <input
-                  className="px-4 py-3 mt-5 text-lg text-center text-gray-700 bg-gray-200 rounded w-80 focus:outline-none focus:shadow-outline"
+                  className="bg-gray-200 rounded w-80 py-3 px-4 text-gray-700 focus:outline-none focus:shadow-outline mt-5 text-lg text-center"
                   type="text"
-                  placeholder="Enter fabric finish"
-                  value={singleFabricFinishes}
-                  onChange={(e) => setSingleFabricFinishes(e.target.value)}
+                  placeholder="Enter Warehouse name"
+                  value={singleWareHouses}
+                  onChange={(e) => setSingleWareHouses(e.target.value)}
                 />
                 {successMessage && (
-              <div className="p-4 my-4 text-green-700 bg-green-100 border-l-4 border-green-500">
+              <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 my-4">
                 <p>{successMessage}</p>
               </div>
             )}
             {errorMessage && (
-              <div className="p-4 my-4 text-red-700 bg-red-100 border-l-4 border-red-500">
+              <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 my-4">
                 <p>{errorMessage}</p>
               </div>
             )}
                 <button
-                  className="py-3 mt-3 text-lg font-bold text-white rounded-lg bg-sky-600 w-80"
-                  onClick={handleSingleFabricFinish}
+                  className="bg-sky-600 w-80 py-3 text-white rounded-lg font-bold text-lg mt-3"
+                  onClick={() => handleSingleWarehouse()}
                 >
                   Update
                 </button>
-                <div className="mt-4 text-center">
+                <div className="text-center mt-4">
                   <p className="flex">
                     <span>
                       <img src={excelIcon} alt="" className="w-7" />
                     </span>
-                    <span className="text-lg font-bold text-sky-600">
+                    <span className="text-sky-600 font-bold text-lg">
                       Upload From excel {"("}Bulk upload{")"}
                     </span>
                   </p>
                 </div>
+ 
               </div>
             </div>
           </div>
@@ -434,4 +419,4 @@ const FabricFinish = ({ searchQuery, isModalOpen, onClose }) => {
   );
 };
 
-export default FabricFinish;
+export default WareHouse;

@@ -1349,7 +1349,7 @@ const EditProductModal = ({ show, onClose, productId }) => {
         }
       );
       
-      if(response.statusCode === 200){
+      if(response.status === 200){
         onClose();
         console.log(" updated successfully:", response.data);
       } else {

@@ -698,7 +698,7 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
                 </div>
                 <div className="flex justify-between gap-5">
                   <label className="block text-sm font-medium text-gray-700">
-                    Total Outer Pcs
+                    Total Inner Boxes
                   </label>
                   <span>{totalOuterPcs}</span>
                 </div>

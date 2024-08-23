@@ -630,7 +630,7 @@ const AddStockOutModel = ({ show, onClose }) => {
                         <tr>
                           <th className="px-4 py-2 border-b">Size</th>
                           <th className="px-4 py-2 border-b">Inner Pieces</th>
-                          <th className="px-4 py-2 border-b">Outer Pieces</th>
+                          <th className="px-4 py-2 border-b">Inner Boxes</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -656,7 +656,7 @@ const AddStockOutModel = ({ show, onClose }) => {
                   <p>{productInnerTotals}</p>
                 </div>
                 <div className="p-2 border rounded-lg">
-                  <h4 className="font-semibold">Total Outer:</h4>
+                  <h4 className="font-semibold">Total Inner Boxes:</h4>
                   <p>{productOuterTotals}</p>
                 </div>
                 <div className="p-2 border rounded-lg">
@@ -681,7 +681,7 @@ const AddStockOutModel = ({ show, onClose }) => {
                         <tr>
                           <th className="px-4 py-2 border-b">Size</th>
                           <th className="px-4 py-2 border-b">Inner Pieces</th>
-                          <th className="px-4 py-2 border-b">Outer Pieces</th>
+                          <th className="px-4 py-2 border-b">Inner Boxes</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -707,7 +707,7 @@ const AddStockOutModel = ({ show, onClose }) => {
                   <p>{orderInnerTotals}</p>
                 </div>
                 <div className="p-2 border rounded-lg">
-                  <h4 className="font-semibold">Total Outer Pcs:</h4>
+                  <h4 className="font-semibold">Total Inner Boxes:</h4>
                   <p>{orderOuterTotals}</p>
                 </div>
                 <div className="p-2 border rounded-lg">
