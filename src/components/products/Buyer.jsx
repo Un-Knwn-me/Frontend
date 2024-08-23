@@ -194,27 +194,27 @@ const Buyer = ({ searchQuery, isModalOpen, onClose }) => {
   };
 
   return (
-    <div  className="px-4 py-2 sm:px-6 lg:px-8">
+    <div  className="px-4 py-2">
       <div className="min-h-[60vh] max-h-[60vh] overflow-y-auto">
         <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50 w-full">
+          <thead className="w-full bg-gray-50">
             <tr>
-              <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-28">
+              <th className="px-2 py-3 font-bold text-center text-black uppercase text-md w-28">
                 Si No
               </th>
-              <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-80">
+              <th className="px-2 py-3 font-bold text-center text-black uppercase text-md w-80">
                 Buyer Name
               </th>
-              <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-40">
+              <th className="w-40 px-2 py-3 font-bold text-center text-black uppercase text-md">
                 Location
               </th>
-              <th className="px-6 py-3 text-center text-md font-bold text-black uppercase w-40">
+              <th className="w-40 px-6 py-3 font-bold text-center text-black uppercase text-md">
                 Status
               </th>
-              <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-40">
+              <th className="w-40 px-2 py-3 font-bold text-center text-black uppercase text-md">
                 Action
               </th>
-              <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-40">
+              <th className="w-40 px-2 py-3 font-bold text-center text-black uppercase text-md">
                 <input
                   type="checkbox"
                   className="form-checkbox"
@@ -226,9 +226,9 @@ const Buyer = ({ searchQuery, isModalOpen, onClose }) => {
                   checked={checkedIds.length === data.length}
                 />
               </th>
-              <th className="px-2 py-3 text-center text-md font-bold text-black uppercase w-8">
+              <th className="w-12 px-2 py-3 font-bold text-center text-black uppercase text-md">
                 <button onClick={handleDelete} className="text-red-500">
-                  <img src={deleteIcon} alt="Delete" className="h-5 w-5" />
+                  <img src={deleteIcon} alt="Delete" className="w-5 h-5" />
                 </button>
               </th>
             </tr>
@@ -236,34 +236,34 @@ const Buyer = ({ searchQuery, isModalOpen, onClose }) => {
           <tbody className="bg-white divide-y divide-gray-200">
             {currentData?.map((row, index) => (
               <tr key={row.id} style={{ maxHeight: "50px" }}>
-                <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-12">
+                <td className="w-12 px-2 py-3 text-center text-black whitespace-nowrap text-md">
                   {startIndex + index + 1}
                 </td>
-                <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">
+                <td className="px-2 py-3 text-center text-black whitespace-nowrap text-md w-28">
                   {editIndex === row.id ? (
                     <input
                       type="text"
                       value={editedBuyerName}
                       onChange={(e) => setEditedBuyerName(e.target.value)}
-                      className="border border-gray-300 rounded-md w-28 px-2 py-2"
+                      className="px-2 py-2 border border-gray-300 rounded-md w-28"
                     />
                   ) : (
                     row.name
                   )}
                 </td>
-                <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-28">
+                <td className="px-2 py-3 text-center text-black whitespace-nowrap text-md w-28">
                   {editIndex === row.id ? (
                     <input
                       type="text"
                       value={editedLocation}
                       onChange={(e) => setEditedLocation(e.target.value)}
-                      className="border border-gray-300 rounded-md w-28 px-2 py-2"
+                      className="px-2 py-2 border border-gray-300 rounded-md w-28"
                     />
                   ) : (
                     row.location
                   )}
                 </td>
-                <td className="px-6 py-3 whitespace-nowrap text-md text-center text-black flex-grow">
+                <td className="flex-grow px-6 py-3 text-center text-black whitespace-nowrap text-md">
                   <button
                     onClick={() =>
                       handleStatusToggle({ id: row.id, isActive: row.isActive })
@@ -291,11 +291,11 @@ const Buyer = ({ searchQuery, isModalOpen, onClose }) => {
                     </div>
                   </button>
                 </td>
-                <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-16">
+                <td className="w-16 px-2 py-3 text-center text-black whitespace-nowrap text-md">
                   {editIndex === row.id ? (
                     <button
                       onClick={() => handleSaveClick(index, row.id)}
-                      className="bg-green-200 border border-green-500 px-2 py-1 rounded-lg flex"
+                      className="flex px-2 py-1 bg-green-200 border border-green-500 rounded-lg"
                     >
                       <img src={tickIcon} alt="" className="mt-1 mr-2" />
                       <span className="text-xs">Update</span>
@@ -309,13 +309,13 @@ const Buyer = ({ searchQuery, isModalOpen, onClose }) => {
                           location: row.location
                         })
                       }
-                      className="text-blue-500 text-center"
+                      className="text-center text-blue-500"
                     >
-                      <img src={editIcon} alt="Edit" className="h-6 w-6" />
+                      <img src={editIcon} alt="Edit" className="w-6 h-6" />
                     </button>
                   )}
                 </td>
-                <td className="px-2 py-3 whitespace-nowrap w-12 text-center">
+                <td className="w-12 px-2 py-3 text-center whitespace-nowrap">
                   <input
                     type="checkbox"
                     className="form-checkbox"
@@ -323,12 +323,12 @@ const Buyer = ({ searchQuery, isModalOpen, onClose }) => {
                     onChange={() => handleCheckboxChange(row.id)}
                   />
                 </td>
-                <td className="px-2 py-3 whitespace-nowrap text-md text-center text-black w-8">
+                <td className="w-12 px-2 py-3 text-center text-black whitespace-nowrap text-md">
                   <button
                     onClick={() => handleDelete(row.id)}
                     className="text-red-500"
                   >
-                    <img src={deleteIcon} alt="Delete" className="h-5 w-5" />
+                    <img src={deleteIcon} alt="Delete" className="w-5 h-5" />
                   </button>
                 </td>
               </tr>
@@ -336,9 +336,9 @@ const Buyer = ({ searchQuery, isModalOpen, onClose }) => {
           </tbody>
         </table>
       </div>
-      <div className="flex justify-between items-center mt-4">
+      <div className="flex items-center justify-between mt-4">
         <div>
-          <span className="text-md text-black">
+          <span className="text-black text-md">
             {recordsPerPage} records per page
           </span>
         </div>
@@ -346,7 +346,7 @@ const Buyer = ({ searchQuery, isModalOpen, onClose }) => {
           <select
             value={recordsPerPage}
             onChange={handleRecordsPerPageChange}
-            className="border border-gray-300 rounded-md px-3 py-2"
+            className="px-3 py-2 border border-gray-300 rounded-md"
           >
             <option value={5}>Records per page: 5</option>
             <option value={10}>Records per page: 10</option>
@@ -354,16 +354,16 @@ const Buyer = ({ searchQuery, isModalOpen, onClose }) => {
           </select>
           <button
             onClick={() => handlePageChange("prev")}
-            className="px-2 py-1 text-md rounded-md"
+            className="px-2 py-1 rounded-md text-md"
           >
             <img src={leftArrowIcon} alt="Previous" />
           </button>
-          <span className="text-md text-black">
+          <span className="text-black text-md">
             {currentPage}/{Math.ceil(data.length / recordsPerPage)}
           </span>
           <button
             onClick={() => handlePageChange("next")}
-            className="px-2 py-1 text-md rounded-md"
+            className="px-2 py-1 rounded-md text-md"
           >
             <img src={rightArrowIcon} alt="Next" />
           </button>
@@ -376,12 +376,12 @@ const Buyer = ({ searchQuery, isModalOpen, onClose }) => {
             onClick={onClose}
           ></div>
           <div className="relative bg-white rounded-lg shadow-lg w-full max-w-[35vw] h-screen max-h-[50vh] overflow-y-auto lg:overflow-hidden">
-            <div className="p-5 flex flex-col">
+            <div className="flex flex-col p-5">
               <div>
                 <div className="flex justify-center">
                   <h2 className="text-2xl font-bold">Add Buyer</h2>
                   <button
-                    className="absolute right-5 cursor-pointer"
+                    className="absolute cursor-pointer right-5"
                     onClick={handleModalClose}
                   >
                     <img src={closeIcon} alt="Close" className="mt-2" />
@@ -391,41 +391,41 @@ const Buyer = ({ searchQuery, isModalOpen, onClose }) => {
               </div>
               <div className="flex flex-col items-center">
                 <input
-                  className="bg-gray-200 rounded w-80 py-3 px-4 text-gray-700 focus:outline-none focus:shadow-outline mt-5 text-lg text-center"
+                  className="px-4 py-3 mt-5 text-lg text-center text-gray-700 bg-gray-200 rounded w-80 focus:outline-none focus:shadow-outline"
                   type="text"
                   placeholder="Enter Buyer name"
                   value={singleBuyers}
                   onChange={(e) => setSingleBuyers(e.target.value)}
                 />
                   <input
-                  className="bg-gray-200 rounded w-80 py-3 px-4 text-gray-700 focus:outline-none focus:shadow-outline mt-5 text-lg text-center"
+                  className="px-4 py-3 mt-5 text-lg text-center text-gray-700 bg-gray-200 rounded w-80 focus:outline-none focus:shadow-outline"
                   type="text"
                   placeholder="Enter Location"
                   value={singleLocation}
                   onChange={(e) => setSingleLocation(e.target.value)}
                 />
                 {successMessage && (
-              <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 my-4">
+              <div className="p-4 my-4 text-green-700 bg-green-100 border-l-4 border-green-500">
                 <p>{successMessage}</p>
               </div>
             )}
             {errorMessage && (
-              <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 my-4">
+              <div className="p-4 my-4 text-red-700 bg-red-100 border-l-4 border-red-500">
                 <p>{errorMessage}</p>
               </div>
             )}
                 <button
-                  className="bg-sky-600 w-80 py-3 text-white rounded-lg font-bold text-lg mt-3"
+                  className="py-3 mt-3 text-lg font-bold text-white rounded-lg bg-sky-600 w-80"
                   onClick={() => handleSingleBrand()}
                 >
                   Update
                 </button>
-                <div className="text-center mt-4">
+                <div className="mt-4 text-center">
                   <p className="flex">
                     <span>
                       <img src={excelIcon} alt="" className="w-7" />
                     </span>
-                    <span className="text-sky-600 font-bold text-lg">
+                    <span className="text-lg font-bold text-sky-600">
                       Upload From excel {"("}Bulk upload{")"}
                     </span>
                   </p>

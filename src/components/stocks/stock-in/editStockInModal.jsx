@@ -243,9 +243,9 @@ const handleOuterPcsChange = (e, sizeName) => {
             <img src={closeIcon} alt="Close" />
           </button>
         </div>
-        <hr className="my-4" />
+        <hr className="m-4" />
         <div className="flex justify-between px-20 my-5 mt-6">
-          <div className="flex grid flex-col grid-cols-3 gap-2 2xl:grid-cols-5">
+          <div className="grid flex-col grid-cols-3 gap-2 2xl:grid-cols-5">
             <div className="flex flex-col">
               <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="styleNumber">
@@ -552,22 +552,28 @@ const handleOuterPcsChange = (e, sizeName) => {
               <div className="flex flex-col gap-4">
               {stockInData?.Product.Size.sizes.map((size, index) => (
                   <div key={index} className="flex items-center gap-4 mb-2">
-                    <div className="w-16">{size}: </div>
-                    <input
-                      type="number"
-                      value={stockInData?.stock_by_size.find(item => item.sizeName === size.sizeName)?.innerPcs || 0}
-                      onChange={(e) => handleInnerPcsChange(e, size.sizeName)}
-                      placeholder="Inner Pcs"
-                      className="w-24 px-2 py-1 border border-gray-300 rounded-md"
-                      disabled={assortmentType === "solid"}
-                    />
-                    <input
-                      type="number"
-                      value={stockInData?.stock_by_size.find(item => item.sizeName === size.sizeName)?.outerPcs || 0}
-                      onChange={(e) => handleOuterPcsChange(e, size.sizeName)}
-                      placeholder="Outer Pcs"
-                      className="w-24 px-2 py-1 border border-gray-300 rounded-md"
-                    />
+                  <div className="w-16 mt-5">{size}: </div>
+                    <div className="flex flex-col gap-2">
+                      <label className="block text-sm font-medium text-gray-700">Inner Pcs</label>
+                      <input
+                        type="number"
+                        value={stockInData?.stock_by_size.find(item => item.sizeName === size.sizeName)?.innerPcs || 0}
+                        onChange={(e) => handleInnerPcsChange(e, size.sizeName)}
+                        placeholder="Inner Pcs"
+                        className="w-24 px-2 py-1 border border-gray-300 rounded-md"
+                        disabled={assortmentType === "solid"}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <label className="block text-sm font-medium text-gray-700">Inner Boxes</label>
+                      <input
+                        type="number"
+                        value={stockInData?.stock_by_size.find(item => item.sizeName === size.sizeName)?.outerPcs || 0}
+                        onChange={(e) => handleOuterPcsChange(e, size.sizeName)}
+                        placeholder="Outer Pcs"
+                        className="w-24 px-2 py-1 border border-gray-300 rounded-md"
+                      />
+                    </div>
                   </div>
                 ))}
               </div>

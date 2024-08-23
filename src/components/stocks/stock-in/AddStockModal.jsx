@@ -42,6 +42,53 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  const [warehouseDropdown, setWarehouseDropdown] = useState(false);
+  const [warehouseSuggestions, setWarehouseSuggestions] = useState([]);
+  const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
+  const [warehouse, setWarehouse] = useState('');
+
+   // Fetch warehouse suggestions
+   const fetchWarehouseSuggestions = async (warehouseInput) => {
+    try {
+      if (warehouseInput.length > 0) {
+        const response = await apiService.get("/warehouses/getall");
+        const filteredWarehouse = response.data.filter((b) =>
+          b.warehouse.toLowerCase().startsWith(warehouseInput.toLowerCase())
+        );
+        console.log(filteredWarehouse);
+        setWarehouseSuggestions(filteredWarehouse);
+      } else {
+        setWarehouseSuggestions([]);
+      }
+    } catch (error) {
+      console.error("Error fetching warehouse:", error);
+    }
+  };
+
+  const handleWarehouseChange = (e) => {
+    const warehouseInput = e.target.value;
+    setWarehouse(warehouseInput);
+    setWarehouseDropdown(true);
+    fetchWarehouseSuggestions(warehouseInput);
+    if (warehouseInput === "") {
+      // setBuyerLocation("");
+      setSelectedWarehouseId(null);
+    }
+  };
+
+  const handleWarehouseSelect = (warehouse) => {
+    setWarehouse(warehouse.warehouse);
+    setSelectedWarehouseId(warehouse.id);
+    setWarehouseSuggestions([]);
+    setWarehouseDropdown(false);
+  };
+
+  const handleAddNewWarehouse = () => {
+    // Implement the logic to add a new buyer here
+    console.log("Adding new warehouse:", warehouse);
+    setWarehouseDropdown(false);
+  };
+
 // get product by style number
   const fetchStyleSuggestions = async (styleInput) => {
     try {
@@ -188,6 +235,7 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
       product_id: selectedProductId,
       packing_type: assortmentType,
       total_pcs: totalProducts,
+      warehouse_id: selectedWarehouseId,
       stock_by_size: sizes.map((size) => ({
         size,
         innerPcs: innerPcs[size],
@@ -236,21 +284,21 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
         onClick={onClose}
       ></div>
       <div className="relative bg-white rounded-lg shadow-lg w-full max-w-[80vw] h-screen max-h-[90vh] overflow-auto py-10">
-        <div className="flex justify-between items-center mb-4 relative px-20">
+        <div className="relative flex items-center justify-between px-20 mb-4">
           <div className="flex justify-center gap-3">
             <h2 className="text-2xl font-medium">CREATE STOCK INWARD</h2>
           </div>
           {/* <p className="text-2xl font-medium">Date:</p> */}
-          <button className="text-black absolute right-5" onClick={onClose}>
+          <button className="absolute text-black right-5" onClick={onClose}>
             <img src={closeIcon} alt="Close" />
           </button>
         </div>
         <hr className="my-4" />
         <div className="flex justify-between px-20 my-5 mt-6">
 
-          <div className="flex flex-col grid grid-cols-3 2xl:grid-cols-5 gap-2">
+          <div className="flex grid flex-col grid-cols-3 gap-2 2xl:grid-cols-5">
             <div className="flex flex-col">
-            <div className="flex flex-col gap-2 relative">
+            <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="styleNumber">
                   Style No:
                 </label>
@@ -259,16 +307,16 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
                   id="styleNumber"
                   value={styleNumber}
                   onChange={handleInputChange}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Style Number"
                 />
               {styleDropdown && styleNumber && (
-                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                  <ul className="absolute left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg top-full">
                     {styleSuggestions.map((item) => (
                       <li
                         key={item.id}
                         onClick={() => handleStyleSelect(item)}
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                        className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                       >
                         {item.style_no}
                       </li>
@@ -277,7 +325,7 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
                 )}
                 </div>
             </div>
-            <div className="flex flex-col gap-2 relative">
+            <div className="relative flex flex-col gap-2">
               <label className="font-semibold" htmlFor="referenceNo">
               Reference No:
               </label>
@@ -285,11 +333,11 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
                   type="text"
                   id="referenceNo"
                   value={ReferenceNo}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
               />
             </div>
-            <div className="flex flex-col gap-2 relative">
+            <div className="relative flex flex-col gap-2">
               <label className="font-semibold" htmlFor="category">
                   Category:
               </label>
@@ -297,11 +345,11 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
                   type="text"
                   id="category"
                   value={category}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
               />
             </div>
-            <div className="flex flex-col gap-2 relative">
+            <div className="relative flex flex-col gap-2">
               <label className="font-semibold" htmlFor="productType">
                 Product Type:
               </label>
@@ -309,11 +357,11 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
                   type="text"
                   id="productType"
                   value={productType}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
               />
             </div>
-            <div className="flex flex-col gap-2 relative">
+            <div className="relative flex flex-col gap-2">
               <label className="font-semibold" htmlFor="brand">
                 Brand:
               </label>
@@ -321,11 +369,11 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
                   type="text"
                   id="brand"
                   value={brand}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
               />
             </div>
-            <div className="flex flex-col gap-2 relative">
+            <div className="relative flex flex-col gap-2">
               <label className="font-semibold" htmlFor="fabric">
                 Fabric:
               </label>
@@ -333,11 +381,11 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
                   type="text"
                   id="fabric"
                   value={fabric}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
               />
             </div>
-            <div className="flex flex-col gap-2 relative">
+            <div className="relative flex flex-col gap-2">
               <label className="font-semibold" htmlFor="fabric-finish">
                 Fabric Fisnish:
               </label>
@@ -345,11 +393,11 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
                   type="text"
                   id="fabric-finish"
                   value={fabricFinish}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
               />
             </div>
-            <div className="flex flex-col gap-2 relative">
+            <div className="relative flex flex-col gap-2">
               <label className="font-semibold" htmlFor="gsm">
                 GSM:
               </label>
@@ -357,11 +405,11 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
                   type="number"
                   id="gsm"
                   value={gsm}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
               />
             </div>
-            <div className="flex flex-col gap-2 relative">
+            <div className="relative flex flex-col gap-2">
               <label className="font-semibold" htmlFor="knitType">
                 Knit Type:
               </label>
@@ -369,11 +417,11 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
                   type="text"
                   id="knitType"
                   value={knitType}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
               />
             </div>
-            <div className="flex flex-col gap-2 relative">
+            <div className="relative flex flex-col gap-2">
               <label className="font-semibold" htmlFor="color">
                 Color:
               </label>
@@ -381,11 +429,11 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
                   type="text"
                   id="color"
                   value={colors}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
               />
             </div>
-            <div className="flex flex-col gap-2 relative">
+            <div className="relative flex flex-col gap-2">
               <label className="font-semibold" htmlFor="size">
                 Size:
               </label>
@@ -393,11 +441,11 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
                   type="text"
                   id="size"
                   value={sizes}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
               />
             </div>
-            <div className="flex flex-col gap-2 relative">
+            <div className="relative flex flex-col gap-2">
               <label className="font-semibold" htmlFor="decoration">
                 Decoration:
               </label>
@@ -405,11 +453,11 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
                   type="text"
                   id="decoration"
                   value={decoration}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
               />
             </div>
-            <div className="flex flex-col gap-2 relative">
+            <div className="relative flex flex-col gap-2">
               <label className="font-semibold" htmlFor="print">
                 Print or Emb:
               </label>
@@ -417,11 +465,11 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
                   type="text"
                   id="print"
                   value={printOrEmb}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
               />
             </div>
-            <div className="flex flex-col gap-2 relative">
+            <div className="relative flex flex-col gap-2">
               <label className="font-semibold" htmlFor="stitch">
                 Stitch Details:
               </label>
@@ -429,11 +477,11 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
                   type="text"
                   id="stitch"
                   value={stitch}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
               />
             </div>
-            <div className="flex flex-col gap-2 relative">
+            <div className="relative flex flex-col gap-2">
               <label className="font-semibold" htmlFor="neck">
                 Neck:
               </label>
@@ -441,11 +489,11 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
                   type="text"
                   id="neck"
                   value={neck}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
               />
             </div>
-            <div className="flex flex-col gap-2 relative">
+            <div className="relative flex flex-col gap-2">
               <label className="font-semibold" htmlFor="length">
                 Length:
               </label>
@@ -453,11 +501,11 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
                   type="text"
                   id="length"
                   value={length}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
               />
             </div>
-            <div className="flex flex-col gap-2 relative">
+            <div className="relative flex flex-col gap-2">
               <label className="font-semibold" htmlFor="sleeve">
                 Sleeve:
               </label>
@@ -465,11 +513,11 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
                   type="text"
                   id="sleeve"
                   value={sleeve}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
               />
             </div>
-            <div className="flex flex-col gap-2 relative">
+            <div className="relative flex flex-col gap-2">
               <label className="font-semibold" htmlFor="packing">
                 Packing Method:
               </label>
@@ -477,11 +525,11 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
                   type="text"
                   id="packing"
                   value={packingMethod}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
               />
             </div>
-            <div className="flex flex-col gap-2 relative">
+            <div className="relative flex flex-col gap-2">
               <label className="font-semibold" htmlFor="measurement">
                 Measurement Chart:
               </label>
@@ -489,43 +537,78 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
                   type="text"
                   id="measurement"
                   value={measurementChart}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
               />
             </div>
+            <div className="relative flex flex-col gap-2">
+                <label className="font-semibold" htmlFor="warehouse">
+                  Warehouse:
+                </label>
+                <input
+                  type="text"
+                  id="warehouse"
+                  value={warehouse}
+                  onChange={handleWarehouseChange}
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
+                  placeholder="Enter Warehouse"
+                />
+                {warehouseDropdown && warehouse && (
+                  <ul className="absolute left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg top-full">
+                    {warehouseSuggestions.length > 0 ? (
+                      warehouseSuggestions.map((suggestion) => (
+                        <li
+                          key={suggestion.id}
+                          className="px-2 py-1 cursor-pointer hover:bg-gray-200"
+                          onClick={() => handleWarehouseSelect(suggestion)}
+                        >
+                          {suggestion.warehouse}
+                        </li>
+                      ))
+                    ) : (
+                      <li
+                        className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
+                        onClick={handleAddNewWarehouse}
+                      >
+                        Add New Buyer: "{warehouse}"
+                      </li>
+                    )}
+                  </ul>
+                )}
+              </div>
 
           </div>
           
-          <div className="flex items-center justify-center border border-gray-400 h-64 mt-10">
+          <div className="flex items-center justify-center h-64 mt-10 border border-gray-400">
             <img
               src={imageUrl || 'https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?t=st=1722163869~exp=1722167469~hmac=37361beb0ca1a1c652d36c9ca94818f793a54d21822edab80e80c6e43a9b7b37&w=740'}
               alt='Stock'
-              className="h-64 w-60 object-cover rounded"
+              className="object-cover h-64 rounded w-60"
             />
           </div>
         </div>
 
-        <div className="flex flex-col gap-2 mt-3 mx-20">
+        <div className="flex flex-col gap-2 mx-20 mt-3">
               <label className="font-semibold" htmlFor="shortDescription">
                 Short Description:
               </label>
               <textarea
                 id="shortDescription"
                 value={shortDescription}
-                className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                 rows="1"
                 disabled
               />
             </div>
 
-            <div className="flex flex-col gap-2 mt-3 mx-20">
+            <div className="flex flex-col gap-2 mx-20 mt-3">
               <label className="font-semibold" htmlFor="fullDescription">
                 Full Description:
               </label>
               <textarea
                 id="fullDescription"
                 value={fullDescription}
-                className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                 rows="2"
                 disabled
               />
@@ -561,65 +644,71 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
           <div className="flex items-center gap-2 mb-4">
             <h3 className="text-lg font-medium">Stock Info:</h3>
           </div>
-          <div className="flex gap-4 border border-gray-400 px-5 justify-between">
+          <div className="flex justify-between gap-4 px-5 border border-gray-400">
             <div className="p-4 rounded-lg">
-              <h4 className="text-sm font-medium mb-4">Quantity per size:</h4>
+              <h4 className="mb-4 text-sm font-medium">Quantity per size:</h4>
               <div className="flex flex-col gap-4">
               {sizes.map((size, index) => (
             <div key={index} className="flex items-center gap-4 mb-2">
-              <div className="w-16">{size}: </div>
+              <div className="w-16 mt-5">{size}: </div>
+              <div className="flex flex-col gap-2">
+              <label className="block text-sm font-medium text-gray-700">Inner Pcs</label>
               <input
                 type="number"
                 value={innerPcs[size] || ''}
                 onChange={(e) => handleInnerPcsChange(size, e.target.value)}
                 placeholder="Inner Pcs"
-                className="border border-gray-300 rounded-md px-2 py-1 w-24"
+                className="w-24 px-2 py-1 border border-gray-300 rounded-md"
                 disabled={assortmentType === "solid"}
               />
+              </div>
+              <div className="flex flex-col gap-2">
+              <label className="block text-sm font-medium text-gray-700">Inner Boxes</label>
               <input
                 type="number"
                 value={outerPcs[size] || ''}
                 onChange={(e) => handleOuterPcsChange(size, e.target.value)}
                 placeholder="Outer Pcs"
-                className="border border-gray-300 rounded-md px-2 py-1 w-24"
+                className="w-24 px-2 py-1 border border-gray-300 rounded-md"
               />
+              </div>
             </div>
           ))}
               </div>
             </div>
 
-            <div className="px-10 content-center">
+            <div className="content-center px-10">
           <label className="font-semibold">Number of Bundles: </label>
           <input
             type="number"
             value={bundles}
             onChange={(e) => setBundles(Number(e.target.value))}
             placeholder="Bundles"
-            className="border border-gray-300 rounded-md px-2 py-1 w-24"
+            className="w-24 px-2 py-1 border border-gray-300 rounded-md"
           />
         </div>
 
-        <div className="p-4 bg-gray-100 flex items-center justify-center my-8">
+        <div className="flex items-center justify-center p-4 my-8 bg-gray-100">
               <div className="flex flex-col gap-4">
-                <div className="flex gap-5 justify-between">
+                <div className="flex justify-between gap-5">
                   <label className="block text-sm font-medium text-gray-700">
                     Total Inner Pcs
                   </label>
                   <span>{totalInnerPcs}</span>
                 </div>
-                <div className="flex gap-5 justify-between">
+                <div className="flex justify-between gap-5">
                   <label className="block text-sm font-medium text-gray-700">
                     Total Outer Pcs
                   </label>
                   <span>{totalOuterPcs}</span>
                 </div>
-                <div className="flex gap-5 justify-between">
+                <div className="flex justify-between gap-5">
                   <label className="block text-sm font-medium text-gray-700">
                     Total Pcs per Bundle
                   </label>
                   <span>{totalInnerPcsPerBundle}</span>
                 </div>
-                <div className="flex gap-5 justify-between">
+                <div className="flex justify-between gap-5">
                   <label className="block text-sm font-medium text-gray-700">
                     Total Pcs
                   </label>
@@ -631,19 +720,19 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
           </div>
         </div>
         {successMessage && (
-              <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 my-4">
+              <div className="p-4 my-4 text-green-700 bg-green-100 border-l-4 border-green-500">
                 <p>{successMessage}</p>
               </div>
             )}
             {errorMessage && (
-              <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 my-4">
+              <div className="p-4 my-4 text-red-700 bg-red-100 border-l-4 border-red-500">
                 <p>{errorMessage}</p>
               </div>
             )}
         <div className="flex justify-end px-20 mt-4">
           <button
             onClick={handleSubmit}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+            className="px-4 py-2 font-semibold text-white bg-blue-500 rounded hover:bg-blue-600"
           >
             CREATE STOCK INWARD
           </button>

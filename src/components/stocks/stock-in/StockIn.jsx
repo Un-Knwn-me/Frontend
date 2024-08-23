@@ -5,9 +5,11 @@ import leftArrowIcon from "../../../assets/left-arrow-icon.svg";
 import rightArrowIcon from "../../../assets/right-arrow-icon.svg";
 import TopLayer from "../../shared/TopLayer"; // Make sure to import TopLayer
 import EditStockInModal from "./editStockInModal";
+import { RiQrScan2Line } from "react-icons/ri";
 import SuccessAlert from "./SuccessAlert";
 import AddStockModal from "./AddStockModal";
 import apiService from "../../../apiService";
+import QRCodeOut from "./QrCodeOut";
 
 const StockIn = ({ searchQuery }) => {
   const [initialData, setInitialData] = useState([]);
@@ -19,6 +21,8 @@ const StockIn = ({ searchQuery }) => {
   const [recordsPerPage, setRecordsPerPage] = useState(5);
   const [showModal, setShowModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [selectedStock, setSelectedStock] = useState();
+  const [showQr, setShowQr] = useState(false);
 
   // Function to fetch all products
   const getAllStocks = async () => {
@@ -121,6 +125,20 @@ const StockIn = ({ searchQuery }) => {
     setShowAddModal(false);
   };
 
+  const handleQrClick = (id) => {
+    if (id) {
+      setSelectedStock(id);
+      setShowQr(true);
+    } else {
+      console.error('Stock ID is undefined');
+    }
+  };  
+
+  const handleQrModalClose = () => {
+    console.log('handle');
+    setShowQr(false);
+  };
+
   const startIndex = (currentPage - 1) * recordsPerPage;
   const endIndex = startIndex + recordsPerPage;
   const currentData = filteredData.slice(startIndex, endIndex);
@@ -187,10 +205,13 @@ const StockIn = ({ searchQuery }) => {
                   <th className="w-16 px-2 py-3 font-bold text-center text-black uppercase text-md">
                     Age
                   </th>
-                  <th className="w-16 px-2 py-3 font-bold text-center text-black uppercase text-md">
+                  <th className="w-12 px-2 py-3 font-bold text-center text-black uppercase text-md">
+                    QR code
+                  </th>
+                  <th className="w-12 px-2 py-3 font-bold text-center text-black uppercase text-md">
                     Action
                   </th>
-                  <th className="w-16 px-2 py-3 font-bold text-center text-black uppercase text-md">
+                  <th className="w-10 px-2 py-3 font-bold text-center text-black uppercase text-md">
                     <input
                       type="checkbox"
                       className="form-checkbox"
@@ -253,8 +274,11 @@ const StockIn = ({ searchQuery }) => {
                     </td>
                     <td className="w-16 px-2 py-3 text-center text-black whitespace-nowrap text-md">
                       {row.days_since_created}
+                    </td> 
+                    <td className="w-12 px-2 py-3 text-center text-black whitespace-nowrap text-md">
+                      <RiQrScan2Line className="w-6 h-6 text-center cursor-pointer" onClick={() => handleQrClick(row.id)}/>
                     </td>   
-                    <td className="w-16 px-2 py-3 text-center text-black whitespace-nowrap text-md">
+                    <td className="w-12 px-2 py-3 text-center text-black whitespace-nowrap text-md">
                       <button
                         onClick={() => handleEditClick(row.id)}
                         className="text-center text-blue-500"
@@ -262,7 +286,7 @@ const StockIn = ({ searchQuery }) => {
                         <img src={editIcon} alt="Edit" className="w-6 h-6" />
                       </button>
                     </td>
-                    <td className="w-12 px-2 py-3 text-center whitespace-nowrap">
+                    <td className="w-10 px-2 py-3 text-center whitespace-nowrap">
                       <input
                         type="checkbox"
                         className="form-checkbox"
@@ -320,6 +344,7 @@ const StockIn = ({ searchQuery }) => {
       </div>
       <EditStockInModal showModal={showModal} close={handleCloseModal} editIndex={editIndex} stockInData={currentData.find((item) => item.id === editIndex)} />
       <AddStockModal show={showAddModal} onClose={handleAddModalClose} getAllStocks={getAllStocks} />
+      <QRCodeOut show={showQr} stockId={selectedStock} close={handleQrModalClose}/>
     </>
   );
 };
