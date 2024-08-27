@@ -118,7 +118,7 @@ const EditUserProfileModal = ({ user, onClose, onUpdate }) => {
               <input
                 type="text"
                 name="phone"
-                value={editedUser.phone}
+                value={editedUser.phone_number}
                 onChange={handleInputChange}
                 className="w-full px-4 py-2 focus:bg-gray-200 focus:outline-none"
               />

@@ -687,7 +687,28 @@ const AddStockOutModel = ({ show, onClose }) => {
             
             <div className="text-center">
               <h3 className="text-lg font-semibold">Ordered Quantities:</h3>
-              {orderInfo?.purchase_by_size ? (
+
+              <div className="flex flex-col items-center justify-center my-10 ">
+            <label className="mb-2 font-semibold" htmlFor="StockOutBundle">
+              Enter Stock Out Bundle:
+            </label>
+            <input
+              className="w-40 px-2 py-2 border border-gray-300 rounded-md hover:border-cyan-300 active:boder-cyan-300 focus:border-cyan-300 "
+              type="number"
+              value={stockOutBundle}
+              onChange={handleBundleChange}
+              placeholder="Enter Bundle Value"
+            />
+            {totalPcs !== null && (
+              <div className="flex justify-center my-2">
+                <p className="text-lg font-medium text-green-500">
+                  Total Pieces: {totalPcs}
+                </p>
+              </div>
+            )}
+          </div>
+
+              {/* {orderInfo?.purchase_by_size ? (
                 <>
                   <div className=''>
                     <table className="min-w-full mt-6 bg-white border border-gray-300 rounded-md">
@@ -733,7 +754,8 @@ const AddStockOutModel = ({ show, onClose }) => {
                 </>
               ) : (
                 <p className="text-gray-500">No order information available.</p>
-              )}
+              )} */}
+              
             </div>
           </div>
           </div>

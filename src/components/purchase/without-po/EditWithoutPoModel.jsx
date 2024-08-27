@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import closeIcon from "../../../assets/close-modal-icon.svg";
 import apiService from "../../../apiService";
+import AddStockOutModel from "../../stocks/stock-out/AddStockOutModel";
 
-const EditWithoutPoModal = ({ show, onClose, withPoId }) => {
+const EditWithoutPoModal = ({ show, onClose, withPoOutId, getAllPurchaseOrder }) => {
   const [deliveryDate, setDeliveryDate] = useState(new Date().toISOString());
   const [selectedProduct, setSelectedProduct] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
@@ -85,7 +86,7 @@ const EditWithoutPoModal = ({ show, onClose, withPoId }) => {
     },
     req_bundle: "",
     product_id: null,
-    stock_by_size: [],
+    purchase_by_size: [],
     req_purchase_qty: null,
     packing_type: "",
     notes: "",
@@ -97,12 +98,12 @@ const EditWithoutPoModal = ({ show, onClose, withPoId }) => {
   });
 
   useEffect(() => {
-    fetchWithPoData(withPoId);
-  }, [withPoId]);
+    fetchWithPoData(withPoOutId);
+  }, [withPoOutId]);
 
-  const fetchWithPoData = async (withPoId) => {
+  const fetchWithPoData = async (withPoOutId) => {
     try {
-      const response = await apiService.get(`/purchases/${withPoId}`);
+      const response = await apiService.get(`/purchases/${withPoOutId}`);
       setWithPoData(response.data);
       setAssortmentType(response.data.packing_type);
       console.log(response.data);
@@ -273,6 +274,10 @@ const EditWithoutPoModal = ({ show, onClose, withPoId }) => {
       setTotalInnerPcsPerBundle(totalInnerPerBundle);
     }
 
+    if (withPoData?.req_bundle !== undefined) {
+      setWithPoBundle(withPoData.req_bundle);
+    }
+
     if (withPoBundle > 0 && withPoData?.purchase_by_size) {
       const totalPcs = withPoData.purchase_by_size.reduce((sum, item) => {
         return sum + (item.innerPcs || 0) * (item.outerPcs || 0) * withPoBundle;
@@ -280,9 +285,11 @@ const EditWithoutPoModal = ({ show, onClose, withPoId }) => {
 
       setTotalPcs(totalPcs);
 
-      if (totalPcs) {
-        setUpdatedwithPoData({ ...updatedWithPoData, totalPcs: totalPcs });
-      }
+      setUpdatedwithPoData({
+        ...updatedWithPoData,
+        req_purchase_qty: totalPcs,
+      });
+
     } else {
       setTotalPcs(0);
     }
@@ -307,23 +314,22 @@ const EditWithoutPoModal = ({ show, onClose, withPoId }) => {
   const handleBundleChange = (e) => {
     const bundleQty = Number(e.target.value);
     setWithPoBundle(bundleQty);
-  
+
     // Recalculate total pieces when the bundle quantity changes
     const newTotalPcs = withPoData.purchase_by_size.reduce((sum, item) => {
       const innerPcs = item.innerPcs || 0;
       const outerPcs = item.outerPcs || 0;
       return sum + innerPcs * outerPcs * bundleQty;
     }, 0);
-  
+
     setTotalPcs(newTotalPcs);
-  
+
     setUpdatedwithPoData((prevData) => ({
       ...prevData,
       req_bundle: bundleQty,
-      totalPcs: newTotalPcs,
+      req_purchase_qty: newTotalPcs,
     }));
   };
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -331,7 +337,7 @@ const EditWithoutPoModal = ({ show, onClose, withPoId }) => {
 
     try {
       const response = await apiService.put(
-        `/purchases/${withPoId}`,
+        `/purchases/${withPoOutId}`,
         updatedWithPoData,
         {
           headers: {
@@ -347,8 +353,9 @@ const EditWithoutPoModal = ({ show, onClose, withPoId }) => {
         setUpdatedwithPoData({});
         setTimeout(() => {
           setSuccessMessage("");
+          getAllPurchaseOrder();
           onClose();
-        }, 3000);
+        }, 1500);
       }
     } catch (error) {
       if (error.response && error.response.status === 409) {
@@ -377,7 +384,7 @@ const EditWithoutPoModal = ({ show, onClose, withPoId }) => {
       <div className="relative bg-white rounded-lg shadow-lg w-full max-w-[80vw] h-screen max-h-[90vh] overflow-auto">
         <div className="px-10 py-5">
           <div className="flex justify-center">
-            <h2 className="text-xl font-bold">Edit Purchase Order</h2>
+            <h2 className="text-xl font-bold">Edit With Out Purchase Order</h2>
             <button
               className="absolute cursor-pointer right-5"
               onClick={handleClose}
@@ -397,6 +404,7 @@ const EditWithoutPoModal = ({ show, onClose, withPoId }) => {
                   id="purchaseOrderNo"
                   value={withPoData.purchase_order_number}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                  placeholder="Enter po number"
                   disabled
                 />
               </div>
@@ -814,7 +822,7 @@ const EditWithoutPoModal = ({ show, onClose, withPoId }) => {
                   <label className="font-semibold">Number of Bundles: </label>
                   <input
                     type="number"
-                    value={withPoBundle}
+                    value={withPoBundle || null}
                     onChange={handleBundleChange}
                     placeholder="Bundles"
                     className="w-24 px-2 py-1 border border-gray-300 rounded-md"

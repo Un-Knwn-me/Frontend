@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import closeIcon from "../../../assets/close-modal-icon.svg";
 import apiService from "../../../apiService";
 
-const EditPoModal = ({ show, onClose, withPoId }) => {
+const EditPoModal = ({ show, onClose, withPoId, getAllPurchaseOrder }) => {
   const [deliveryDate, setDeliveryDate] = useState(new Date().toISOString());
   const [selectedProduct, setSelectedProduct] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
@@ -85,7 +85,7 @@ const EditPoModal = ({ show, onClose, withPoId }) => {
     },
     req_bundle: "",
     product_id: null,
-    stock_by_size: [],
+    purchase_by_size: [],
     req_purchase_qty: null,
     packing_type: "",
     notes: "",
@@ -285,16 +285,20 @@ const EditPoModal = ({ show, onClose, withPoId }) => {
       setTotalInnerPcsPerBundle(totalInnerPerBundle);
     }
 
+    if (withPoData?.req_bundle !== undefined) {
+      setWithPoBundle(withPoData.req_bundle);
+    }
+
     if (withPoBundle > 0 && withPoData?.purchase_by_size) {
       const totalPcs = withPoData.purchase_by_size.reduce((sum, item) => {
         return sum + (item.innerPcs || 0) * (item.outerPcs || 0) * withPoBundle;
       }, 0);
 
       setTotalPcs(totalPcs);
-
-      if (totalPcs) {
-        setUpdatedwithPoData({ ...updatedWithPoData, totalPcs: totalPcs });
-      }
+      setUpdatedwithPoData({
+        ...updatedWithPoData,
+        req_purchase_qty: totalPcs,
+      });
     } else {
       setTotalPcs(0);
     }
@@ -319,23 +323,22 @@ const EditPoModal = ({ show, onClose, withPoId }) => {
   const handleBundleChange = (e) => {
     const bundleQty = Number(e.target.value);
     setWithPoBundle(bundleQty);
-  
+
     // Recalculate total pieces when the bundle quantity changes
     const newTotalPcs = withPoData.purchase_by_size.reduce((sum, item) => {
       const innerPcs = item.innerPcs || 0;
       const outerPcs = item.outerPcs || 0;
       return sum + innerPcs * outerPcs * bundleQty;
     }, 0);
-  
+
     setTotalPcs(newTotalPcs);
-  
+
     setUpdatedwithPoData((prevData) => ({
       ...prevData,
       req_bundle: bundleQty,
-      totalPcs: newTotalPcs,
+      req_purchase_qty: newTotalPcs,
     }));
   };
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -359,8 +362,9 @@ const EditPoModal = ({ show, onClose, withPoId }) => {
         setUpdatedwithPoData({});
         setTimeout(() => {
           setSuccessMessage("");
+          getAllPurchaseOrder();
           onClose();
-        }, 3000);
+        }, 1500);
       }
     } catch (error) {
       if (error.response && error.response.status === 409) {
@@ -827,7 +831,7 @@ const EditPoModal = ({ show, onClose, withPoId }) => {
                   <label className="font-semibold">Number of Bundles: </label>
                   <input
                     type="number"
-                    value={withPoBundle}
+                    value={withPoBundle || null}
                     onChange={handleBundleChange}
                     placeholder="Bundles"
                     className="w-24 px-2 py-1 border border-gray-300 rounded-md"

@@ -14,7 +14,7 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
   const [stockInOuterTotals, setStockInOuterTotals] = useState(null);
   const [totalInnerPcsPerBundle, setTotalInnerPcsPerBundle] = useState(null);
   const [stockInBundle, setStockInBundle] = useState(null);
-  const [totalPcs, setTotalPcs] = useState(0);
+  const [totalPcs, setTotalPcs] = useState(null);
 
   // Suggestion warehouse states
   const [warehouseDropdown, setWarehouseDropdown] = useState(false);
@@ -157,7 +157,7 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
   };
 
   useEffect(() => {
-      fetchStockInData(editIndex);
+    fetchStockInData(editIndex);
   }, [editIndex]);
 
   const fetchStockInData = async (editIndex) => {
@@ -169,7 +169,6 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
       // Fill the input fields based on the fetched stock-in data
       setSizes(response.data.Size.sizes);
       setSelectedProduct(response.data);
-    
     } catch (error) {
       console.error("Error fetching stock In data:", error);
     }
@@ -204,7 +203,7 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
         return acc;
       }, {});
       setInnerPcs(initialInnerPcs);
-      console.log(innerPcs)
+      console.log(innerPcs);
     } else {
       setInnerPcs({});
     }
@@ -250,11 +249,17 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
       setTotalInnerPcsPerBundle(totalInnerPerBundle);
     }
 
+    if (stockInData?.no_bundles !== undefined) {
+      setStockInBundle(stockInData.no_bundles);
+    }
+
     if (stockInBundle > 0 && stockInData?.stock_by_size) {
       const totalPcs = stockInData.stock_by_size.reduce((sum, item) => {
         return sum + item.innerPcs * item.outerPcs * stockInBundle;
       }, 0);
       setTotalPcs(totalPcs);
+      console.log(totalPcs);
+
       setUpdatedStockInData({
         ...updatedStockInData,
         total_pcs: totalPcs,
@@ -283,16 +288,15 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
   const handleBundleChange = (e) => {
     const bundleQty = Number(e.target.value);
     setStockInBundle(bundleQty);
-  
+
     // Recalculate total pieces when the bundle quantity changes
     const newTotalPcs = stockInData.stock_by_size.reduce((sum, item) => {
       const innerPcs = item.innerPcs || 0;
       const outerPcs = item.outerPcs || 0;
       return sum + innerPcs * outerPcs * bundleQty;
     }, 0);
-  
+
     setTotalPcs(newTotalPcs);
-  
     setUpdatedStockInData((prevData) => ({
       ...prevData,
       no_bundles: bundleQty,
@@ -303,10 +307,11 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("updatedStockInData", updatedStockInData);
-    
+
     try {
-      console.log(`editIndex ${editIndex}`);
-      const response = await apiService.put(`/stocks/stockIn/${editIndex}`, updatedStockInData,
+      const response = await apiService.put(
+        `/stocks/stockIn/${editIndex}`,
+        updatedStockInData,
         {
           headers: {
             "Content-Type": "application/json",
@@ -316,7 +321,7 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
 
       if (response.status === 200) {
         console.log("Submit response:", response);
-        setSuccessMessage('Stock-In updated successfully');
+        setSuccessMessage("Stock-In updated successfully");
         setErrorMessage("");
         setUpdatedStockInData({});
         setTimeout(() => {
@@ -328,10 +333,10 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
     } catch (error) {
       if (error.response && error.response.status === 409) {
         setErrorMessage(error.message);
-    } else {
+      } else {
         setErrorMessage(error.message);
+      }
     }
-    } 
   };
 
   if (!showModal) return null;
