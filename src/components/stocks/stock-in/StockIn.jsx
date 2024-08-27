@@ -164,7 +164,7 @@ const StockIn = ({ searchQuery }) => {
           addButtonText="Add Stock"
           onAddButtonClick={() => setShowAddModal(true)}
         />
-        <div className="p-4 mx-auto mt-5 bg-white ">
+        <div className="px-2 py-4 mx-auto mt-5 bg-white ">
           <div className="min-h-[60vh]">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="w-full bg-gray-50">
@@ -342,7 +342,7 @@ const StockIn = ({ searchQuery }) => {
           </div>
         </div>
       </div>
-      <EditStockInModal showModal={showModal} close={handleCloseModal} editIndex={editIndex} stockInData={currentData.find((item) => item.id === editIndex)} />
+      <EditStockInModal showModal={showModal} close={handleCloseModal} editIndex={editIndex} getAllStocks={getAllStocks}/>
       <AddStockModal show={showAddModal} onClose={handleAddModalClose} getAllStocks={getAllStocks} />
       <QRCodeOut show={showQr} stockId={selectedStock} close={handleQrModalClose}/>
     </>

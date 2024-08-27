@@ -46,6 +46,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
   const [selectedMeasurementImage, setSelectedMeasurementImage] = useState(null);
   const [packingMethod, setPackingMethod] = useState("");
   const [packingInfo, setPackingInfo] = useState('');
+  const [warehouse, setWarehouse] = useState('');
   const [shortDescription, setShortDescription] = useState("");
   const [fullDescription, setFullDescription] = useState("");
   const [images, setImages] = useState("");
@@ -103,6 +104,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
       setMeasurementChart("");
       setSelectedMeasurementImage("");
       setPackingMethod("");
+      setWarehouse("");
       setShortDescription("");
       setFullDescription("");
       setImages("");
@@ -140,6 +142,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
     setFullDescription(e.Product.full_description);
     setSizes(e.Product.Size.sizes);
     setPackingInfo(e.packing_type)
+    setWarehouse(e.Warehouse.warehouse);
     const totalStockInnerPcs = await calculateTotalInnerPcs(e.stock_by_size);
     setProductInnerTotals(totalStockInnerPcs);
     const totalStockOuterPcs = await calculateTotalOuterPcs(e.stock_by_size);
@@ -710,6 +713,19 @@ const handleDeliveryDateChange = (e) => {
                   type="text"
                   id="packing"
                   value={packingInfo || ''}
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                  disabled
+                />
+            </div>
+
+            <div className="relative flex flex-col gap-2">
+                <label className="font-semibold" htmlFor="packing">
+                  Warehouse:
+                </label>
+                <input
+                  type="text"
+                  id="packing"
+                  value={warehouse || ''}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />

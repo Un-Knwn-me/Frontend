@@ -1,176 +1,369 @@
-import React, { useState, useEffect } from "react";
-import editIcon from "../../../assets/edit-icon.svg";
+import React, { useEffect, useState } from "react";
 import closeIcon from "../../../assets/close-modal-icon.svg";
 import apiService from "../../../apiService";
 
-const EditWithoutPoModal = ({ show, onClose, productId }) => {
-  const [buyer, setBuyer] = useState("");
-  const [orderNumber, setOrderNumber] = useState("");
-  const [referenceNumber, setReferenceNumber] = useState("");
-  const [referenceDropdown, setReferenceDropdown] = useState(false);
-  const [purchaseOrder, setPurchaseOrder] = useState({});
-  const [referenceSuggestions, setReferenceSuggestions] = useState([]);
-  const [selectedProductId, setSelectedProductId] = useState(null);
-  const [styleNo, setStyleNo] = useState("");
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [sizes, setSizes] = useState([]);
-  const [brand, setBrand] = useState('');
-  const [category, setCategory] = useState('');
-  const [productType, setProductType] = useState('');
-  const [deliveryDate, setDeliveryDate] = useState(new Date().toISOString().split("T")[0]); 
-  const [assortmentType, setAssortmentType] = useState("");
+const EditWithoutPoModal = ({ show, onClose, withPoId }) => {
+  const [deliveryDate, setDeliveryDate] = useState(new Date().toISOString());
+  const [selectedProduct, setSelectedProduct] = useState({});
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [assortmentType, setAssortmentType] = useState("assorted");
   const [innerPcs, setInnerPcs] = useState({});
-  const [outerPcs, setOuterPcs] = useState({});
-  const [bundles, setBundles] = useState(''); 
   const [totalInnerPcs, setTotalInnerPcs] = useState(0);
   const [totalOuterPcs, setTotalOuterPcs] = useState(0);
   const [totalInnerPcsPerBundle, setTotalInnerPcsPerBundle] = useState(0);
-  const [totalProducts, setTotalProducts] = useState(0);
-  const [dia, setDia] = useState('');
-  const [notes, setNotes] = useState('');
+  const [withPoBundle, setWithPoBundle] = useState(null);
+  const [totalPcs, setTotalPcs] = useState(null);
+  const [updatedWithPoData, setUpdatedwithPoData] = useState({});
 
-  const handleDeliveryDateChange = (e) => {
-    setDeliveryDate(e.target.value); 
+  // Suggestion buyer states
+  const [buyerDropdown, setBuyerDropdown] = useState(false);
+  const [buyerSuggestions, setBuyerSuggestions] = useState([]);
+  const [selectedBuyerId, setSelectedBuyerId] = useState(null);
+  const [updatedBuyerData, setUpdatedBuyerData] = useState({});
+
+  const [withPoData, setWithPoData] = useState({
+    Product: {
+      style_no: "",
+      Reference: {
+        reference_no: "",
+      },
+      Category: {
+        categoryName: "",
+      },
+      Brand: {
+        brandName: "",
+      },
+      Color: {
+        colorName: "",
+      },
+      Decoration: {
+        decorationName: "",
+      },
+      Fabric: {
+        fabricName: "",
+      },
+      FabricFinish: {
+        fabricFinishName: "",
+      },
+      Gsm: {
+        gsmValue: null,
+      },
+      KnitType: {
+        knitType: "",
+      },
+      Length: {
+        lengthType: "",
+      },
+      MeasurementChart: {
+        name: "",
+      },
+      Neck: {
+        neckType: "",
+      },
+      PackingMethod: {
+        packingType: "",
+      },
+      PrintEmbName: {
+        printType: "",
+      },
+      ProductType: {
+        product: "",
+      },
+      Size: {
+        sizes: [],
+      },
+      Sleeve: {
+        sleeveName: "",
+      },
+      StitchDetail: {
+        stictchDetail: "",
+      },
+      short_description: "",
+      full_description: "",
+      images: "",
+    },
+    req_bundle: "",
+    product_id: null,
+    stock_by_size: [],
+    req_purchase_qty: null,
+    packing_type: "",
+    notes: "",
+    purchase_order_number: "",
+    Buyer: {
+      name: "",
+      location: "",
+    },
+  });
+
+  useEffect(() => {
+    fetchWithPoData(withPoId);
+  }, [withPoId]);
+
+  const fetchWithPoData = async (withPoId) => {
+    try {
+      const response = await apiService.get(`/purchases/${withPoId}`);
+      setWithPoData(response.data);
+      setAssortmentType(response.data.packing_type);
+      console.log(response.data);
+      // Fill the input fields based on the fetched stock-in data
+    } catch (error) {
+      console.error(
+        "Error fetching With Po  data:",
+        error.response || error.message
+      );
+    }
   };
 
-  // get purchaseOrder by id
-  const getPurchaseOrder = async (productId) => {
+  // Fetch buyer suggestions
+  const fetchBuyerSuggestions = async (buyerInput) => {
     try {
-      const response = await apiService.get(`/purchases/${productId}`);
-
-      if (response.status === 200) {
-        console.log(response.data);
-        const data = response.data;
-        setPurchaseOrder(data);
-        setDeliveryDate(data.delivery_date.split("T")[0]);
-        setAssortmentType(data.packing_type) 
-        setBrand(data.Product.Brand.brandName);
-        setStyleNo(data.Product.Style.style_no);
-        setCategory(data.Product.Category.categoryName);
-        setProductType(data.Product.ProductType.product);
-        setSizes(data.purchase_by_size.map(item => ({
-          size: item.size,
-          innerPcs: item.innerPcs,
-          outerPcs: item.outerPcs
-        })));
-
-        // Set initial innerPcs and outerPcs based on response
-        if (data.packing_type === "solid") {
-          const initialInnerPcs = data.purchase_by_size.reduce((acc, item) => {
-            acc[item.size] = item.innerPcs;
-            return acc;
-          }, {});
-          setInnerPcs(initialInnerPcs);
-          const initialOuterPcs = data.purchase_by_size.reduce((acc, item) => {
-            acc[item.size] = item.outerPcs;
-            return acc;
-          }, {});
-          setOuterPcs(initialOuterPcs);
-        } else {
-          setInnerPcs({});
-          setOuterPcs({});
-        }
+      if (buyerInput.length > 0) {
+        const response = await apiService.get("/buyers/getall");
+        const filteredBuyers = response.data.filter((b) =>
+          b.name.toLowerCase().startsWith(buyerInput.toLowerCase())
+        );
+        console.log(filteredBuyers);
+        setBuyerSuggestions(filteredBuyers);
       } else {
-        setPurchaseOrder({});
+        setBuyerSuggestions([]);
       }
     } catch (error) {
-      console.error("Error fetching Product:", error);
+      console.error("Error fetching buyers:", error);
     }
   };
 
-
-  const handleInputChange = (e) => {
-    const referenceInput = e.target.value;
-    if (referenceInput.length > 0) {
-      setReferenceNumber(referenceInput);
-      setReferenceDropdown(true);
-    } else {
-      setReferenceNumber("");
-      setReferenceDropdown(false);
-      setStyleNo("");
-      setSizes([]);
-      setSelectedProduct(null);
-    }
+  const handleBuyerChange = (e) => {
+    const buyerInput = e.target.value;
+    setWithPoData({
+      ...withPoData,
+      Buyer: {
+        ...withPoData.Buyer,
+        name: buyerInput,
+        location: "",
+      },
+    });
+    setBuyerDropdown(true);
+    fetchBuyerSuggestions(buyerInput);
   };
 
-  const handleReferenceSelect = (e) => {
-    setReferenceNumber(e.reference_number);
-    setSelectedProductId(e.id);
-    setReferenceSuggestions([]);
-    setReferenceDropdown(false);
-    setBrand(e.Brand.brandName);
-    setStyleNo(e.Style.style_no);
-    setCategory(e.Category.categoryName);
-    setProductType(e.ProductType.product);
-    setSizes(e.Size.sizes);
-    setSelectedProduct(e);
-
-    if (assortmentType === "solid") {
-      const initialInnerPcs = e.Size.sizes.reduce((acc, size) => {
-        acc[size] = e.inner_pcs;
-        return acc;
-      }, {});
-      setInnerPcs(initialInnerPcs);
-    } else {
-      setInnerPcs({});
-      setOuterPcs({});
-    }
+  const handleBuyerSelect = (buyer) => {
+    setWithPoData({
+      ...withPoData,
+      Buyer: {
+        ...withPoData.Buyer,
+        name: buyer.name,
+        location: buyer.location,
+      },
+    });
+    setSelectedBuyerId(buyer.id);
+    setBuyerSuggestions([]);
+    setBuyerDropdown(false);
+    setUpdatedBuyerData({
+      ...updatedBuyerData,
+      buyer_id: buyer.id,
+    });
+    setUpdatedwithPoData({
+      ...updatedWithPoData,
+      buyer_id: buyer.id,
+    });
+    console.log(buyer.name);
+    console.log(buyer.location);
   };
 
+  const handleAddNewBuyer = () => {
+    // Implement the logic to add a new buyer here
+    console.log("Adding new buyer:", withPoData.Buyer.name);
+    console.log("Adding new buyer:", withPoData.Buyer.location);
+    // Close the dropdown after adding the buyer
+    setBuyerDropdown(false);
+  };
+
+  // // handle PO number change
+  // const handlePurchaseOrderNoChange = (e) => {
+  //   setWithPoData((prevState) => ({
+  //     ...prevState,
+  //     purchase_order_number: e.target.value,
+  //   }));
+  // };
+
+  const handleDeliveryDateChange = (e) => {
+    const inputDate = e.target.value;
+    setDeliveryDate(new Date(inputDate).toISOString());
+  };
+
+  const handleStockBySizeChange = (size, innerPcs, outerPcs) => {
+    const updatedStockBySize = withPoData.purchase_by_size.map((item) =>
+      item.size === size ? { ...item, innerPcs, outerPcs } : item
+    );
+
+    setWithPoData((prevState) => ({
+      ...prevState,
+      purchase_by_size: updatedStockBySize,
+    }));
+
+    setUpdatedwithPoData({
+      ...updatedWithPoData,
+      purchase_by_size: updatedStockBySize,
+    });
+  };
+
+  // handle size quantity change
   const handleAssortmentTypeChange = (e) => {
-    const value = e.target.value;
-    setAssortmentType(value);
-    if (value === "solid" && selectedProduct) {
-      const initialInnerPcs = selectedProduct.Size.sizes.reduce((acc, size) => {
-        acc[size] = selectedProduct.inner_pcs;
-        return acc;
-      }, {});
+    setAssortmentType(e.target.value);
+    setUpdatedwithPoData({
+      ...updatedWithPoData,
+      packing_type: e.target.value,
+    });
+
+    if (e.target.value === "solid" && selectedProduct) {
+      // Check if selectedProduct and selectedProduct.Size.sizes exist
+      const initialInnerPcs =
+        selectedProduct.Size && selectedProduct.Size.sizes
+          ? selectedProduct.Size.sizes.reduce((acc, size) => {
+              acc[size] = selectedProduct.inner_pcs;
+              return acc;
+            }, {})
+          : {};
+
       setInnerPcs(initialInnerPcs);
+      console.log(innerPcs);
     } else {
       setInnerPcs({});
-      setOuterPcs({});
     }
   };
 
-  const handleInnerPcsChange = (size, value) => {
-    setInnerPcs(prev => ({
-      ...prev,
-      [size]: Number(value) || 0
-    }));
+  const handleInnerPcsChange = (e, size) => {
+    const newInnerPcs = parseInt(e.target.value, 10) || null; // Ensure the value is a number
+    const sizeData =
+      withPoData.purchase_by_size.find((item) => item.size === size) || {};
+
+    // Update the stock data with new inner pcs and existing outer pcs
+    handleStockBySizeChange(size, newInnerPcs, sizeData.outerPcs || null);
+
+    console.log("Inner pieces updated for size", size);
   };
 
-  const handleOuterPcsChange = (size, value) => {
-    setOuterPcs(prev => ({
-      ...prev,
-      [size]: Number(value) || 0
-    }));
+  const handleOuterPcsChange = (e, size) => {
+    const newOuterPcs = parseInt(e.target.value, 10) || null; // Ensure the value is a number
+    const sizeData =
+      withPoData.purchase_by_size.find((item) => item.size === size) || {};
+
+    // Update the stock data with new outer pcs and existing inner pcs
+    handleStockBySizeChange(size, sizeData.innerPcs || null, newOuterPcs);
+
+    console.log("Outer pieces updated for size", size);
   };
 
   useEffect(() => {
-    if (productId) {
-      getPurchaseOrder(productId);
+    if (withPoData?.purchase_by_size) {
+      const totalwithPoInnerPcs = calculateTotalInnerPcs(
+        withPoData.purchase_by_size
+      );
+      setTotalInnerPcs(totalwithPoInnerPcs);
+
+      const totalwithPoOuterPcs = calculateTotalOuterPcs(
+        withPoData.purchase_by_size
+      );
+      setTotalOuterPcs(totalwithPoOuterPcs);
+
+      const totalInnerPerBundle = calculateTotalInnerPerBundle(
+        withPoData.purchase_by_size
+      );
+      setTotalInnerPcsPerBundle(totalInnerPerBundle);
     }
-  }, [productId]);
 
-  useEffect(() => {
-    const totalInner = Object.values(innerPcs).reduce((sum, pcs) => sum + pcs, 0);
-    const totalOuter = Object.values(outerPcs).reduce((sum, pcs) => sum + pcs, 0);
-    setTotalInnerPcs(totalInner);
-    setTotalOuterPcs(totalOuter);
+    if (withPoBundle > 0 && withPoData?.purchase_by_size) {
+      const totalPcs = withPoData.purchase_by_size.reduce((sum, item) => {
+        return sum + (item.innerPcs || 0) * (item.outerPcs || 0) * withPoBundle;
+      }, 0);
 
-    const totalInnerPerBundle = sizes.reduce((sum, sizeItem) => {
-      const inner = innerPcs[sizeItem.size] || 0;
-      const outer = outerPcs[sizeItem.size] || 0;
-      return sum + (inner * outer);
+      setTotalPcs(totalPcs);
+
+      if (totalPcs) {
+        setUpdatedwithPoData({ ...updatedWithPoData, totalPcs: totalPcs });
+      }
+    } else {
+      setTotalPcs(0);
+    }
+  }, [withPoData]);
+
+  const calculateTotalInnerPcs = (data) => {
+    return data.reduce((total, item) => total + item.innerPcs, 0);
+  };
+
+  const calculateTotalOuterPcs = (data) => {
+    return data.reduce((total, item) => total + item.outerPcs, 0);
+  };
+
+  const calculateTotalInnerPerBundle = (data) => {
+    return data.reduce((total, item) => {
+      const inner = item.innerPcs || 0;
+      const outer = item.outerPcs || 0;
+      return total + inner * outer;
     }, 0);
+  };
 
-    setTotalInnerPcsPerBundle(totalInnerPerBundle);
-    const totalProducts = totalInnerPerBundle * bundles;
-    setTotalProducts(totalProducts);
-  }, [innerPcs, outerPcs, bundles, sizes]);
+  const handleBundleChange = (e) => {
+    const bundleQty = Number(e.target.value);
+    setWithPoBundle(bundleQty);
+  
+    // Recalculate total pieces when the bundle quantity changes
+    const newTotalPcs = withPoData.purchase_by_size.reduce((sum, item) => {
+      const innerPcs = item.innerPcs || 0;
+      const outerPcs = item.outerPcs || 0;
+      return sum + innerPcs * outerPcs * bundleQty;
+    }, 0);
+  
+    setTotalPcs(newTotalPcs);
+  
+    setUpdatedwithPoData((prevData) => ({
+      ...prevData,
+      req_bundle: bundleQty,
+      totalPcs: newTotalPcs,
+    }));
+  };
+  
 
-  const handleSubmit = async () => {
-    // Handle the submit logic
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("updatedWithPoData", updatedWithPoData);
+
+    try {
+      const response = await apiService.put(
+        `/purchases/${withPoId}`,
+        updatedWithPoData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("Submit response:", response);
+        setSuccessMessage("With-Po updated successfully");
+        setErrorMessage("");
+        setUpdatedwithPoData({});
+        setTimeout(() => {
+          setSuccessMessage("");
+          onClose();
+        }, 3000);
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 409) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage(error.message);
+      }
+    }
+  };
+
+  const handleClose = () => {
+    setUpdatedwithPoData({});
+    setSuccessMessage("");
+    setErrorMessage("");
+    onClose();
   };
 
   if (!show) return null;
@@ -179,144 +372,370 @@ const EditWithoutPoModal = ({ show, onClose, productId }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-black bg-opacity-50">
       <div
         className="fixed inset-0 bg-black opacity-50"
-        onClick={onClose}
+        onClick={handleClose}
       ></div>
       <div className="relative bg-white rounded-lg shadow-lg w-full max-w-[80vw] h-screen max-h-[90vh] overflow-auto">
         <div className="px-10 py-5">
           <div className="flex justify-center">
             <h2 className="text-xl font-bold">Edit Purchase Order</h2>
-            <button className="absolute right-5 cursor-pointer" onClick={onClose}>
+            <button
+              className="absolute cursor-pointer right-5"
+              onClick={handleClose}
+            >
               <img src={closeIcon} alt="Close" />
             </button>
           </div>
           <hr className="my-2" />
           <div className="px-20">
-            <div className="mt-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-              <div className="flex flex-col gap-2 mt-3">
+            <div className="grid grid-cols-2 gap-4 mt-10 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
+              <div className="flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="styleNo">
                   Purchase Order No:
                 </label>
                 <input
                   type="text"
                   id="purchaseOrderNo"
-                  value={purchaseOrder.purchase_order_number || ""}
-                  onChange={(e) => setOrderNumber(e.target.value)}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
-                  placeholder="Enter po number"
+                  value={withPoData.purchase_order_number}
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                  disabled
                 />
               </div>
-              <div className="flex flex-col gap-2 mt-3">
+
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="buyer">
-                  Buyer:
+                  Buyer Name:
                 </label>
                 <input
                   type="text"
                   id="buyer"
-                  value={purchaseOrder?.Buyer?.name || ""}
-                  // onChange={(e) => setBuyer(e.target.value)}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
-                  placeholder="Enter buyer"
+                  value={withPoData.Buyer.name}
+                  onChange={handleBuyerChange}
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                  placeholder="Enter Buyer Name"
                 />
+                {buyerDropdown && withPoData.Buyer.name && (
+                  <ul className="absolute left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg top-full">
+                    {buyerSuggestions.length > 0 ? (
+                      buyerSuggestions.map((suggestion) => (
+                        <li
+                          key={suggestion.id}
+                          className="px-4 py-2 cursor-pointer hover:bg-gray-200"
+                          onClick={() => handleBuyerSelect(suggestion)}
+                        >
+                          {suggestion.name}
+                        </li>
+                      ))
+                    ) : (
+                      <li
+                        className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
+                        onClick={handleAddNewBuyer}
+                      >
+                        Add New Buyer: "{withPoData.Buyer.name}"
+                      </li>
+                    )}
+                  </ul>
+                )}
               </div>
-              <div className="flex flex-col gap-2 mt-3">
+
+              <div className="flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="location">
-                  Location
+                  Buyer Location
                 </label>
                 <input
                   type="text"
                   id="location"
-                  // value={purchaseOrder?.Buyer?.location || ""}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  value={withPoData.Buyer.location}
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
               </div>
-              <div className="flex flex-col gap-2 mt-3">
+
+              <div className="flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="deliveryDate">
                   Delivery date:
                 </label>
                 <input
                   type="date"
                   id="deliveryDate"
-                  value={deliveryDate}
+                  value={deliveryDate.split("T")[0]}
                   onChange={handleDeliveryDateChange}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter delivery date"
                 />
               </div>
-              <div className="flex flex-col gap-2 mt-3 relative">
+
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="styleNo">
                   Style No:
                 </label>
                 <input
                   type="text"
                   id="styleNo"
-                  value={purchaseOrder.product_style_number || ""}
-                  onChange={handleInputChange}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  value={withPoData.Product.style_no}
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Style No"
                 />
-                {referenceDropdown && referenceNumber && (
-                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg">
-                    {referenceSuggestions.map((item) => (
-                      <li
-                        key={item.id}
-                        onClick={() => handleReferenceSelect(item)}
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
-                      >
-                        {item.reference_number}
-                      </li>
-                    ))}
-                  </ul>
-                )}
               </div>
-              <div className="flex flex-col gap-2 mt-3">
-                <label className="font-semibold" htmlFor="Brand">
-                  Brand:
+
+              <div className="relative flex flex-col gap-2">
+                <label className="font-semibold" htmlFor="referenceNumber">
+                  Reference Number:
+                </label>
+                <input
+                  type="text"
+                  id="referenceNumber"
+                  value={withPoData.Product.Reference.reference_no}
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                  disabled
+                />
+              </div>
+
+              <div className="relative flex flex-col gap-2">
+                <label className="font-semibold" htmlFor="brand">
+                  Brand Name:
                 </label>
                 <input
                   type="text"
                   id="brand"
-                  value={brand}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  value={withPoData.Product.Brand.brandName}
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
               </div>
-              <div className="flex flex-col gap-2 mt-3">
-                <label className="font-semibold" htmlFor="gsm">
-                  Style No
+
+              <div className="relative flex flex-col gap-2">
+                <label className="font-semibold" htmlFor="fabric">
+                  Fabric:
                 </label>
                 <input
                   type="text"
-                  id="styleNo"
-                  value={styleNo}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  id="fabric"
+                  value={withPoData.Product.Fabric.fabricName}
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
               </div>
-              <div className="flex flex-col gap-2 mt-3">
-                <label className="font-semibold" htmlFor="colors">
+
+              <div className="relative flex flex-col gap-2">
+                <label className="font-semibold" htmlFor="fabricFinish">
+                  Fabric Finish:
+                </label>
+                <input
+                  type="text"
+                  id="fabricFinish"
+                  value={withPoData.Product.FabricFinish.fabricFinishName}
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                  disabled
+                />
+              </div>
+
+              <div className="relative flex flex-col gap-2">
+                <label className="font-semibold" htmlFor="gsm">
+                  GSM:
+                </label>
+                <input
+                  type="number"
+                  id="gsm"
+                  value={withPoData.Product.Gsm.gsmValue}
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                  disabled
+                />
+              </div>
+
+              <div className="relative flex flex-col gap-2">
+                <label className="font-semibold" htmlFor="knitType">
+                  Knit Type:
+                </label>
+                <input
+                  type="text"
+                  id="knitType"
+                  value={withPoData.Product.KnitType.knitType}
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                  disabled
+                />
+              </div>
+
+              <div className="relative flex flex-col gap-2">
+                <label className="font-semibold" htmlFor="category">
                   Category:
                 </label>
                 <input
                   type="text"
                   id="category"
-                  value={category}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  value={withPoData.Product.Category.categoryName}
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
               </div>
-              <div className="flex flex-col gap-2 mt-3">
-                <label className="font-semibold" htmlFor="sizes">
+
+              <div className="relative flex flex-col gap-2">
+                <label className="font-semibold" htmlFor="color">
+                  Color:
+                </label>
+                <input
+                  type="text"
+                  id="color"
+                  value={withPoData.Product.Color.colorName}
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                  disabled
+                />
+              </div>
+
+              <div className="relative flex flex-col gap-2">
+                <label className="font-semibold" htmlFor="size">
+                  Size:
+                </label>
+                <input
+                  type="text"
+                  id="size"
+                  value={withPoData.Product.Size.sizes}
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                  disabled
+                />
+              </div>
+
+              <div className="relative flex flex-col gap-2">
+                <label className="font-semibold" htmlFor="decoration">
+                  Decorations:
+                </label>
+                <input
+                  type="text"
+                  id="decoration"
+                  value={withPoData.Product.Decoration.decorationName}
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                  disabled
+                />
+              </div>
+
+              <div className="relative flex flex-col gap-2">
+                <label className="font-semibold" htmlFor="print">
+                  Print or Embed:
+                </label>
+                <input
+                  type="text"
+                  id="print"
+                  value={withPoData.Product.PrintEmbName.printType}
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                  disabled
+                />
+              </div>
+
+              <div className="relative flex flex-col gap-2">
+                <label className="font-semibold" htmlFor="stitch">
+                  Stitch Details:
+                </label>
+                <input
+                  type="text"
+                  id="stitch"
+                  value={withPoData.Product.StitchDetail.stictchDetail}
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                  disabled
+                />
+              </div>
+
+              <div className="relative flex flex-col gap-2">
+                <label className="font-semibold" htmlFor="neck">
+                  Neck:
+                </label>
+                <input
+                  type="text"
+                  id="neck"
+                  value={withPoData.Product.Neck.neckType}
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                  disabled
+                />
+              </div>
+
+              <div className="relative flex flex-col gap-2">
+                <label className="font-semibold" htmlFor="sleeve">
+                  Sleeve:
+                </label>
+                <input
+                  type="text"
+                  id="sleeve"
+                  value={withPoData.Product.Sleeve.sleeveName}
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                  disabled
+                />
+              </div>
+
+              <div className="relative flex flex-col gap-2">
+                <label className="font-semibold" htmlFor="length">
+                  Length:
+                </label>
+                <input
+                  type="text"
+                  id="length"
+                  value={withPoData.Product.Length.lengthType}
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                  disabled
+                />
+              </div>
+
+              <div className="relative flex flex-col gap-2">
+                <label className="font-semibold" htmlFor="packing">
+                  Packing Method:
+                </label>
+                <input
+                  type="text"
+                  id="packing"
+                  value={withPoData.Product.PackingMethod.packingType}
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                  disabled
+                />
+              </div>
+
+              <div className="relative flex flex-col gap-2">
+                <label className="font-semibold" htmlFor="product-type">
                   Product Type:
                 </label>
                 <input
                   type="text"
-                  id="productType"
-                  value={productType}
-                  className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                  id="product-type"
+                  value={withPoData.Product.ProductType.product}
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
-              </div>              
+              </div>
+
+              <div className="relative flex flex-col gap-2">
+                <label className="font-semibold" htmlFor="measurement-chart">
+                  Measurement chart:
+                </label>
+                <input
+                  type="text"
+                  id="measurement-chart"
+                  value={withPoData.Product.MeasurementChart.name}
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                  disabled
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2 mt-3">
+              <label className="font-semibold" htmlFor="shortDescription">
+                Short Description:
+              </label>
+              <textarea
+                id="shortDescription"
+                value={withPoData.Product.short_description}
+                className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                rows="1"
+                disabled
+              />
+            </div>
+
+            <div className="flex flex-col gap-2 mt-3">
+              <label className="font-semibold" htmlFor="fullDescription">
+                Full Description:
+              </label>
+              <textarea
+                id="fullDescription"
+                value={withPoData.Product.full_description}
+                className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                rows="2"
+                disabled
+              />
             </div>
 
             <div className="flex flex-col gap-2 mt-3">
@@ -325,9 +744,8 @@ const EditWithoutPoModal = ({ show, onClose, productId }) => {
               </label>
               <textarea
                 id="notes"
-                value={purchaseOrder.notes}
-                onChange={(e) => setNotes(e.target.value)}
-                className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                value={withPoData.notes}
+                className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                 placeholder="Enter additional notes"
                 rows="3"
               />
@@ -363,79 +781,91 @@ const EditWithoutPoModal = ({ show, onClose, productId }) => {
               <div className="flex items-center gap-2 mb-4">
                 <h3 className="text-lg font-medium">Order Info:</h3>
               </div>
-              <div className="flex gap-4 border border-gray-400 px-5 justify-between">
+              <div className="flex justify-between gap-4 px-5 border border-gray-400">
                 <div className="p-4 rounded-lg">
-                  <h4 className="text-sm font-medium mb-4">Quantity per size:</h4>
+                  <h4 className="mb-4 text-sm font-medium">
+                    Quantity per size:
+                  </h4>
                   <div className="flex flex-col gap-4">
-                    {sizes.map((sizeItem, index) => (
+                    {withPoData?.purchase_by_size?.map((stock, index) => (
                       <div key={index} className="flex items-center gap-4 mb-2">
-                        <div className="w-16">{sizeItem.size}: </div>
+                        <div className="w-16">{stock.size}: </div>
                         <input
                           type="number"
-                          value={innerPcs[sizeItem.size] || sizeItem.innerPcs}
-                          onChange={(e) => handleInnerPcsChange(sizeItem, e.target.value)}
+                          value={stock.innerPcs || null}
+                          onChange={(e) => handleInnerPcsChange(e, stock.size)}
                           placeholder="Inner Pcs"
-                          className="border border-gray-300 rounded-md px-2 py-1 w-24"
+                          className="w-24 px-2 py-1 border border-gray-300 rounded-md"
                           disabled={assortmentType === "solid"}
                         />
                         <input
                           type="number"
-                          value={outerPcs[sizeItem.size] || sizeItem.outerPcs}
-                          onChange={(e) => handleOuterPcsChange(sizeItem, e.target.value)}
+                          value={stock.outerPcs || null}
+                          onChange={(e) => handleOuterPcsChange(e, stock.size)}
                           placeholder="Outer Pcs"
-                          className="border border-gray-300 rounded-md px-2 py-1 w-24"
+                          className="w-24 px-2 py-1 border border-gray-300 rounded-md"
                         />
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="content-center">
-                  <label className="font-semibold">No of Bundles: </label>
+                <div className="content-center px-20">
+                  <label className="font-semibold">Number of Bundles: </label>
                   <input
                     type="number"
-                    value={purchaseOrder.stock_out_no_bundles}
-                    onChange={(e) => setBundles(Number(e.target.value) || 0)}
+                    value={withPoBundle}
+                    onChange={handleBundleChange}
                     placeholder="Bundles"
-                    className="border border-gray-300 rounded-md px-2 py-1 w-24"
+                    className="w-24 px-2 py-1 border border-gray-300 rounded-md"
                   />
                 </div>
 
-                <div className="p-4 bg-gray-100 flex items-center justify-center mt-8 mb-8">
+                <div className="flex items-center justify-center p-4 mt-8 mb-8 bg-gray-100">
                   <div className="flex flex-col gap-4">
-                    <div className="flex gap-5 justify-between">
+                    <div className="flex justify-between gap-5">
                       <label className="block text-sm font-medium text-gray-700">
                         Total Inner Pcs
                       </label>
                       <span>{totalInnerPcs}</span>
                     </div>
-                    <div className="flex gap-5 justify-between">
+                    <div className="flex justify-between gap-5">
                       <label className="block text-sm font-medium text-gray-700">
                         Total Outer Pcs
                       </label>
                       <span>{totalOuterPcs}</span>
                     </div>
-                    <div className="flex gap-5 justify-between">
+                    <div className="flex justify-between gap-5">
                       <label className="block text-sm font-medium text-gray-700">
                         Total Pcs per Bundle
                       </label>
                       <span>{totalInnerPcsPerBundle}</span>
                     </div>
-                    <div className="flex gap-5 justify-between">
+                    <div className="flex justify-between gap-5">
                       <label className="block text-sm font-medium text-gray-700">
                         Total Pcs
                       </label>
-                      <span>{totalProducts || purchaseOrder.total_purchase_qty}</span>
+                      <span>{totalPcs}</span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          {successMessage && (
+            <div className="p-4 my-4 text-green-700 bg-green-100 border-l-4 border-green-500">
+              <p>{successMessage}</p>
+            </div>
+          )}
+          {errorMessage && (
+            <div className="p-4 my-4 text-red-700 bg-red-100 border-l-4 border-red-500">
+              <p>{errorMessage}</p>
+            </div>
+          )}
           <div className="flex justify-center px-20 mt-5">
             <button
               onClick={handleSubmit}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+              className="px-4 py-2 font-semibold text-white bg-blue-500 rounded hover:bg-blue-600"
             >
               CREATE PURCHASE ORDER
             </button>

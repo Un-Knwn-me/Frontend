@@ -247,14 +247,14 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
     try {
       const response = await apiService.post("/stocks/create", stockData);
 
-      if (response.status === 200) {
+      if (response.status === 201) {
       console.log("Stock created:", response.data);
       onClose();
       getAllStocks();
       } 
     } catch (error) {
       if (error.response && error.response.status === 409) {
-        setErrorMessage("Reference number of the product already exists.");
+        setErrorMessage("Style number of the product already exists.");
 
         // Clear messages after 5 seconds
         setTimeout(() => {

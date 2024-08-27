@@ -25,7 +25,7 @@ const AddStockOutModel = ({ show, onClose }) => {
   const fetchStyleSuggestions = async (style_no) => {
     try {
         const response = await apiService.get(`/stocks/${style_no}`);
-
+        console.log('productInfo', response.data);
         setProductInfo(response.data);
         const totalStockInnerPcs = calculateTotalInnerPcs(response.data.stock_by_size);
         setProductInnerTotals(totalStockInnerPcs);
@@ -519,6 +519,20 @@ const AddStockOutModel = ({ show, onClose }) => {
                   disabled
                 />
               </div>
+
+              <div className="relative flex flex-col gap-2">
+                <label className="font-semibold" htmlFor="packing">
+                  Warehouse:
+                </label>
+                <input
+                  type="text"
+                  id="packing"
+                  value={productInfo?.Warehouse.warehouse || ''}
+                  className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                  disabled
+                />
+              </div>
+
             </div>
 
             <div className="flex flex-col gap-2 mt-3">
