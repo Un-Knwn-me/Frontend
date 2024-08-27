@@ -23,6 +23,7 @@ const StockIn = ({ searchQuery }) => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedStock, setSelectedStock] = useState();
   const [showQr, setShowQr] = useState(false);
+  const [qrData, setQrData] = useState({});
 
   // Function to fetch all products
   const getAllStocks = async () => {
@@ -75,7 +76,7 @@ const StockIn = ({ searchQuery }) => {
     setCurrentPage(1); // Reset to first page on new search
   };
 
-  const handleEditClick = (id) => {
+  const handleEditClick = (id, row) => {
     setEditIndex(id);
     setShowModal(true);
   };
@@ -125,9 +126,10 @@ const StockIn = ({ searchQuery }) => {
     setShowAddModal(false);
   };
 
-  const handleQrClick = (id) => {
+  const handleQrClick = (id, row) => {
     if (id) {
       setSelectedStock(id);
+      setQrData(row);
       setShowQr(true);
     } else {
       console.error('Stock ID is undefined');
@@ -276,7 +278,7 @@ const StockIn = ({ searchQuery }) => {
                       {row.days_since_created}
                     </td> 
                     <td className="w-10 px-2 py-3 text-center text-black whitespace-nowrap text-md">
-                      <RiQrScan2Line className="w-6 h-6 text-center cursor-pointer" onClick={() => handleQrClick(row.id)}/>
+                      <RiQrScan2Line className="w-6 h-6 text-center cursor-pointer" onClick={() => handleQrClick(row.id, row)}/>
                     </td>   
                     <td className="w-10 px-2 py-3 text-center text-black whitespace-nowrap text-md">
                       <button
@@ -344,7 +346,7 @@ const StockIn = ({ searchQuery }) => {
       </div>
       <EditStockInModal showModal={showModal} close={handleCloseModal} editIndex={editIndex} getAllStocks={getAllStocks}/>
       <AddStockModal show={showAddModal} onClose={handleAddModalClose} getAllStocks={getAllStocks} />
-      <QRCodeOut show={showQr} stockId={selectedStock} close={handleQrModalClose}/>
+      <QRCodeOut show={showQr} stockId={selectedStock} close={handleQrModalClose} qrData={qrData}/>
     </>
   );
 };

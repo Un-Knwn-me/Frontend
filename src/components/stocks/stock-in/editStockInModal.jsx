@@ -250,10 +250,6 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
       setTotalInnerPcsPerBundle(totalInnerPerBundle);
     }
 
-    if (stockInData?.no_bundles !== undefined) {
-      setStockInBundle(stockInData.no_bundles);
-    }
-
     if (stockInBundle > 0 && stockInData?.stock_by_size) {
       const totalPcs = stockInData.stock_by_size.reduce((sum, item) => {
         return sum + item.innerPcs * item.outerPcs * stockInBundle;
@@ -261,7 +257,7 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
       setTotalPcs(totalPcs);
       setUpdatedStockInData({
         ...updatedStockInData,
-        totalPcs: totalPcs,
+        total_pcs: totalPcs,
       });
     } else {
       setTotalPcs(0);
@@ -300,7 +296,7 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
     setUpdatedStockInData((prevData) => ({
       ...prevData,
       no_bundles: bundleQty,
-      totalPcs: newTotalPcs,
+      total_pcs: newTotalPcs,
     }));
   };
 
@@ -309,6 +305,7 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
     console.log("updatedStockInData", updatedStockInData);
     
     try {
+      console.log(`editIndex ${editIndex}`);
       const response = await apiService.put(`/stocks/stockIn/${editIndex}`, updatedStockInData,
         {
           headers: {
