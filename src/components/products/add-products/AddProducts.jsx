@@ -43,14 +43,24 @@ const AddProducts = ({ searchQuery }) => {
     getAllProducts();
   }, []);
 
-
   const handleSearch = (searchValue) => {
-    const filtered = initialData.filter((item) =>
-      item.brand.toLowerCase().includes(searchValue.toLowerCase())
-    );
+    const lowercasedSearchValue = searchValue.toLowerCase();
+  
+    const filtered = initialData.filter((item) => {
+      return (
+        (item.style_no && item.style_no.toLowerCase().includes(lowercasedSearchValue)) ||
+        (item.Reference && item.Reference.reference_no && item.Reference.reference_no.toLowerCase().includes(lowercasedSearchValue)) ||
+        (item.ProductType && item.ProductType.product && item.ProductType.product.toLowerCase().includes(lowercasedSearchValue)) ||
+        (item.Brand && item.Brand.brandName && item.Brand.brandName.toLowerCase().includes(lowercasedSearchValue)) ||
+        (item.Fabric && item.Fabric.fabricName && item.Fabric.fabricName.toLowerCase().includes(lowercasedSearchValue)) ||
+        (item.Color && item.Color.colorName && item.Color.colorName.toLowerCase().includes(lowercasedSearchValue)) ||
+        (item.Size && item.Size.sizes && item.Size.sizes.some(size => size.toLowerCase().includes(lowercasedSearchValue)))
+      );
+    });
+  
     setFilteredData(filtered);
-    setCurrentPage(1); // Reset to first page on new search
-  };
+    setCurrentPage(1);
+  };   
 
   const handleEditClick = (id) => {
     setSelectedProductId(id);

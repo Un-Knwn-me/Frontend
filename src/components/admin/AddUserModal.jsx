@@ -57,8 +57,8 @@ const AddUserModal = ({ isOpen, onClose, onUpdate }) => {
         },
       });
       console.log(response.data);
-      onUpdate(response.data); // Optional: Update parent component or state
-      onClose(); // Close the modal
+      onUpdate(response.data); 
+      onClose(); 
     } catch (error) {
       console.error("User creation failed:", error);
       // Handle error (e.g., show an error message)
@@ -79,9 +79,9 @@ const AddUserModal = ({ isOpen, onClose, onUpdate }) => {
     >
       <div className="bg-white p-8 rounded-lg shadow-lg relative min-h-[450px] min-w-[350px]">
         <form onSubmit={handleSubmit}>
-          <div className="text-center mb-4">
+          <div className="mb-4 text-center">
             <div className="relative">
-              <h2 className="text-xl text-center font-bold">Add User</h2>
+              <h2 className="text-xl font-bold text-center">Add User</h2>
               <button
                 className="absolute top-0 right-0"
                 onClick={() => onClose()}
@@ -96,11 +96,11 @@ const AddUserModal = ({ isOpen, onClose, onUpdate }) => {
                     <img
                       src={previewUrl}
                       alt="Profile Preview"
-                      className="rounded-full w-20 h-20 mr-4"
+                      className="w-20 h-20 mr-4 rounded-full"
                     />
                     <button
                       type="button"
-                      className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                      className="absolute top-0 right-0 flex items-center justify-center w-6 h-6 text-white bg-red-500 rounded-full"
                       onClick={handleRemoveImage}
                     >
                       &times;
@@ -110,13 +110,13 @@ const AddUserModal = ({ isOpen, onClose, onUpdate }) => {
                   <img
                     src={addUserPhotoIcon}
                     alt=""
-                    className="bg-gray-200 rounded-full p-4 mr-4"
+                    className="p-4 mr-4 bg-gray-200 rounded-full"
                   />
                 )}
                 <div className="flex flex-col">
-                  <span className="relative py-2 mr-2 text-md text-left text-blue-500 underline min-w-28 max-w-24 cursor-pointer">
+                  <span className="relative py-2 mr-2 text-left text-blue-500 underline cursor-pointer text-md min-w-28 max-w-24">
                     {previewUrl ? "Change Photo" : "Upload Photo"}
-                    <span className="text-blue-500 absolute top-1 right-0">*</span>
+                    <span className="absolute right-0 text-blue-500 top-1">*</span>
                   </span>
                   <p className="text-xs text-gray-400">
                     The photo should be Png, Jpeg below 1mb in size
@@ -203,10 +203,10 @@ const AddUserModal = ({ isOpen, onClose, onUpdate }) => {
           </div>
           </div>
           {/* Update button */}
-          <div className="text-right absolute bottom-5 right-10">
+          <div className="absolute text-right bottom-5 right-10">
             <button
               type="submit"
-              className="bg-sky-700 text-white px-4 py-1 rounded-md w-40"
+              className="w-40 px-4 py-1 text-white rounded-md bg-sky-700"
             >
               Update
             </button>

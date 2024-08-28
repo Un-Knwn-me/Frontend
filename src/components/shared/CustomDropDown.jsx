@@ -45,13 +45,13 @@ const CustomDropdown = ({ options, selectedOption, onSelect, icon }) => {
             )}
             <button
               type="button"
-              class="inline-flex items-center justify-between px-2 py-1 text-lg font-medium text-gray-700 bg-transparent rounded-md focus:outline-none"
+              className="inline-flex items-center justify-between px-2 py-1 text-lg font-medium text-gray-700 bg-transparent rounded-md focus:outline-none"
               onClick={toggleDropdown}
               aria-haspopup="listbox"
-              aria-expanded="false" 
+              aria-expanded="false"
             >
               <span>
-              {selectedOption || 'Sort by'}
+                {selectedOption?.label || 'Sort by'}
               </span>
               <MdOutlineSort className='ml-2 mt-0.5 text-lg'/>
             </button>
@@ -73,7 +73,7 @@ const CustomDropdown = ({ options, selectedOption, onSelect, icon }) => {
                   className="relative px-4 py-2 text-sm text-gray-700 cursor-pointer select-none hover:bg-gray-100 hover:text-gray-900"
                   onClick={() => handleOptionSelect(option)}
                 >
-                  {option}
+                  {option.label}
                 </li>
               ))}
             </ul>
@@ -83,5 +83,6 @@ const CustomDropdown = ({ options, selectedOption, onSelect, icon }) => {
     </div>
   );
 };
+
 
 export default CustomDropdown;

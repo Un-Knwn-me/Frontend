@@ -13,6 +13,8 @@ import { CiEdit } from "react-icons/ci";
 import EditUserProfileModal from "./EditUserProfileModal";
 
 const UsersTable = ({searchQuery}) => {
+  const [initialData, setInitialData] = useState([]);
+  const [filteredData, setFilteredData] = useState(initialData);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isUserEditOpen, setIsUserEditOpen] = useState(false);
@@ -23,10 +25,15 @@ const UsersTable = ({searchQuery}) => {
   const [users, setUsers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(5);
+  const [selectedUsersId, setSelectedUsersId] = useState(null);
 
   useEffect(() => {
     getAllUsers();
   }, []);
+
+  useEffect(() => {
+    handleSearch(searchQuery);
+  }, [searchQuery, users]);
 
   const permissions = [
     "ADMIN",
@@ -46,6 +53,7 @@ const UsersTable = ({searchQuery}) => {
       });
       console.log(response.data);
       setUsers(response.data);
+      setFilteredData(response.data);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
@@ -90,12 +98,15 @@ const UsersTable = ({searchQuery}) => {
     }
   };
 
+  
+
    // Function to open the edit user modal and fetch user data
    const openEditUserModal = async (user) => {
     try {
       const response = await apiService.get(`/users/${user.id}`);
       console.log(response.data); 
-      setSelectedUser(response.data);
+        setSelectedUser(response.data);
+        setSelectedUsersId(user.id);
       setIsUserEditOpen(true);
     } catch (error) {
       console.error(`Error fetching user ${user.id}:`, error);
@@ -141,22 +152,32 @@ const UsersTable = ({searchQuery}) => {
     }
   };
 
-  // const filteredData = users.filter(
-  //   (item) =>
-  //     item.full_name &&
-  //     item.full_name.toLowerCase().includes(searchQuery.toLowerCase())
-  // );
+  const handleSearch = (searchValue) => {
+    if (searchValue) {
+      const filtered = users.filter(item =>
+        item.full_name.toLowerCase().includes(searchValue.toLowerCase())
+      );
+      setFilteredData(filtered);
+    } else {
+      setFilteredData(users);
+    }
+    setCurrentPage(1); // Reset to first page on new search
+  };
+
+ 
 
   const startIndex = (currentPage - 1) * recordsPerPage;
   const endIndex = startIndex + recordsPerPage;
-  // const currentData = filteredData.slice(startIndex, endIndex);
+  const currentData = filteredData.slice(startIndex, endIndex);
 
   return (
     <>
       <TopLayer
+        isSearch={true}
+        onSearch={handleSearch}
         isAddButton={true}
         addButtonIcon={addusersIcon}
-        addButtonText="Add User"
+        addButtonText="Add User "
         arrangeIconRight={true}
         onAddButtonClick={openModal}
       />
@@ -183,6 +204,7 @@ const UsersTable = ({searchQuery}) => {
           onClose={() => setIsUserEditOpen(false)}
           permissions={permissions}
           onUpdate={handleEditUser}
+          userId={selectedUsersId}
         />
       )}
       <div className="mt-3 overflow-y-auto max-h-[70vh] pb-5">
@@ -215,7 +237,7 @@ const UsersTable = ({searchQuery}) => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {users?.map((row, index) => (
+            {currentData?.map((row, index) => (
               <tr key={row.id} style={{ maxHeight: "50px" }}>
                 <td className="w-20 px-2 py-2 text-center text-black whitespace-nowrap text-md">
                   {startIndex + index + 1}

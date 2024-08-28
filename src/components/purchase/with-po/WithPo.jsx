@@ -49,9 +49,18 @@ const WithPo = () => {
   }, []);
 
   const handleSearch = (searchValue) => {
+    const lowercasedSearchValue = searchValue.toLowerCase();
+
     const filtered = initialData.filter(item =>
-      item.purchase_order_number.toLowerCase().includes(searchValue.toLowerCase())
+      (item.purchase_order_number && item.purchase_order_number.toLowerCase().includes(lowercasedSearchValue)) ||
+      (item.Product?.style_no && item.Product.style_no.toLowerCase().includes(lowercasedSearchValue)) ||
+      (item.Product?.Brand?.brandName && item.Product.Brand.brandName.toLowerCase().includes(lowercasedSearchValue)) ||
+      (item.Product?.Category?.categoryName && item.Product.Category.categoryName.toLowerCase().includes(lowercasedSearchValue)) ||
+      (item.Product?.ProductType?.product && item.Product.ProductType.product.toLowerCase().includes(lowercasedSearchValue)) ||
+      (item.Buyer?.name && item.Buyer.name.toLowerCase().includes(lowercasedSearchValue)) ||
+      (item.Buyer?.location && item.Buyer.location.toLowerCase().includes(lowercasedSearchValue))
     );
+
     setFilteredData(filtered);
     setCurrentPage(1); // Reset to first page on new search
   };

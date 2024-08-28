@@ -9,7 +9,7 @@ import apiService from "../../apiService";
 const EditUsersModal = ({ user, onClose, onUpdate, permissions }) => {
     const [editedUser, setEditedUser] = useState({
         ...user,
-        moduleAccess: user.moduleAccess || [], // Ensure moduleAccess is defined
+        moduleAccess: user.moduleAccess || [], 
       });
     const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
 
@@ -64,10 +64,10 @@ const EditUsersModal = ({ user, onClose, onUpdate, permissions }) => {
         {!isEditProfileModalOpen && (
                     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="bg-white rounded-lg p-8 w-[600px]">
-                        <div className="flex justify-between items-center mb-4">
+                        <div className="flex items-center justify-between mb-4">
                             <h2 className="text-xl font-semibold">Profile</h2>
                             <button onClick={onClose} className="font-bold">
-                                <img src={closeIcon} alt="" className="h-5 w-5" />
+                                <img src={closeIcon} alt="" className="w-5 h-5" />
                             </button>
                         </div>
                         <div className="flex items-center mb-4">
@@ -75,7 +75,7 @@ const EditUsersModal = ({ user, onClose, onUpdate, permissions }) => {
                                 <img
                                     src={user.profile}
                                     alt={user.full_name}
-                                    className="w-16 h-16 rounded-full object-cover mr-4"
+                                    className="object-cover w-16 h-16 mr-4 rounded-full"
                                 />
                             ) : (
                                 <div
@@ -86,7 +86,7 @@ const EditUsersModal = ({ user, onClose, onUpdate, permissions }) => {
                             )}
                             <div className="flex" >
                                 <div className="font-semibold">{user.full_name}</div>
-                                <button className="text-blue-500 flex ml-5" onClick={openEditProfileModal}>
+                                <button className="flex ml-5 text-blue-500" onClick={openEditProfileModal}>
                                     <img src={editIcon} alt="Edit" className="w-6 h-6" />
                                     <span className="text-lg underline" >Edit Profile</span>
                                 </button>
@@ -95,7 +95,7 @@ const EditUsersModal = ({ user, onClose, onUpdate, permissions }) => {
                         <div>
                             {permissions.map((permission) => (
                                 <>
-                                <div key={permission} className="flex items-center mb-2 justify-between">
+                                <div key={permission} className="flex items-center justify-between mb-2">
                                     <div className="mr-2">{permission}</div>
                                     <div className="flex items-center">
                                         <span className={`mr-2 ${editedUser.moduleAccess.includes(permission) ? 'text-green-600' : 'text-gray-400'}`}>
@@ -117,20 +117,20 @@ const EditUsersModal = ({ user, onClose, onUpdate, permissions }) => {
                                         </button>
                                     </div>
                                 </div>
-                    <hr className="my-2 border border-gray-200 w-full" />
+                    <hr className="w-full my-2 border border-gray-200" />
                 </>
                             ))}
                         </div>
-                        <div className="mt-4 flex justify-between">
+                        <div className="flex justify-between mt-4">
                             <button
                                 onClick={handleUpdate}
-                                className="bg-blue-500 text-white py-2 px-4 rounded-md font-semibold"
+                                className="px-4 py-2 font-semibold text-white bg-blue-500 rounded-md"
                             >
                                 Update
                             </button>
                             <button
                                 onClick={handleDelete}
-                                className="bg-red-500 text-white py-2 px-5 rounded-md font-semibold"
+                                className="px-5 py-2 font-semibold text-white bg-red-500 rounded-md"
                             >
                                 Delete
                             </button>

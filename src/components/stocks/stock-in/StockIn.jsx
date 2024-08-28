@@ -70,7 +70,13 @@ const StockIn = ({ searchQuery }) => {
 
   const handleSearch = (searchValue) => {
     const filtered = initialData.filter((item) =>
-      item.brand.toLowerCase().includes(searchValue.toLowerCase())
+      item.created_at.toLowerCase().includes(searchValue.toLowerCase()) ||
+      item.Product.style_no.toLowerCase().includes(searchValue.toLowerCase()) ||
+      item.Product.Reference.reference_no.toLowerCase().includes(searchValue.toLowerCase()) ||
+      item.Product.Brand.brandName.toLowerCase().includes(searchValue.toLowerCase()) ||
+      item.Product.Size.sizes.join(" ").toLowerCase().includes(searchValue.toLowerCase()) ||
+      item.Product.Category.categoryName.toLowerCase().includes(searchValue.toLowerCase()) ||
+      item.Product.ProductType.product.toLowerCase().includes(searchValue.toLowerCase())
     );
     setFilteredData(filtered);
     setCurrentPage(1); // Reset to first page on new search
