@@ -6,6 +6,7 @@ import rightArrowIcon from '../../assets/right-arrow-icon.svg';
 import { PDFDocument, rgb } from 'pdf-lib';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import * as XLSX from 'xlsx';
 
 const Reports = () => {
   const [selectedPreset, setSelectedPreset] = useState('');
@@ -28,7 +29,7 @@ const Reports = () => {
   const fetchReportData = async (preset) => {
     try {
       setIsLoading(true);
-      let endpoint = '';
+      let endpoint = '';  
 
       switch (preset) {
         case 'Overall Stocks':
@@ -106,165 +107,251 @@ const Reports = () => {
     setCurrentPage(1);
   };  
   
+  const generateSpreadsheet = (category) => {
+    // Create a new workbook
+    const workbook = XLSX.utils.book_new();
+    const worksheetData = [];
 
-  const generatePDF = async (category) => {
-    const pdfDoc = await PDFDocument.create();
-    let page = pdfDoc.addPage();
-    const { width, height } = page.getSize();
-  
-    const marginTop = 50;
-    const lineHeight = 20;
-    let currentYPosition = height - marginTop;
-    const bottomMargin = 100; 
+    // Define headers
+    const headers = [
+        'SL No',
+        'Images',
+        'Style No',
+        'Brand',
+        'Category',
+        'Color',
+        'Decoration',
+        'Fabric',
+        'Fabric Finish',
+        'Gsm',
+        'Knit Type',
+        'Length',
+        'Neck',
+        'Packing Method',
+        'Print & Embeded',
+        'Type',
+        'Sleeve',
+        'Stitch Detail',
+        'Short Description',
+        'Full Description',
+        'Stock Info',
+        'Stock-In Date',
+        'Total Pcs'
+    ];
 
-    let categoryDisplay;
-      if (category.categoryName) {
-          categoryDisplay = `Category: ${category.categoryName}`;
-      } else if (category.printType) {
-          categoryDisplay = `Print Type: ${category.printType}`;
-      } else {
-          categoryDisplay = 'N/A';
-      }
-  
-    // Draw the report title and category
-    page.drawText(`Report: ${selectedPreset}`, { x: 50, y: currentYPosition, size: 20, color: rgb(0, 0, 0) });
-    currentYPosition -= lineHeight;
-  
-    page.drawText(categoryDisplay, { x: 50, y: currentYPosition - 10, size: 16, color: rgb(0, 0, 0) });
-    currentYPosition -= lineHeight;
-    
-    
-    // Draw a line between header and product details
-    page.drawLine({
-      start: { x: 50, y: currentYPosition },
-      end: { x: width - 50, y: currentYPosition },
-      thickness: 1,
-      color: rgb(0, 0, 0),
-    });
-    currentYPosition -= lineHeight;
-  
-    // Iterate over the products in the category and add them to the PDF
+    // Push headers to worksheet data
+    worksheetData.push(headers);
+
+    // Iterate over products and add data
     category.Products.forEach((product, index) => {
-      // Check if the page has enough space for a new product
-      if (currentYPosition <= marginTop + bottomMargin) {
-          page = pdfDoc.addPage();
-          currentYPosition = height - marginTop;
-      }
+        const stockData = product.Stocks.map(stock => ({
+            stockInDate: new Date(stock.created_at).toLocaleDateString('en-GB'),
+            totalPcs: stock.total_pcs,
+        }));
 
-      // Draw the product details
-      page.drawText(`${index + 1}. Style No: ${product.style_no}`, { x: 50, y: currentYPosition - 15, size: 15, color: rgb(0, 0, 0) });
-      currentYPosition -= lineHeight;
+        stockData.forEach((stock) => {
+            const rowData = [
+                startIndex + index + 1,
+                product.images[0],
+                product.style_no,
+                product.Brand.brandName,
+                product.Category.categoryName,
+                product.Color.colorName,
+                product.Decoration.decorationName,
+                product.Fabric.fabricName,
+                product.FabricFinish.fabricFinishName,
+                product.Gsm.gsmValue,
+                product.KnitType.knitType,
+                product.Length.lengthType,
+                product.Neck.neckType,
+                product.PackingMethod.packingType,
+                product.PrintEmbName.printType,
+                product.ProductType.product,
+                product.Sleeve.sleeveName,
+                product.StitchDetail.stictchDetail,
+                product.short_description,
+                product.full_description,
+                stock.totalPcs,
+                stock.stockInDate,
+            ];
 
-      // Draw product attributes
-      const productDetails = [
-        `Brand: ${product.Brand.brandName}`,
-        `Category: ${product.Category.categoryName}`,
-        `Color: ${product.Color.colorName}`,
-        `Decoration: ${product.Decoration.decorationName}`,
-        `Fabric: ${product.Fabric.fabricName}`,
-        `Fabric Finish: ${product.FabricFinish.fabricFinishName}`,
-        `Gsm: ${product.Gsm.gsmValue}`,
-        `Knit Type: ${product.KnitType.knitType}`,
-        `Length: ${product.Length.lengthType}`,
-        `Neck: ${product.Neck.neckType}`,
-        `Packing Method: ${product.PackingMethod.packingType}`,
-        `Print & Embeded: ${product.PrintEmbName.printType}`,
-        `Type: ${product.ProductType.product}`,
-        `Sleeve: ${product.Sleeve.sleeveName}`,
-        `Stitch Detail: ${product.StitchDetail.stictchDetail}`,
-        `Short Description: ${product.short_description}`,
-        `Full Description: ${product.full_description}`,
-      ];
-  
-        productDetails.forEach((detail) => {
-            if (currentYPosition <= marginTop + bottomMargin) {
-                page = pdfDoc.addPage();
-                currentYPosition = height - marginTop;
-            }
-            page.drawText(detail, { x: 65, y: currentYPosition - 15, size: 14, color: rgb(0, 0, 0) });
-            currentYPosition -= lineHeight;
+            worksheetData.push(rowData);
         });
-
-        if (currentYPosition <= marginTop + bottomMargin) {
-            page = pdfDoc.addPage();
-            currentYPosition = height - marginTop;
-        }
-
-        page.drawText(`Stock Info:`, { x: 50, y: currentYPosition - 35, size: 15, color: rgb(0, 0, 0) });
-        currentYPosition -= lineHeight;
-
-        page.drawLine({
-            start: { x: 50, y: currentYPosition - 18 },  
-            end: { x: width - 470, y: currentYPosition - 18 },  
-            thickness: 1,
-            color: rgb(0, 0, 0),
-        });
-        currentYPosition -= lineHeight;
-  
-        // Draw a line between header and table
-        page.drawLine({
-            start: { x: 50, y: currentYPosition - 45 },
-            end: { x: width - 250, y: currentYPosition - 45 },
-            thickness: 1,
-            color: rgb(0, 0, 0),
-        });
-        currentYPosition -= lineHeight;
-
-        // Draw table headers
-        page.drawText("Size", { x: 50, y: currentYPosition - 17, size: 14, color: rgb(0, 0, 0) });
-        page.drawText("Inner Pcs", { x: 150, y: currentYPosition - 17, size: 14, color: rgb(0, 0, 0) });
-        page.drawText("Outer Pcs", { x: 250, y: currentYPosition - 17, size: 14, color: rgb(0, 0, 0) });
-        currentYPosition -= lineHeight;
-
-      // Iterate over the Stocks and Stock-by-Size
-      product.Stocks.forEach((stock) => {
-          if (currentYPosition <= marginTop + bottomMargin) {
-              page = pdfDoc.addPage();
-              currentYPosition = height - marginTop;
-          }
-
-          const formattedDate = new Date(stock.created_at).toLocaleDateString('en-GB');
-
-          stock.stock_by_size.forEach((sizeData) => {
-              if (currentYPosition <= marginTop + bottomMargin) {
-                  page = pdfDoc.addPage();
-                  currentYPosition = height - marginTop;
-              }
-
-              page.drawText(sizeData.size, { x: 50, y: currentYPosition - 25, size: 12, color: rgb(0, 0, 0) });
-              page.drawText(sizeData.innerPcs.toString(), { x: 150, y: currentYPosition - 25, size: 12, color: rgb(0, 0, 0) });
-              page.drawText(sizeData.outerPcs.toString(), { x: 250, y: currentYPosition - 25, size: 12, color: rgb(0, 0, 0) });
-              currentYPosition -= lineHeight;
-          });
-
-          if (currentYPosition <= marginTop + bottomMargin) {
-              page = pdfDoc.addPage();
-              currentYPosition = height - marginTop;
-          }
-
-          // Draw Stock-In Date and Total Pcs
-          page.drawText(`Stock-In Date: ${formattedDate}`, { x: 50, y: currentYPosition - 45, size: 14, color: rgb(0, 0, 0) });
-          page.drawText(`Total Pcs: ${stock.total_pcs}`, { x: 250, y: currentYPosition - 45, size: 14, color: rgb(0, 0, 0) });
-          currentYPosition -= lineHeight;
-      });
-
-        // Add bottom space after each product
-        currentYPosition -= bottomMargin;
     });
 
-    const pdfBytes = await pdfDoc.save();
+    // Create a worksheet from the data
+    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
 
-    // Create a blob and a URL for it
-    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-    const url = URL.createObjectURL(blob);
+    // Add the worksheet to the workbook
+    XLSX.utils.book_append_sheet(workbook, worksheet, selectedPreset);
 
-    // Open the PDF in a new tab
-    window.open(url, '_blank');
+    // Generate and save the file
+    const fileName = `report_${selectedPreset.replace(/\s+/g, '_').toLowerCase()}.xlsx`;
+    XLSX.writeFile(workbook, fileName);
 };
+
+
+
+//   const generatePDF = async (category) => {
+//     const pdfDoc = await PDFDocument.create();
+//     let page = pdfDoc.addPage();
+//     const { width, height } = page.getSize();
+  
+//     const marginTop = 50;
+//     const lineHeight = 20;
+//     let currentYPosition = height - marginTop;
+//     const bottomMargin = 100; 
+
+//     let categoryDisplay;
+//       if (category.categoryName) {
+//           categoryDisplay = `Category: ${category.categoryName}`;
+//       } else if (category.printType) {
+//           categoryDisplay = `Print Type: ${category.printType}`;
+//       } else {
+//           categoryDisplay = 'N/A';
+//       }
+  
+//     // Draw the report title and category
+//     page.drawText(`Report: ${selectedPreset}`, { x: 50, y: currentYPosition, size: 20, color: rgb(0, 0, 0) });
+//     currentYPosition -= lineHeight;
+  
+//     page.drawText(categoryDisplay, { x: 50, y: currentYPosition - 10, size: 16, color: rgb(0, 0, 0) });
+//     currentYPosition -= lineHeight;
+    
+    
+//     // Draw a line between header and product details
+//     page.drawLine({
+//       start: { x: 50, y: currentYPosition },
+//       end: { x: width - 50, y: currentYPosition },
+//       thickness: 1,
+//       color: rgb(0, 0, 0),
+//     });
+//     currentYPosition -= lineHeight;
+  
+//     // Iterate over the products in the category and add them to the PDF
+//     category.Products.forEach((product, index) => {
+//       // Check if the page has enough space for a new product
+//       if (currentYPosition <= marginTop + bottomMargin) {
+//           page = pdfDoc.addPage();
+//           currentYPosition = height - marginTop;
+//       }
+
+//       // Draw the product details
+//       page.drawText(`${index + 1}. Style No: ${product.style_no}`, { x: 50, y: currentYPosition - 15, size: 15, color: rgb(0, 0, 0) });
+//       currentYPosition -= lineHeight;
+
+//       // Draw product attributes
+//       const productDetails = [
+//         `Brand: ${product.Brand.brandName}`,
+//         `Category: ${product.Category.categoryName}`,
+//         `Color: ${product.Color.colorName}`,
+//         `Decoration: ${product.Decoration.decorationName}`,
+//         `Fabric: ${product.Fabric.fabricName}`,
+//         `Fabric Finish: ${product.FabricFinish.fabricFinishName}`,
+//         `Gsm: ${product.Gsm.gsmValue}`,
+//         `Knit Type: ${product.KnitType.knitType}`,
+//         `Length: ${product.Length.lengthType}`,
+//         `Neck: ${product.Neck.neckType}`,
+//         `Packing Method: ${product.PackingMethod.packingType}`,
+//         `Print & Embeded: ${product.PrintEmbName.printType}`,
+//         `Type: ${product.ProductType.product}`,
+//         `Sleeve: ${product.Sleeve.sleeveName}`,
+//         `Stitch Detail: ${product.StitchDetail.stictchDetail}`,
+//         `Short Description: ${product.short_description}`,
+//         `Full Description: ${product.full_description}`,
+//       ];
+  
+//         productDetails.forEach((detail) => {
+//             if (currentYPosition <= marginTop + bottomMargin) {
+//                 page = pdfDoc.addPage();
+//                 currentYPosition = height - marginTop;
+//             }
+//             page.drawText(detail, { x: 65, y: currentYPosition - 15, size: 14, color: rgb(0, 0, 0) });
+//             currentYPosition -= lineHeight;
+//         });
+
+//         if (currentYPosition <= marginTop + bottomMargin) {
+//             page = pdfDoc.addPage();
+//             currentYPosition = height - marginTop;
+//         }
+
+//         page.drawText(`Stock Info:`, { x: 50, y: currentYPosition - 35, size: 15, color: rgb(0, 0, 0) });
+//         currentYPosition -= lineHeight;
+
+//         page.drawLine({
+//             start: { x: 50, y: currentYPosition - 18 },  
+//             end: { x: width - 470, y: currentYPosition - 18 },  
+//             thickness: 1,
+//             color: rgb(0, 0, 0),
+//         });
+//         currentYPosition -= lineHeight;
+  
+//         // Draw a line between header and table
+//         page.drawLine({
+//             start: { x: 50, y: currentYPosition - 45 },
+//             end: { x: width - 250, y: currentYPosition - 45 },
+//             thickness: 1,
+//             color: rgb(0, 0, 0),
+//         });
+//         currentYPosition -= lineHeight;
+
+//         // Draw table headers
+//         page.drawText("Size", { x: 50, y: currentYPosition - 17, size: 14, color: rgb(0, 0, 0) });
+//         page.drawText("Inner Pcs", { x: 150, y: currentYPosition - 17, size: 14, color: rgb(0, 0, 0) });
+//         page.drawText("Outer Pcs", { x: 250, y: currentYPosition - 17, size: 14, color: rgb(0, 0, 0) });
+//         currentYPosition -= lineHeight;
+
+//       // Iterate over the Stocks and Stock-by-Size
+//       product.Stocks.forEach((stock) => {
+//           if (currentYPosition <= marginTop + bottomMargin) {
+//               page = pdfDoc.addPage();
+//               currentYPosition = height - marginTop;
+//           }
+
+//           const formattedDate = new Date(stock.created_at).toLocaleDateString('en-GB');
+
+//           stock.stock_by_size.forEach((sizeData) => {
+//               if (currentYPosition <= marginTop + bottomMargin) {
+//                   page = pdfDoc.addPage();
+//                   currentYPosition = height - marginTop;
+//               }
+
+//               page.drawText(sizeData.size, { x: 50, y: currentYPosition - 25, size: 12, color: rgb(0, 0, 0) });
+//               page.drawText(sizeData.innerPcs.toString(), { x: 150, y: currentYPosition - 25, size: 12, color: rgb(0, 0, 0) });
+//               page.drawText(sizeData.outerPcs.toString(), { x: 250, y: currentYPosition - 25, size: 12, color: rgb(0, 0, 0) });
+//               currentYPosition -= lineHeight;
+//           });
+
+//           if (currentYPosition <= marginTop + bottomMargin) {
+//               page = pdfDoc.addPage();
+//               currentYPosition = height - marginTop;
+//           }
+
+//           // Draw Stock-In Date and Total Pcs
+//           page.drawText(`Stock-In Date: ${formattedDate}`, { x: 50, y: currentYPosition - 45, size: 14, color: rgb(0, 0, 0) });
+//           page.drawText(`Total Pcs: ${stock.total_pcs}`, { x: 250, y: currentYPosition - 45, size: 14, color: rgb(0, 0, 0) });
+//           currentYPosition -= lineHeight;
+//       });
+
+//         // Add bottom space after each product
+//         currentYPosition -= bottomMargin;
+//     });
+
+//     const pdfBytes = await pdfDoc.save();
+
+//     // Create a blob and a URL for it
+//     const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+//     const url = URL.createObjectURL(blob);
+
+//     // Open the PDF in a new tab
+//     window.open(url, '_blank');
+// };
 
   const startIndex = (currentPage - 1) * recordsPerPage;
   const endIndex = startIndex + recordsPerPage;
-  const data = reportData.slice(startIndex, endIndex);
+  // const data = reportData.slice(startIndex, endIndex);
+  const data = Array.isArray(reportData) ? reportData.slice(startIndex, endIndex) : [];
+
 
   return (
     <div className="w-full py-2 bg-white rounded-lg">
@@ -329,7 +416,7 @@ const Reports = () => {
                       </td>
                       <td className="w-20 px-2 py-3 text-center text-black whitespace-nowrap text-md">
                         <button 
-                          onClick={() => generatePDF(category)} 
+                          onClick={() => generateSpreadsheet(category)}
                           className="px-3 py-1 text-sm text-white bg-blue-500 rounded-md"
                         >
                           View
