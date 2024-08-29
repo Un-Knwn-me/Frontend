@@ -57,8 +57,8 @@ const AddUserModal = ({ isOpen, onClose, onUpdate }) => {
         },
       });
       console.log(response.data);
-      onUpdate(response.data); 
-      onClose(); 
+      onUpdate(response.data); // Optional: Update parent component or state
+      onClose(); // Close the modal
     } catch (error) {
       console.error("User creation failed:", error);
       // Handle error (e.g., show an error message)

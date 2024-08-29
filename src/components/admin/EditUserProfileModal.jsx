@@ -32,8 +32,6 @@ const EditUserProfileModal = ({ user, onClose, onUpdate, userId }) => {
   }, [userId]);
 
   const fetchUserData = async (userId) => {
-    console.log("userId", userId);
-
     try {
       const response = await apiService.get(`/users/${userId}`);
       setUserData(response.data);
@@ -120,10 +118,19 @@ const EditUserProfileModal = ({ user, onClose, onUpdate, userId }) => {
       await apiService.delete(`/users/deleteProfile/${userId}`);
 
       setIsConfirmationModalOpen(false);
-      onUpdate({ ...userData, profile: null }); 
+      onUpdate({ ...userData, profile: null });
       onClose();
     } catch (error) {
       console.error("Error removing photo:", error.response || error.message);
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    try {
+      await apiService.delete(`/users/${userId}`);
+      onClose();
+    } catch (error) {
+      console.error("Error deleting user:", error.response || error.message);
     }
   };
 
@@ -256,17 +263,23 @@ const EditUserProfileModal = ({ user, onClose, onUpdate, userId }) => {
             </button>
           </div>
         </div>
-        <div className="flex justify-end mt-4">
+        <div className="flex justify-between">
           <button
+            className="px-4 py-2 text-white bg-red-500 rounded"
+            onClick={handleDeleteUser}
+          >
+            Delete User
+          </button>
+          <button
+            className="px-4 py-2 text-white bg-blue-500 rounded"
             onClick={handleUpdate}
-            className="px-4 py-2 font-semibold text-white bg-blue-500 rounded-md"
           >
             Update
           </button>
         </div>
       </div>
-   
-       {isConfirmationModalOpen && (
+
+      {isConfirmationModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg p-6 w-[30vw]">
             <h3 className="mb-4 text-lg font-semibold">Confirm Action</h3>

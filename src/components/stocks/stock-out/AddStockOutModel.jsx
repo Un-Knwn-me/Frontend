@@ -707,54 +707,6 @@ const AddStockOutModel = ({ show, onClose }) => {
               </div>
             )}
           </div>
-
-              {/* {orderInfo?.purchase_by_size ? (
-                <>
-                  <div className=''>
-                    <table className="min-w-full mt-6 bg-white border border-gray-300 rounded-md">
-                      <thead>
-                        <tr>
-                          <th className="px-4 py-2 border-b">Size</th>
-                          <th className="px-4 py-2 border-b">Inner Pieces</th>
-                          <th className="px-4 py-2 border-b">Inner Boxes</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {orderInfo.purchase_by_size.map((stock, index) => (
-                          <tr key={index}>
-                            <td className="px-4 py-2 border-b">{stock.size}</td>
-                            <td className="px-4 py-2 border-b">{stock.innerPcs}</td>
-                            <td className="px-4 py-2 border-b">{stock.outerPcs}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  <div className="my-4">
-              <h3 className="text-lg font-bold">Order Totals</h3>
-              <div className="grid grid-cols-4 gap-4 mt-4">
-                <div className="p-2 border rounded-lg">
-                  <h4 className="font-semibold">Total Bundle:</h4>
-                  <p>{orderInfo?.req_bundle}</p>
-                </div>
-                <div className="p-2 border rounded-lg">
-                  <h4 className="font-semibold">Total Inner Pcs:</h4>
-                  <p>{orderInnerTotals}</p>
-                </div>
-                <div className="p-2 border rounded-lg">
-                  <h4 className="font-semibold">Total Inner Boxes:</h4>
-                  <p>{orderOuterTotals}</p>
-                </div>
-                <div className="p-2 border rounded-lg">
-                  <h4 className="font-semibold">Total Pieces:</h4>
-                  <p>{orderInfo?.req_purchase_qty}</p>
-                </div>
-              </div>
-            </div>
-                </>
-              ) : (
-                <p className="text-gray-500">No order information available.</p>
-              )} */}
               
             </div>
           </div>

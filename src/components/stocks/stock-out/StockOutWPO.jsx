@@ -154,57 +154,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
     console.log("Adding new style no:", styleNumber);
     // Close the dropdown after adding the buyer
     setStyleDropdown(false);
-  };
-
-    // handle size quantity change
-    const handleAssortmentTypeChange = (e) => {
-        const selectedType = e.target.value;
-        setAssortmentType(selectedType);
-      
-        if (selectedType === "solid" && selectedProduct) {
-          const initialInnerPcs = selectedProduct.Product.Size.sizes.reduce((acc, size) => {
-            acc[size] = selectedProduct.stock_by_size.find(stock => stock.size === size)?.innerPcs || 0;
-            return acc;
-          }, {});
-          setInnerPcs(initialInnerPcs);
-        } else if (selectedType === "assorted") {
-          setInnerPcs(selectedProduct.Product.Size.sizes.reduce((acc, size) => {
-            acc[size] = 0; // Resetting to 0 for assorted
-            return acc;
-          }, {}));
-        }
-      };      
-    
-      const handleInnerPcsChange = (size, value) => {
-        setInnerPcs((prev) => ({
-          ...prev,
-          [size]: Number(value)
-        }));
-      };
-    
-      const handleOuterPcsChange = (size, value) => {
-        setOuterPcs((prev) => ({
-          ...prev,
-          [size]: Number(value)
-        }));
-      };
-
-    useEffect(() => {
-    const totalInner = Object.values(innerPcs).reduce((sum, pcs) => sum + Number(pcs || 0), 0);
-    const totalOuter = Object.values(outerPcs).reduce((sum, pcs) => sum + Number(pcs || 0), 0);
-    setTotalInnerPcs(totalInner);
-    setTotalOuterPcs(totalOuter);
-
-    const totalInnerPerBundle = sizes.reduce((sum, size) => {
-        const inner = innerPcs[size] || 0;
-        const outer = outerPcs[size] || 0;
-        return sum + (inner * outer);
-    }, 0);
-
-    setTotalInnerPcsPerBundle(totalInnerPerBundle);
-    const totalProducts = totalInnerPerBundle * stockOutBundle;
-    setTotalProducts(totalProducts);
-    }, [innerPcs, outerPcs, stockOutBundle, sizes]);
+  };  
 
  // Fetch buyer suggestions
  const fetchBuyerSuggestions = async (buyerInput) => {
@@ -261,11 +211,17 @@ const handleDeliveryDateChange = (e) => {
       const bundleQty = e.target.value;
       setStockOutBundle(bundleQty);
 
+      const totalInnerPerBundle = productInfo.stock_by_size.reduce((sum, size) => {
+        return sum + (size.inner * size.outer);
+    }, 0);
+
+    setTotalInnerPcsPerBundle(totalInnerPerBundle);
+
       const totalPcs = productInfo?.stock_by_size.reduce((sum, item) => {
         return sum + (item.innerPcs * item.outerPcs * bundleQty);
       }, 0);
-
-      setTotalPcs(totalPcs);
+      
+      setTotalProducts(totalPcs);
     } catch (error) {
       console.error("Error handling bundle change:", error);
     }
@@ -288,12 +244,8 @@ const handleDeliveryDateChange = (e) => {
         product_style_number: productInfo.product_style_number,
         product_id: productInfo.Product.id,
         notes,
-        packing_type: assortmentType,
-        purchase_by_size: sizes.map((size) => ({
-            size,
-            innerPcs: innerPcs[size],
-            outerPcs: outerPcs[size],
-          })),
+        packing_type: packingInfo,
+        purchase_by_size: productInfo.stock_by_size,
         req_bundle: stockOutBundle,
         req_purchase_qty: totalProducts,
       }
@@ -826,68 +778,7 @@ const handleDeliveryDateChange = (e) => {
             
             <div className="text-center">
               <h3 className="text-lg font-semibold">Order Quantities:</h3>
-              {sizes ? (
-                <>
-                <div className="my-4">
-          <label className="font-semibold">Packaging Type:</label>
-          <div className="gap-4 mt-2">
-            <label>
-              <input
-                type="radio"
-                value="assorted"
-                checked={assortmentType === "assorted"}
-                onChange={handleAssortmentTypeChange}
-                className="mx-1"
-              />
-               Assorted
-            </label>
-            <label className='ml-2'>
-              <input
-                type="radio"
-                value="solid"
-                checked={assortmentType === "solid"}
-                onChange={handleAssortmentTypeChange}
-                className="mx-1"
-              />
-               Solid
-            </label>
-          </div>
-        </div>
-
-                <div className="p-4 rounded-lg">
-              <h4 className="mb-4 text-sm font-medium">Quantity per size:</h4>
-              <div className="flex flex-col gap-4">
-              {sizes.map((size, index) => (
-            <div key={index} className="flex items-center justify-center gap-4 mb-2">
-              <div className="w-16">{size}: </div>
-              <input
-                type="number"
-                value={innerPcs[size] || ''}
-                onChange={(e) => handleInnerPcsChange(size, e.target.value)}
-                placeholder="Inner Pcs"
-                className="w-24 px-2 py-1 border border-gray-300 rounded-md"
-                disabled={assortmentType === "solid"}
-              />
-              <input
-                type="number"
-                value={outerPcs[size] || ''}
-                onChange={(e) => handleOuterPcsChange(size, e.target.value)}
-                placeholder="Outer Pcs"
-                className="w-24 px-2 py-1 border border-gray-300 rounded-md"
-              />
-            </div>
-          ))}
-              </div>
-            </div>
-                </>
-              ) : (
-                <p className="text-gray-500">No order information available.</p>
-              )}
-            </div>
-          </div>
-          </div>
-
-          <div className="flex flex-col items-center justify-center my-10 ">
+              <div className="flex flex-col items-center justify-center my-10 ">
             <label className="mb-2 font-semibold" htmlFor="StockOutBundle">
               Enter Stock Out Bundle:
             </label>
@@ -902,33 +793,23 @@ const handleDeliveryDateChange = (e) => {
 
           <div className="flex items-center justify-center my-8" >
               <div className="flex flex-col gap-4 p-5 bg-gray-100 w-fit">
-                <div className="flex justify-between gap-5">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Total Inner Pcs
-                  </label>
-                  <span>{totalInnerPcs}</span>
-                </div>
-                <div className="flex justify-between gap-5">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Total Outer Pcs
-                  </label>
-                  <span>{totalOuterPcs}</span>
-                </div>
-                <div className="flex justify-between gap-5">
+                {/* <div className="flex justify-between gap-5">
                   <label className="block text-sm font-medium text-gray-700">
                     Total Pcs per Bundle
                   </label>
                   <span>{totalInnerPcsPerBundle}</span>
-                </div>
+                </div> */}
                 <div className="flex justify-between gap-5">
                   <label className="block font-bold text-gray-700 text-md">
                     Total Pcs
                   </label>
-                  <span className='font-bold text-md'>{totalProducts}</span>
+                  <span className='text-lg font-bold'>{totalProducts}</span>
                 </div>
               </div>
             </div>
-          
+            </div>
+          </div>
+          </div>          
 
           <div className="flex justify-center px-20 mt-5">
             <button

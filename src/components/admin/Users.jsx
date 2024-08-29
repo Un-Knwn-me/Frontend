@@ -26,23 +26,26 @@ const UsersTable = ({searchQuery}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(5);
   const [selectedUsersId, setSelectedUsersId] = useState(null);
+  const [permissions, setPermissions] = useState([]);
+
 
   useEffect(() => {
     getAllUsers();
+    getPermissions();
   }, []);
 
   useEffect(() => {
     handleSearch(searchQuery);
   }, [searchQuery, users]);
 
-  const permissions = [
-    "ADMIN",
-    "PURCHASE ORDER",
-    "STOCK IN",
-    "STOCK OUT",
-    "PRODUCT MASTER",
-    "REPORTS",
-  ];
+  // const permissions = [
+  //   "ADMIN",
+  //   "PURCHASE ORDER",
+  //   "STOCK IN",
+  //   "STOCK OUT",
+  //   "PRODUCT MASTER",
+  //   "REPORTS",
+  // ];
 
   const getAllUsers = async () => {
     try {
@@ -58,6 +61,20 @@ const UsersTable = ({searchQuery}) => {
       console.error("Error fetching users:", error);
     }
   };
+
+    // Fetch permissions data
+    const getPermissions = async () => {
+      try {
+        const response = await apiService.get(`/users/depart/getall`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        setPermissions(response.data);
+      } catch (error) {
+        console.error("Error fetching permissions:", error);
+      }
+    };
   
   // Function to open the add user modal
   const openModal = () => {
@@ -92,6 +109,7 @@ const UsersTable = ({searchQuery}) => {
       const response = await apiService.get(`/users/${user.id}`);
       console.log(response.data); 
       setSelectedUser(response.data);
+      setSelectedUsersId(user.id);
       setIsEditModalOpen(true);
     } catch (error) {
       console.error(`Error fetching user ${user.id}:`, error);
@@ -195,6 +213,7 @@ const UsersTable = ({searchQuery}) => {
           onClose={() => setIsEditModalOpen(false)}
           permissions={permissions}
           onUpdate={handleEditUser}
+          selectedUsersId={selectedUsersId}
         />
       )}
       {isUserEditOpen && (
