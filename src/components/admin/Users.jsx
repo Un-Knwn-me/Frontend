@@ -12,7 +12,7 @@ import { TbLockAccess } from "react-icons/tb";
 import { CiEdit } from "react-icons/ci";
 import EditUserProfileModal from "./EditUserProfileModal";
 
-const UsersTable = ({searchQuery}) => {
+const UsersTable = ({ searchQuery, onClose }) => {
   const [initialData, setInitialData] = useState([]);
   const [filteredData, setFilteredData] = useState(initialData);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,7 +27,8 @@ const UsersTable = ({searchQuery}) => {
   const [recordsPerPage, setRecordsPerPage] = useState(5);
   const [selectedUsersId, setSelectedUsersId] = useState(null);
   const [permissions, setPermissions] = useState([]);
-
+  const [isDeleteConfirmationModalOpen, setIsDeleteConfirmationModalOpen] =
+  useState(false);
 
   useEffect(() => {
     getAllUsers();
@@ -62,20 +63,20 @@ const UsersTable = ({searchQuery}) => {
     }
   };
 
-    // Fetch permissions data
-    const getPermissions = async () => {
-      try {
-        const response = await apiService.get(`/users/depart/getall`, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        setPermissions(response.data);
-      } catch (error) {
-        console.error("Error fetching permissions:", error);
-      }
-    };
-  
+  // Fetch permissions data
+  const getPermissions = async () => {
+    try {
+      const response = await apiService.get(`/users/depart/getall`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      setPermissions(response.data);
+    } catch (error) {
+      console.error("Error fetching permissions:", error);
+    }
+  };
+
   // Function to open the add user modal
   const openModal = () => {
     setIsModalOpen(true);
@@ -107,7 +108,7 @@ const UsersTable = ({searchQuery}) => {
   const openEditModal = async (user) => {
     try {
       const response = await apiService.get(`/users/${user.id}`);
-      console.log(response.data); 
+      console.log(response.data);
       setSelectedUser(response.data);
       setSelectedUsersId(user.id);
       setIsEditModalOpen(true);
@@ -116,24 +117,22 @@ const UsersTable = ({searchQuery}) => {
     }
   };
 
-  
-
-   // Function to open the edit user modal and fetch user data
-   const openEditUserModal = async (user) => {
+  // Function to open the edit user modal and fetch user data
+  const openEditUserModal = async (user) => {
     try {
       const response = await apiService.get(`/users/${user.id}`);
-      console.log(response.data); 
-        setSelectedUser(response.data);
-        setSelectedUsersId(user.id);
+      console.log(response.data);
+      setSelectedUser(response.data);
+      setSelectedUsersId(user.id);
       setIsUserEditOpen(true);
     } catch (error) {
       console.error(`Error fetching user ${user.id}:`, error);
     }
   };
 
-   // handle save button click
-   const handleSaveClick = async (index, id) => {
-    console.log('save clicked')
+  // handle save button click
+  const handleSaveClick = async (index, id) => {
+    console.log("save clicked");
     // try {
     //   const response = await apiService.put(`/users/${id}`, {
     //     brandName: editedBrandName,
@@ -172,7 +171,7 @@ const UsersTable = ({searchQuery}) => {
 
   const handleSearch = (searchValue) => {
     if (searchValue) {
-      const filtered = users.filter(item =>
+      const filtered = users.filter((item) =>
         item.full_name.toLowerCase().includes(searchValue.toLowerCase())
       );
       setFilteredData(filtered);
@@ -182,7 +181,19 @@ const UsersTable = ({searchQuery}) => {
     setCurrentPage(1); // Reset to first page on new search
   };
 
- 
+  const confirmDeleteUser = async () => {
+    console.log(selectedUsersId);
+    
+    try {
+      await apiService.delete(`/users/${selectedUsersId}`);
+
+      setIsDeleteConfirmationModalOpen(false);
+      getAllUsers()
+      onClose();
+    } catch (error) {
+      console.error("Error deleting user:", error.response || error.message);
+    }
+  };
 
   const startIndex = (currentPage - 1) * recordsPerPage;
   const endIndex = startIndex + recordsPerPage;
@@ -214,6 +225,7 @@ const UsersTable = ({searchQuery}) => {
           permissions={permissions}
           onUpdate={handleEditUser}
           selectedUsersId={selectedUsersId}
+          getAllUsers={getAllUsers}
         />
       )}
       {isUserEditOpen && (
@@ -224,10 +236,11 @@ const UsersTable = ({searchQuery}) => {
           permissions={permissions}
           onUpdate={handleEditUser}
           userId={selectedUsersId}
+          getAllUsers={getAllUsers}
         />
       )}
       <div className="mt-3 overflow-y-auto max-h-[70vh] pb-5">
-      <table className="min-w-full divide-y divide-gray-200">
+        <table className="min-w-full divide-y divide-gray-200">
           <thead className="w-full bg-gray-50">
             <tr>
               <th className="w-20 px-6 py-2 font-medium text-center text-black uppercase text-md">
@@ -262,31 +275,48 @@ const UsersTable = ({searchQuery}) => {
                   {startIndex + index + 1}
                 </td>
                 <td className="px-2 py-2 text-center text-black whitespace-nowrap text-md w-28">
-                      <div className="flex items-center justify-center">
-                      {row.profile ? (
-                                <img
-                                    src={row.profile}
-                                    alt={row.full_name}
-                                    className="object-cover w-16 h-16 mr-4 rounded-full"
-                                />
-                            ) : (
-                                <div
-                                    className={`w-16 h-16 rounded-full flex items-center justify-center bg-blue-500 text-white mr-4 text-2xl`}
-                                >
-                                    {row.full_name.charAt(0).toUpperCase()}
-                                </div>
-                            )}
+                  <div className="flex items-center justify-center">
+                    {row.profile ? (
+                      <img
+                        src={row.profile}
+                        alt={row.full_name}
+                        className="object-cover w-16 h-16 mr-4 rounded-full"
+                      />
+                    ) : (
+                      <div
+                        className={`w-16 h-16 rounded-full flex items-center justify-center bg-blue-500 text-white mr-4 text-2xl`}
+                      >
+                        {row.full_name.charAt(0).toUpperCase()}
                       </div>
-                    </td>
+                    )}
+                  </div>
+                </td>
                 <td className="w-64 px-6 py-2 text-left text-black whitespace-nowrap text-md">
-                    {row.full_name}
+                  {row.full_name}
                 </td>
                 <td className="flex items-center content-center gap-2 px-6 py-6 text-lg font-medium text-left text-black uppercase">
-                  {row.is_admin ? 
+                  {row.is_admin ? (
                     <span className="p-2 text-xs font-semibold text-black bg-blue-200 rounded-md">
                       Admin
                     </span>
-                    : ''}
+                  ) : (
+                    <div className="flex gap-5">
+                      {row.UserPermissions ? (
+                        row.UserPermissions.map((permission, index) => (
+                          <span
+                            key={index}
+                            className="p-2 text-xs font-semibold text-black bg-blue-200 rounded-md"
+                          >
+                            {permission.Department?.departmentName || ""}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="p-2 text-xs font-semibold text-black bg-gray-200 rounded-md">
+                          N/A
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </td>
                 <td className="w-40 px-2 py-2 text-center text-black whitespace-nowrap text-md">
                   {editIndex === row.id ? (
@@ -306,7 +336,7 @@ const UsersTable = ({searchQuery}) => {
                       }
                       className="text-center text-blue-500"
                     >
-                    <TbLockAccess color="black" className="h-6 w-7"/>
+                      <TbLockAccess color="black" className="h-6 w-7" />
                     </button>
                   )}
                 </td>
@@ -328,13 +358,13 @@ const UsersTable = ({searchQuery}) => {
                       }
                       className="text-center text-blue-500"
                     >
-                    <CiEdit color="black" className="h-6 w-7"/>
+                      <CiEdit color="black" className="h-6 w-7" />
                     </button>
                   )}
                 </td>
                 <td className="w-32 px-2 py-2 text-center text-black whitespace-nowrap text-md">
                   <button
-                    onClick={() => handleDelete(row.id)}
+                  onClick={() => setIsDeleteConfirmationModalOpen(true)}
                     className="text-red-500"
                   >
                     <img src={deleteIcon} alt="Delete" className="w-5 h-5" />
@@ -345,6 +375,30 @@ const UsersTable = ({searchQuery}) => {
           </tbody>
         </table>
 
+        {isDeleteConfirmationModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="p-6 bg-white rounded-md shadow-lg">
+            <h3 className="mb-4 text-lg font-semibold">Delete User</h3>
+            <p>
+              Are you sure you want to delete this user?
+            </p>
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={() => setIsDeleteConfirmationModalOpen(false)}
+                className="px-4 py-2 mr-2 text-gray-500 bg-gray-200 rounded-md"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDeleteUser}
+                className="px-4 py-2 text-white bg-red-500 rounded-md"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       </div>
     </>
   );

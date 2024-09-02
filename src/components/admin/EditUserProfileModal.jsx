@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import closeIcon from "../../assets/close-modal-icon.svg";
 import apiService from "../../apiService";
 
-const EditUserProfileModal = ({ user, onClose, onUpdate, userId }) => {
+const EditUserProfileModal = ({ user, onClose, onUpdate, userId, getAllUsers }) => {
   const [editingField, setEditingField] = useState(null);
 
   const [userData, setUserData] = useState({
@@ -26,6 +26,8 @@ const EditUserProfileModal = ({ user, onClose, onUpdate, userId }) => {
   const [imagePreview, setImagePreview] = useState("");
   const [isPhotoRemoved, setIsPhotoRemoved] = useState(false);
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
+  const [isDeleteConfirmationModalOpen, setIsDeleteConfirmationModalOpen] =
+    useState(false);
 
   useEffect(() => {
     fetchUserData(userId);
@@ -125,9 +127,12 @@ const EditUserProfileModal = ({ user, onClose, onUpdate, userId }) => {
     }
   };
 
-  const handleDeleteUser = async () => {
+  const confirmDeleteUser = async () => {
     try {
       await apiService.delete(`/users/${userId}`);
+
+      setIsDeleteConfirmationModalOpen(false);
+      getAllUsers()
       onClose();
     } catch (error) {
       console.error("Error deleting user:", error.response || error.message);
@@ -266,7 +271,7 @@ const EditUserProfileModal = ({ user, onClose, onUpdate, userId }) => {
         <div className="flex justify-between">
           <button
             className="px-4 py-2 text-white bg-red-500 rounded"
-            onClick={handleDeleteUser}
+            onClick={() => setIsDeleteConfirmationModalOpen(true)}
           >
             Delete User
           </button>
@@ -296,6 +301,31 @@ const EditUserProfileModal = ({ user, onClose, onUpdate, userId }) => {
                 className="px-4 py-2 font-semibold text-white bg-red-500 rounded-md"
               >
                 Yes, Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isDeleteConfirmationModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="p-6 bg-white rounded-md shadow-lg">
+            <h3 className="mb-4 text-lg font-semibold">Delete User</h3>
+            <p>
+              Are you sure you want to delete this user?
+            </p>
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={() => setIsDeleteConfirmationModalOpen(false)}
+                className="px-4 py-2 mr-2 text-gray-500 bg-gray-200 rounded-md"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDeleteUser}
+                className="px-4 py-2 text-white bg-red-500 rounded-md"
+              >
+                Delete
               </button>
             </div>
           </div>

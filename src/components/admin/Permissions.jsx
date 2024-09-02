@@ -13,6 +13,7 @@ import deleteIcon from "../../assets/delete-icon.svg";
 import tickIcon from "../../assets/tick-icon.svg";
 import { TbLockAccess } from "react-icons/tb";
 
+
 // Utility function to shuffle an array
 const shuffleArray = (array) => {
   let shuffledArray = [...array];
@@ -45,36 +46,28 @@ const Permission = () => {
   const [modalData, setModalData] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // const [users, setUsers] = useState([
-  //   {
-  //     id: 1,
-  //     full_name: "John Doe",
-  //     department: "Sales",
-  //     phone: "9234567890",
-  //     is_admin: true,
-  //     module_access: { create: true, read: true, edit: true, delete: true },
-  //   },
-  //   {
-  //     id: 2,
-  //     full_name: "Jane Smith",
-  //     department: "HR",
-  //     phone: "8876543210",
-  //     is_admin: false,
-  //     module_access: { create: false, read: true, edit: true, delete: false },
-  //   },
-  //   {
-  //     id: 3,
-  //     full_name: "Michael Johnson",
-  //     department: "IT",
-  //     phone: "9551234567",
-  //     is_admin: false,
-  //     module_access: { create: true, read: true, edit: false, delete: false },
-  //   },
-  // ]);
+  const [users, setUsers] = useState([
+    // Make sure all IDs are unique
+    {
+      id: 1,
+      full_name: "John Doe",
+      phone: "123-456-7890",
+      module_access: { create: true, read: true, edit: false, delete: false },
+    },
+    {
+      id: 2,
+      full_name: "Smith",
+      phone: "098-765-4321",
+      module_access: { create: false, read: true, edit: true, delete: true },
+    },
+    {
+      id: 3,
+      full_name: "Vijay",
+      phone: "098-765-4321",
+      module_access: { create: false, read: true, edit: true, delete: true },
+    },
+  ]);
 
-  const [users, setUsers] = useState([]);
-
- 
   // Fetch all departments
   const fetchDepartments = async () => {
     try {
@@ -88,8 +81,8 @@ const Permission = () => {
     }
   };
 
-   // Fetch users based on department
-   const fetchUsers = async (departmentId) => {
+  // Fetch users based on department
+  const fetchUsers = async (departmentId) => {
     try {
       const response = await apiService.get(`/users/dept/${departmentId}`, {
         headers: {
@@ -106,8 +99,6 @@ const Permission = () => {
   useEffect(() => {
     fetchDepartments();
   }, []);
-
-
 
   const bgColors = [
     "bg-blue-500",
@@ -152,17 +143,6 @@ const Permission = () => {
     // Close the modal
     setIsModalOpen(false);
   };
-
-  const permissions = [
-    "ADMIN",
-    "PURCHASE ORDER",
-    "STOCK IN",
-    "STOCK OUT",
-    "PRODUCT MASTER",
-    "REPORTS",
-  ];
-
- 
 
   // const openModal = (e, permission) => {
   //   const rect = e.target.getBoundingClientRect();
@@ -244,13 +224,17 @@ const Permission = () => {
     }
   };
 
+  const filteredUsers = users.filter((user) =>
+    user.full_name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const startIndex = (currentPage - 1) * recordsPerPage;
   const endIndex = startIndex + recordsPerPage;
 
   return (
     <>
       <TopLayer
-        isAddButton={false}
+        isAddButton={true}
         addButtonText="Add Module"
         addButtonIcon={plusIcon}
         onAddButtonClick={openAddModuleModal}
@@ -284,6 +268,46 @@ const Permission = () => {
                 &times;
               </button>
             </div>
+
+            <div className="flex items-center justify-between mt-4 mb-4">
+              <div className="relative w-1/3">
+                <input
+                  type="text"
+                  placeholder="Search by Username.."
+                  className="w-full p-2 pl-4 pr-10 text-sm text-gray-700 bg-gray-100 rounded-md outline-none"
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-5 h-5 text-gray-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                </div>
+              </div>
+
+              <button
+                onClick={""}
+                className="flex items-center px-4 py-2 ml-4 font-semibold "
+              >
+                <img
+                  src={addUserIcon}
+                  alt="Add Icon"
+                  className="w-5 h-5 mr-2"
+                />
+                Add User
+              </button>
+            </div>
+
             <div className="flex flex-col h-full mt-4">
               <div className="flex-grow pb-5 mt-3 overflow-y-auto">
                 <table className="min-w-full divide-y divide-gray-200">
@@ -304,46 +328,48 @@ const Permission = () => {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {users.map((row, index) => (
-                      <tr key={row.id} style={{ maxHeight: "50px" }}>
-                        <td className="w-20 px-2 py-2 text-center text-black whitespace-nowrap text-md">
-                          {index + 1}
-                        </td>
-                        <td className="w-64 px-2 py-2 text-left text-black whitespace-nowrap text-md">
-                          {row.full_name}
-                        </td>
-                        <td className="flex items-center gap-2 px-6 py-2 text-lg font-medium text-left text-black">
-                          {row.module_access.create && (
-                            <span className="p-2 text-xs font-semibold text-black bg-green-200 rounded-md">
-                              Create
-                            </span>
-                          )}
-                          {row.module_access.read && (
-                            <span className="p-2 text-xs font-semibold text-black bg-blue-200 rounded-md">
-                              Read
-                            </span>
-                          )}
-                          {row.module_access.edit && (
-                            <span className="p-2 text-xs font-semibold text-black bg-yellow-200 rounded-md">
-                              Edit
-                            </span>
-                          )}
-                          {row.module_access.delete && (
-                            <span className="p-2 text-xs font-semibold text-black bg-red-200 rounded-md">
-                              Delete
-                            </span>
-                          )}
-                        </td>
-                        <td className="w-40 px-2 py-2 text-center text-black whitespace-nowrap text-md">
-                          <button
-                            onClick={() => openEditModal(row)}
-                            className="text-center text-blue-500"
-                          >
-                            <CiEdit color="black" className="h-6 w-7" />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
+                    {filteredUsers
+                      .slice(startIndex, endIndex)
+                      .map((row, index) => (
+                        <tr key={row.id} style={{ maxHeight: "50px" }}>
+                          <td className="w-20 px-2 py-2 text-center text-black whitespace-nowrap text-md">
+                            {index + 1}
+                          </td>
+                          <td className="w-64 px-2 py-2 text-left text-black whitespace-nowrap text-md">
+                            {row.full_name}
+                          </td>
+                          <td className="flex items-center gap-2 px-6 py-2 text-lg font-medium text-left text-black">
+                            {row.module_access.create && (
+                              <span className="p-2 text-xs font-semibold text-black bg-green-200 rounded-md">
+                                Create
+                              </span>
+                            )}
+                            {row.module_access.read && (
+                              <span className="p-2 text-xs font-semibold text-black bg-blue-200 rounded-md">
+                                Read
+                              </span>
+                            )}
+                            {row.module_access.edit && (
+                              <span className="p-2 text-xs font-semibold text-black bg-yellow-200 rounded-md">
+                                Edit
+                              </span>
+                            )}
+                            {row.module_access.delete && (
+                              <span className="p-2 text-xs font-semibold text-black bg-red-200 rounded-md">
+                                Delete
+                              </span>
+                            )}
+                          </td>
+                          <td className="w-40 px-2 py-2 text-center text-black whitespace-nowrap text-md">
+                            <button
+                              onClick={() => openEditModal(row)}
+                              className="text-center text-blue-500"
+                            >
+                              <CiEdit color="black" className="h-6 w-7" />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
                   </tbody>
                 </table>
               </div>

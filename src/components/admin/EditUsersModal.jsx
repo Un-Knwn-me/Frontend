@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import editIcon from "../../assets/edit-icon-blue-color.svg";
 import toggleActive from "../../assets/toggle-active.svg";
 import toggleInactive from "../../assets/toggle-inactive.svg";
 import closeIcon from "../../assets/close-modal-icon.svg";
@@ -12,8 +11,10 @@ const EditUsersModal = ({
   onUpdate,
   permissions,
   selectedUsersId,
+  getAllUsers
 }) => {
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const [userData, setUserData] = useState({
     full_name: "",
@@ -21,7 +22,7 @@ const EditUsersModal = ({
     phone_number: "",
     profile: "",
     password: "",
-    UserPermissions: [],
+    UserPermissions: [{ Department: { departmentName: "" } }],
     is_admin: false,
   });
 
@@ -29,7 +30,7 @@ const EditUsersModal = ({
     if (selectedUsersId) {
       fetchUserData(selectedUsersId);
     }
-  }, [selectedUsersId]);
+  }, [selectedUsersId, isAdmin]);
 
   const fetchUserData = async (selectedUsersId) => {
     try {
@@ -37,13 +38,13 @@ const EditUsersModal = ({
       const fetchedUserData = response.data;
       console.log(response.data);
 
-      // Ensure moduleAccess is an array
       setUserData({
         ...fetchedUserData,
         UserPermissions: fetchedUserData.is_admin
-          ? [...new Set([...fetchedUserData.UserPermissions, "ADMIN"])]
+          ? [{ Department: { departmentName: "ADMIN" } }]
           : fetchedUserData.UserPermissions || [],
       });
+      setIsAdmin(fetchedUserData.is_admin);
     } catch (error) {
       console.error(
         "Error fetching user data:",
@@ -52,66 +53,63 @@ const EditUsersModal = ({
     }
   };
 
-  const handlePermissionToggle = async (permission) => {
-    const permissionName = permission.departmentName;
-    const isAdminToggling = permissionName === "ADMIN";
-
-    setUserData((prevUserData) => {
-      const existingPermission = prevUserData.UserPermissions.find(
-        (perm) => perm.Department?.departmentName === permissionName
-      );
-
-      let newPermissions;
-      let newIsAdmin = prevUserData.is_admin;
-
-      if (existingPermission) {
-        // If the permission exists, remove it
-        newPermissions = prevUserData.UserPermissions.filter(
-          (perm) => perm.Department?.departmentName !== permissionName
-        );
-
-        // If toggling "ADMIN", update is_admin to false
-        if (isAdminToggling) {
-          newIsAdmin = false;
-        }
-      } else {
-        // If the permission doesn't exist, add it
-        newPermissions = [
-          ...prevUserData.UserPermissions,
-          { Department: { departmentName: permissionName } },
-        ];
-
-        // If toggling "ADMIN", update is_admin to true
-        if (isAdminToggling) {
-          newIsAdmin = true;
-        }
-      }
-
-      return {
-        ...prevUserData,
-        UserPermissions: newPermissions,
-        is_admin: newIsAdmin,
-      };
-    });
+  const handleAdminToggle = async () => {
+    const newAdmin = !isAdmin;
 
     try {
-      if (
-        userData.UserPermissions.some(
-          (perm) => perm.Department?.departmentName === permissionName
-        )
-      ) {
-        // If the permission was there, delete it on the server
-        await apiService.delete("/delete/userPermission", {
-          data: { user_id: selectedUsersId, department_id: permission.id },
-        });
+      const response = await apiService.put(
+        `/users/${selectedUsersId}`,
+        {is_admin: newAdmin},
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      onUpdate(response.data);      
+      setIsAdmin(response.data.is_admin);
+      console.log("Admin status updated", response.data);
+  
+    } catch (error) {
+      console.error("Update failed:", error.response || error.message);
+    }
+  };
+
+  const handlePermissionToggle = async (permission) => {
+    const isPermissionActive = userData.UserPermissions.some(
+      (perm) => perm?.Department?.id === permission.id
+    );
+    console.log("Permission toggled:", permission, isPermissionActive);
+    let updatedData = {
+      user_id: selectedUsersId,
+      department_id: permission.id,
+    };
+
+    try {
+      if (!isPermissionActive) {
+        // Add the new permission to the server (toggle switched to true)
+        const response = await apiService.post("/users/newPermission", updatedData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (response.status === 201) {
+          fetchUserData(selectedUsersId);
+          console.log("Permission added successfully.");
+          getAllUsers()
+        }
       } else {
-        // If the permission wasn't there, add it on the server
-        await apiService.post("/users/newPermission", {
-          user_id: selectedUsersId,
-          department_id: permission.id,
-        });
+        console.log('working', updatedData)
+        // Delete the permission from the server (toggle switched to false)
+        const response = await apiService.delete(`/users/delete/userPermission/${selectedUsersId}/${permission.id}`);
+        if (response.status === 202) {
+          fetchUserData(selectedUsersId);
+          console.log("Permission deleted successfully.", response);
+          getAllUsers()
+        }
       }
-      console.log("Permission updated successfully.");
     } catch (error) {
       console.error(
         "Error updating permission:",
@@ -149,9 +147,7 @@ const EditUsersModal = ({
                   className="object-cover w-16 h-16 mr-4 rounded-full"
                 />
               ) : (
-                <div
-                  className={`w-16 h-16 rounded-full flex items-center justify-center bg-blue-500 text-white mr-4 text-2xl`}
-                >
+                <div className="flex items-center justify-center w-16 h-16 mr-4 text-2xl text-white bg-blue-500 rounded-full">
                   {userData.full_name.charAt(0).toUpperCase()}
                 </div>
               )}
@@ -167,26 +163,18 @@ const EditUsersModal = ({
                 <div className="flex items-center">
                   <span
                     className={`mr-2 ${
-                      userData.UserPermissions.includes("ADMIN")
-                        ? "text-green-600"
-                        : "text-gray-400"
+                      userData.is_admin ? "text-green-600" : "text-gray-400"
                     }`}
                   >
-                    {userData.UserPermissions.includes("ADMIN")
-                      ? "Access"
-                      : "No Access"}
+                    {userData.is_admin ? "Access" : "No Access"}
                   </span>
                   <button
-                    onClick={() => handlePermissionToggle("ADMIN")}
+                    onClick={handleAdminToggle}
                     className="mr-4"
-                    disabled={userData.is_admin && "ADMIN" !== "ADMIN"}
+                    // disabled={userData.is_admin}
                   >
                     <img
-                      src={
-                        userData.UserPermissions.includes("ADMIN")
-                          ? toggleActive
-                          : toggleInactive
-                      }
+                      src={userData.is_admin ? toggleActive : toggleInactive}
                       alt="Toggle"
                       className="w-10 h-10"
                     />
@@ -220,10 +208,7 @@ const EditUsersModal = ({
                         <button
                           onClick={() => handlePermissionToggle(permission)}
                           className="mr-4"
-                          disabled={
-                            userData.is_admin &&
-                            permission.departmentName !== "ADMIN"
-                          }
+                          disabled={isAdmin}
                         >
                           <img
                             src={
