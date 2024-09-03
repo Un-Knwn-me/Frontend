@@ -715,14 +715,14 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
                     </div>
                     <div className="flex flex-col gap-2">
                       <label className="block text-sm font-medium text-gray-700">
-                        Inner Boxes
+                        no of Inner Box
                       </label>
                       <input
                         type="number"
                         value={stock.outerPcs || null}
                         onChange={(e) => handleOuterPcsChange(e, stock.size)}
                         placeholder="Outer Pcs"
-                        className="w-24 px-2 py-1 border border-gray-300 rounded-md"
+                        className="px-2 py-1 border border-gray-300 rounded-md w-28"
                       />
                     </div>
                   </div>
@@ -751,7 +751,7 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
                 </div>
                 <div className="flex justify-between gap-5">
                   <label className="block text-sm font-medium text-gray-700">
-                    Total Outer Pcs
+                    Total Inner Boxes
                   </label>
                   <span>{stockInOuterTotals}</span>
                 </div>

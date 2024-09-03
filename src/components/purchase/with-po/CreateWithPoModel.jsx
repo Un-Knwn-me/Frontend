@@ -753,13 +753,13 @@ const CreatePoModal = ({ show, onClose, getAllPurchaseOrder }) => {
               />
               </div>
               <div className="flex flex-col gap-2">
-              <label className="block text-sm font-medium text-gray-700">Outer box</label>
+              <label className="block text-sm font-medium text-gray-700">no of Inner box</label>
               <input
                 type="number"
                 value={outerPcs[size] || ''}
                 onChange={(e) => handleOuterPcsChange(size, e.target.value)}
                 placeholder="Outer Pcs"
-                className="w-24 px-2 py-1 border border-gray-300 rounded-md"
+                className="px-2 py-1 border border-gray-300 rounded-md w-28"
               />
               </div>
             </div>
@@ -788,7 +788,7 @@ const CreatePoModal = ({ show, onClose, getAllPurchaseOrder }) => {
                 </div>
                 <div className="flex justify-between gap-5">
                   <label className="block text-sm font-medium text-gray-700">
-                    Total Outer Pcs
+                    Total Inner Boxes
                   </label>
                   <span>{totalOuterPcs}</span>
                 </div>

@@ -750,12 +750,14 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                 <h3 className="text-lg font-medium">Order Info:</h3>
               </div>
               <div className="flex justify-between gap-4 px-5 border border-gray-400">
-            <div className="p-4 rounded-lg">
+              <div className="p-4 rounded-lg">
               <h4 className="mb-4 text-sm font-medium">Quantity per size:</h4>
               <div className="flex flex-col gap-4">
               {sizes.map((size, index) => (
-            <div key={index} className="flex items-center gap-4 mb-2">
-              <div className="w-16">{size}: </div>
+              <div key={index} className="flex items-center gap-2 mb-2">
+              <div className="w-16 mt-5">{size}: </div>
+              <div className="flex flex-col gap-2">
+              <label className="block text-sm font-medium text-gray-700">Inner Pcs</label>
               <input
                 type="number"
                 value={innerPcs[size] || ''}
@@ -764,13 +766,17 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                 className="w-24 px-2 py-1 border border-gray-300 rounded-md"
                 disabled={assortmentType === "solid"}
               />
+              </div>
+              <div className="flex flex-col gap-2">
+              <label className="block text-sm font-medium text-gray-700">no of Inner box</label>
               <input
                 type="number"
                 value={outerPcs[size] || ''}
                 onChange={(e) => handleOuterPcsChange(size, e.target.value)}
                 placeholder="Outer Pcs"
-                className="w-24 px-2 py-1 border border-gray-300 rounded-md"
+                className="px-2 py-1 border border-gray-300 rounded-md w-28"
               />
+              </div>
             </div>
           ))}
               </div>
@@ -797,7 +803,7 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                 </div>
                 <div className="flex justify-between gap-5">
                   <label className="block text-sm font-medium text-gray-700">
-                    Total Outer Pcs
+                    Total Inner Boxes
                   </label>
                   <span>{totalOuterPcs}</span>
                 </div>

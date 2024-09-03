@@ -663,13 +663,13 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
               />
               </div>
               <div className="flex flex-col gap-2">
-              <label className="block text-sm font-medium text-gray-700">Inner Boxes</label>
+              <label className="block text-sm font-medium text-gray-700">no of Inner Box</label>
               <input
                 type="number"
                 value={outerPcs[size] || ''}
                 onChange={(e) => handleOuterPcsChange(size, e.target.value)}
                 placeholder="Outer Pcs"
-                className="w-24 px-2 py-1 border border-gray-300 rounded-md"
+                className="px-2 py-1 border border-gray-300 rounded-md w-28"
               />
               </div>
             </div>
