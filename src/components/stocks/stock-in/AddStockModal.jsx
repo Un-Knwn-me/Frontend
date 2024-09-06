@@ -234,6 +234,7 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
       product_style_number: styleNumber,
       product_id: selectedProductId,
       packing_type: assortmentType,
+      pcs_per_bundle: totalInnerPcsPerBundle,
       total_pcs: totalProducts,
       warehouse_id: selectedWarehouseId,
       stock_by_size: sizes.map((size) => ({

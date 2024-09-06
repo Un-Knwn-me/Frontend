@@ -250,6 +250,7 @@ const CreatePoModal = ({ show, onClose, getAllPurchaseOrder }) => {
         outerPcs: outerPcs[size],
       })),
       req_bundle: bundles,
+      pcs_per_bundle: totalInnerPcsPerBundle,
       req_purchase_qty: totalProducts,
     };
 

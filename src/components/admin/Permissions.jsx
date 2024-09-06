@@ -1,43 +1,48 @@
 import React, { useEffect, useState } from "react";
-import permissionUserIcon from "../../assets/permission-user-icon.svg";
-import { FcDepartment } from "react-icons/fc";
-import editIcon from "../../assets/edit-icon.svg";
 import TopLayer from "../shared/TopLayer";
 import plusIcon from "../../assets/add-icon.svg";
-import profileImage from "../../assets/profile-image.png";
 import closeIcon from "../../assets/close-modal-icon.svg";
+import deleteIcon from "../../assets/delete-icon.svg";
 import addUserIcon from "../../assets/add-users-icon.svg";
 import apiService from "../../apiService";
 import { CiEdit } from "react-icons/ci";
-import deleteIcon from "../../assets/delete-icon.svg";
-import tickIcon from "../../assets/tick-icon.svg";
-import { TbLockAccess } from "react-icons/tb";
+import PermissionsAddUserModal from "./PermissionsAddUserModal";
+import product from "../../assets/products.jpg";
+import purchase from "../../assets/purchase-order.jpg";
+import stockIn from "../../assets/stock-in.jpg";
+import stockOut from "../../assets/stock-out.jpg";
+import reports from "../../assets/reports.jpg";
+import admin from "../../assets/admin.jpg";
 
-const Permission = () => {
-  const [tooltipStates, setTooltipStates] = useState({});
+const Permission = (onClose, selectedDeptId) => {
   const [modalVisible, setModalVisible] = useState(false);
-
-  const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
   const [searchQuery, setSearchQuery] = useState("");
   const [addModuleModalVisible, setAddModuleModalVisible] = useState(false);
   const [departmentName, setDepartmentName] = useState("");
   const [department, setDepartment] = useState([]);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [editIndex, setEditIndex] = useState(null);
-
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(5);
-
   const [permissionChanges, setPermissionChanges] = useState({});
   const [modalData, setModalData] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPermission, setSelectedPermission] = useState("");
+  const [deptId, setDeptId] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [permissionsUsers, setPermissionsUsers] = useState("");
 
   const [users, setUsers] = useState([]);
+
+  const [isAddUserModalVisible, setAddUserModalVisible] = useState(false);
+
+  const departmentImages = {
+    Products: product,
+    "Purchase order": purchase,
+    "Stock In": stockIn,
+    "Stock Out": stockOut,
+    Reports: reports,
+  };
 
   // Fetch all departments
   const fetchDepartments = async () => {
@@ -52,17 +57,41 @@ const Permission = () => {
     }
   };
 
-  // Fetch users based on department
+  const fetchAminUsers = async () => {
+    try {
+      const response = await apiService.get("/users/admin-users", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.status === 200) {
+        console.log(response.data);
+        setUsers(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+  // Fetch users based on department or get all admin users if 'Admin' department is selected
   const fetchUsers = async (departmentId) => {
     try {
-      const response = await apiService.get(
-        `/users/department/${departmentId}`,
-        {
+      let response;
+
+      if (departmentId === "Admin") {
+        response = await apiService.get("/users/admin-users", {
           headers: {
             "Content-Type": "application/json",
           },
-        }
-      );
+        });
+      } else {
+        response = await apiService.get(`/users/department/${departmentId}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      }
+
       console.log(response.data);
       setUsers(response.data);
     } catch (error) {
@@ -74,45 +103,12 @@ const Permission = () => {
     fetchDepartments();
   }, []);
 
-  const bgColors = [
-    "bg-blue-500",
-    "bg-green-500",
-    "bg-red-500",
-    "bg-maroon-500",
-  ];
-
-  const showToolTip = (e, permission) => {
-    const rect = e.target.getBoundingClientRect();
-    setTooltipStates((prevState) => ({
-      ...prevState,
-      [permission]: {
-        visible: true,
-        top: rect.bottom + window.scrollY,
-        left: rect.left + window.scrollX,
-      },
-    }));
+  const openAddUserModal = () => {
+    setAddUserModalVisible(true);
   };
 
-  const hideToolTip = () => {
-    setTooltipStates({});
-  };
-
-  const handleDelete = (userData) => {};
-
-  const openEditModal = (user) => {
-    try {
-      if (user === null) {
-        console.log("no data available");
-      }
-      setModalData({
-        ...user,
-        user_permission: user.UserPermissions[0],
-      });
-      console.log(modalData);
-
-      setSelectedPermission(user.department);
-      setIsModalOpen(true);
-    } catch (error) {}
+  const closeAddUserModal = () => {
+    setAddUserModalVisible(false);
   };
 
   const handleSaveClick = async () => {
@@ -136,53 +132,60 @@ const Permission = () => {
     }
   };
 
-  // const openModal = (e, permission) => {
-  //   const rect = e.target.getBoundingClientRect();
-  //   setSelectedPermission(permission);
-  //   setModalPosition({
-  //     top: rect.bottom + window.scrollY,
-  //     left: rect.left + window.scrollX,
-  //   });
-  //   setModalVisible(true);
-  //   // Filter users based on the clicked permission
-  //   const usersWithPermission = users.filter((user) =>
-  //     user.permissions.includes(permission)
-  //   );
-  //   setUsers(usersWithPermission);
-  // };
-
   const handlePermissionChange = (accessType) => {
     console.log(`accessTypes: ${accessType}`);
 
-    // Create a new object for user permissions with the updated value
     const newPermissions = {
       ...modalData.user_permission,
       [accessType]: !modalData.user_permission[accessType],
     };
 
-    // Update the modalData state
     setModalData((prevState) => ({
       ...prevState,
       user_permission: newPermissions,
     }));
 
-    // Track changes separately, ensuring we update the correct accessType
     setPermissionChanges((prevChanges) => ({
       ...prevChanges,
       [accessType]: newPermissions[accessType],
     }));
 
-    // Log the updated permission changes
     console.log("change: ", {
       ...permissionChanges,
       [accessType]: newPermissions[accessType],
     });
   };
 
+  const openEditModal = (user) => {
+    try {
+      if (user === null) {
+        console.log("no data available");
+      }
+      setModalData({
+        ...user,
+        user_permission: user.UserPermissions[0],
+      });
+      console.log(modalData);
+
+      setSelectedPermission(user.department);
+      setIsModalOpen(true);
+      setSelectedUser(user);
+      console.log(user);
+    } catch (error) {}
+  };
+
   const openDeptModal = (dept) => {
-    setSelectedPermission(dept.departmentName);
-    setModalVisible(true);
-    fetchUsers(dept.id); // Fetch users when a department is clicked
+    if (dept.departmentName === "Admin") {
+      setSelectedPermission("Admin");
+      setModalVisible(true);
+      fetchUsers("Admin"); // Fetch admin users
+    } else {
+      setSelectedPermission(dept.departmentName);
+      setModalVisible(true);
+      fetchUsers(dept.id); // Fetch regular department users
+      setDeptId(dept.id);
+    }
+    console.log("Department ID:", dept.id);
   };
 
   const closeModal = () => {
@@ -244,6 +247,54 @@ const Permission = () => {
     }
   };
 
+  const handleDelete = () => {};
+
+  const handleDeleteNewPermissionsUsers = async (userId) => {
+    try {
+      console.log(deptId);
+      console.log("Adding new user:", userId);
+      const response = await apiService.delete(
+        `/users/delete/userPermission/${userId}/${deptId}`
+      );
+      console.log(response);
+
+      if (response.status === 202) {
+        console.log("User removed successfully.");
+        setAddUserModalVisible(false);
+        fetchUsers(deptId);
+      } else {
+        console.error("Failed to add new user:", response.data);
+      }
+    } catch (error) {
+      console.error("Error adding new user:", error);
+    }
+  };
+
+  const handleDeleteNewAdmin = async (userId) => {
+    const removeAdmin = false;
+
+    try {
+      const response = await apiService.put(
+        `/users/${userId}`,
+        { is_admin: removeAdmin },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("Admin status removed", response.data);
+        fetchAminUsers(userId);
+      } else {
+        console.warn("Unexpected response status:", response.status);
+      }
+    } catch (error) {
+      console.error("Update failed:", error.response || error.message);
+    }
+  };
+
   const filteredUsers = users.filter((user) =>
     user.full_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -253,26 +304,46 @@ const Permission = () => {
 
   return (
     <>
-      <TopLayer
-        isAddButton={false}
+      {/* <TopLayer
+        isAddButton={true}
         addButtonText="Add Module"
         addButtonIcon={plusIcon}
         onAddButtonClick={openAddModuleModal}
-      />
-      <div className="grid gap-4 px-6 mt-4 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
-        {department.map((dept, index) => (
-          <div
-            key={index}
-            className="relative p-4 overflow-hidden bg-white border rounded-lg shadow-lg cursor-pointer"
-            onClick={() => openDeptModal(dept)}
-          >
-            <div className="relative flex items-center mb-10">
-              <div className="flex-1 ml-1 text-lg font-medium cursor-pointer">
+      /> */}
+      <div className="flex flex-wrap justify-center gap-8 mt-10">
+        {/* Dynamic Department Cards */}
+        {department.map((dept, index) => {
+          const imageSrc = departmentImages[dept.departmentName] || product;
+          return (
+            <div
+              key={index}
+              className="flex flex-col items-center p-4 overflow-hidden transition-transform duration-300 transform bg-white border rounded-lg shadow-lg cursor-pointer w-80 hover:scale-105"
+              onClick={() => openDeptModal(dept)}
+            >
+              <img
+                src={imageSrc}
+                alt={dept.departmentName}
+                className="object-fill w-full h-40 rounded-t-lg"
+              />
+              <div className="mt-4 text-lg font-semibold text-center">
                 {dept.departmentName}
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
+
+        {/* Static Admin Card */}
+        <div
+          className="flex flex-col items-center p-4 overflow-hidden transition-transform duration-300 transform bg-white border rounded-lg shadow-lg cursor-pointer w-80 hover:scale-105"
+          onClick={() => openDeptModal({ departmentName: "Admin" })}
+        >
+          <img
+            src={admin}
+            alt="Admin"
+            className="object-fill w-full h-40 rounded-t-lg"
+          />
+          <div className="mt-4 text-lg font-semibold text-center">Admin</div>
+        </div>
       </div>
 
       {modalVisible && (
@@ -314,8 +385,8 @@ const Permission = () => {
               </div>
 
               <button
-                onClick={""}
                 className="flex items-center px-4 py-2 ml-4 font-semibold "
+                onClick={openAddUserModal}
               >
                 <img
                   src={addUserIcon}
@@ -342,6 +413,15 @@ const Permission = () => {
                       </th>
                       <th className="w-40 px-6 py-2 font-medium text-center text-black uppercase text-md">
                         Action
+                      </th>
+                      <th className="w-32 px-2 py-2 font-bold text-center text-black uppercase text-md">
+                        <button onClick={handleDelete} className="text-red-500">
+                          <img
+                            src={deleteIcon}
+                            alt="Delete"
+                            className="w-5 h-5"
+                          />
+                        </button>
                       </th>
                     </tr>
                   </thead>
@@ -386,6 +466,21 @@ const Permission = () => {
                                 className="text-center text-blue-500"
                               >
                                 <CiEdit color="black" className="h-6 w-7" />
+                              </button>
+                            </td>
+                            <td className="w-32 px-2 py-2 text-center text-black whitespace-nowrap text-md">
+                              <button
+                                onClick={() => {
+                                  handleDeleteNewPermissionsUsers(row.id);
+                                  handleDeleteNewAdmin(row.id);
+                                }}
+                                className="text-red-500"
+                              >
+                                <img
+                                  src={deleteIcon}
+                                  alt="Delete"
+                                  className="w-5 h-5"
+                                />
                               </button>
                             </td>
                           </tr>
@@ -454,15 +549,6 @@ const Permission = () => {
                             modalData.user_permission?.[accessType] || false
                           }
                           onChange={() => handlePermissionChange(accessType)}
-                          // setModalData({
-                          //   ...modalData,
-                          //   user_permission: {
-                          //     ...modalData.user_permission,
-                          //     [accessType]:
-                          //       !modalData.user_permission?.[accessType],
-                          //   },
-                          // })
-                          // }
                         />
                         <div className="relative h-6 bg-gray-200 rounded-full w-11 peer-checked:bg-blue-500">
                           <div
@@ -541,6 +627,13 @@ const Permission = () => {
           </div>
         </div>
       )}
+      <PermissionsAddUserModal
+        isVisible={isAddUserModalVisible}
+        onClose={closeAddUserModal}
+        selectedDeptId={deptId}
+        fetchUsers={fetchUsers}
+        fetchAminUsers={fetchAminUsers}
+      />
     </>
   );
 };

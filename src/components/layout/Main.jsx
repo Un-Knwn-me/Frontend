@@ -1,23 +1,16 @@
 import React, { useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import HorizontalNavbar from "./HorizontalNavbar";
 import VerticalNavbar from "./VerticalNavbar";
 
 const Main = () => {
   const [sideNavOpen, setSideNavOpen] = useState(true);
-  const location = useLocation();
-
-  const formattedRoute =
-    location.pathname
-      .split("/")
-      .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
-      .join(" > ");
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen overflow-auto">
       {/* Vertical Navbar */}
       <div
-        className={`fixed h-full bg-gray-200 duration-300 ${sideNavOpen ? "w-56" : "w-20"}`}
+        className={`z-10 fixed h-full bg-gray-200 duration-300 ${sideNavOpen ? "w-56" : "w-20"}`}
       >
         <VerticalNavbar isOpen={sideNavOpen} toggleSideNav={() => setSideNavOpen(!sideNavOpen)} />
       </div>
@@ -30,7 +23,7 @@ const Main = () => {
         <HorizontalNavbar />
 
         {/* Main Content */}
-        <main className="flex-grow overflow-y-auto pt-2">
+        <main className="flex-grow h-0 pt-2 overflow-y-auto">
           {/* Outlet for nested routes */}
           <Outlet />
         </main>

@@ -14,7 +14,7 @@ const Reports = () => {
   const [recordsPerPage, setRecordsPerPage] = useState(5);
   const [reportData, setReportData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const tableRef = useRef();  // Reference for capturing the table
+  const tableRef = useRef();
 
   const presets = [
     { id: 'pr1', value: 'Overall Stocks', label: 'Overall Stocks' },
@@ -234,6 +234,34 @@ const Reports = () => {
 
   console.log('data: ', reportData);
 
+  const handleDownload = async () => {
+    try {
+      // Request the backend to generate the PDF and download it
+      const response = await apiService.get('/reports/stock-report', {
+        responseType: 'blob', // Important to specify the response type as blob
+      });
+
+      // Create a new Blob object using the response data
+      const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+
+      // Create a link element
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(pdfBlob);
+      link.download = 'stock_report.pdf'; // The name of the downloaded file
+
+      // Append the link to the body
+      document.body.appendChild(link);
+
+      // Programmatically click the link to trigger the download
+      link.click();
+
+      // Clean up by removing the link after downloading
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Error downloading the PDF', error);
+    }
+  };
+
   return (
     <div className="w-full py-2 bg-white rounded-lg">
       <div className="relative w-40">
@@ -261,6 +289,15 @@ const Reports = () => {
           </ul>
         )}
       </div>
+
+      <div>
+      <button
+        onClick={handleDownload}
+        className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+      >
+        Download Stock Report
+      </button>
+    </div>
 
       {data.length > 0 && (
         <>
