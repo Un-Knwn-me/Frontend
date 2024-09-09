@@ -341,7 +341,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
                   DC Number:
                 </label>
                 <input
-                  type="date"
+                  type="text"
                   id="dc-number"
                   value={dcNumber}
                   onChange={(e) => setDcNumber(e.target.value)}
