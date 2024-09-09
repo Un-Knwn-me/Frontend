@@ -5,7 +5,7 @@ import apiService from '../../../apiService';
 const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
   const [buyer, setBuyer] = useState("");
   const [buyerLocation, setBuyerLocation] = useState("");
-  const [deliveryDate, setDeliveryDate] = useState(new Date().toISOString());
+  const [dcNumber, setDcNumber] = useState(null);
   const [styleNumber, setStyleNumber] = useState("");
   const [styleDropdown, setStyleDropdown] = useState(false);
   const [styleSuggestions, setStyleSuggestions] = useState([]);
@@ -200,12 +200,6 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
    setBuyerDropdown(false);
  };
 
-//  handle date
-const handleDeliveryDateChange = (e) => {
-    const inputDate = e.target.value;
-    setDeliveryDate(new Date(inputDate).toISOString());
-};
-
   const handleBundleChange = async (e) => {
     try {
       const bundleQty = e.target.value;
@@ -240,9 +234,10 @@ const handleDeliveryDateChange = (e) => {
       const stockData = {
         order_type: "Without Purchase Order",
         buyer_id: selectedBuyerId,
-        delivery_date: deliveryDate,
+        delivery_date: Date.now(),
         product_style_number: productInfo.product_style_number,
         product_id: productInfo.Product.id,
+        dc_number: dcNumber,
         notes,
         packing_type: packingInfo,
         purchase_by_size: productInfo.stock_by_size,
@@ -342,16 +337,16 @@ const handleDeliveryDateChange = (e) => {
               </div>
 
               <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="deliveryDate">
-                  Delivery date:
+                <label className="font-semibold" htmlFor="dc-number">
+                  DC Number:
                 </label>
                 <input
                   type="date"
-                  id="deliveryDate"
-                  value={deliveryDate.split("T")[0]}
-                  onChange={handleDeliveryDateChange}
+                  id="dc-number"
+                  value={dcNumber}
+                  onChange={(e) => setDcNumber(e.target.value)}
                   className="px-2 py-2 border border-gray-300 rounded-md hover:border-cyan-300 active:boder-cyan-300 focus:border-cyan-300"
-                  placeholder="Enter delivery date"
+                  placeholder="Enter dc number"
                 />
               </div>
 

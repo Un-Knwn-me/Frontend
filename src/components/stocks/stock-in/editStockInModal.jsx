@@ -595,7 +595,7 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
               <input
                 type="text"
                 id="warehouse"
-                value={stockInData?.Warehouse.warehouse}
+                value={stockInData?.Warehouse?.warehouse}
                 onChange={handleWarehouseChange}
                 className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                 placeholder="Enter Warehouse"
