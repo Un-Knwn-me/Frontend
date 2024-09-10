@@ -1,29 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import closeIcon from "../../../assets/close-modal-icon.svg";
 import apiService from '../../../apiService';
 
 const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
   const [buyer, setBuyer] = useState("");
   const [buyerLocation, setBuyerLocation] = useState("");
-  const [dcNumber, setDcNumber] = useState(null);
+  const [dcNumber, setDcNumber] = useState('');
   const [styleNumber, setStyleNumber] = useState("");
   const [styleDropdown, setStyleDropdown] = useState(false);
   const [styleSuggestions, setStyleSuggestions] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [selectedProductId, setSelectedProductId] = useState(null);
   const [productInfo, setProductInfo] = useState({});
-  const [orderInfo, setOrderInfo] = useState(null);
   const [productInnerTotals, setProductInnerTotals] = useState(null);
   const [productOuterTotals, setProductOuterTotals] = useState(null);
-  const [assortmentType, setAssortmentType] = useState("assorted");
-  const [innerPcs, setInnerPcs] = useState({});
-  const [outerPcs, setOuterPcs] = useState({});
   const [stockOutBundle, setStockOutBundle] = useState(null);
-  const [totalInnerPcs, setTotalInnerPcs] = useState(0);
-  const [totalOuterPcs, setTotalOuterPcs] = useState(0);
-  const [totalInnerPcsPerBundle, setTotalInnerPcsPerBundle] = useState(0);
   const [totalProducts, setTotalProducts] = useState(0);
-  const [totalPcs, setTotalPcs] = useState(null);
   const [notes, setNotes] = useState("");
 
   const [ReferenceNo, setReferenceNo] = useState("");
@@ -64,7 +54,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
         const filteredProduct = response.data.filter((e) =>
             e.product_style_number.toLowerCase().startsWith(styleInput.toLowerCase())
           );
-          console.log(response.data);
+          console.log(filteredProduct);
           setStyleSuggestions(filteredProduct);
         } else {
           setStyleSuggestions([]);
@@ -84,7 +74,6 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
       setStyleNumber("");
       setStyleDropdown(false);
       setProductInfo(null)
-      setSelectedProduct(null);
       setReferenceNo("");
       setCategory("");
       setProductType("");
@@ -114,8 +103,6 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
   const handleStyleSelect = async(e) => {
     console.log("handleStyleSelect: ", e);
     setStyleNumber(e.Product.style_no);
-    setSelectedProduct(e);
-    setSelectedProductId(e.id);
     setStyleSuggestions([]);
     setStyleDropdown(false);
     setProductInfo(e)
@@ -204,12 +191,6 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
     try {
       const bundleQty = e.target.value;
       setStockOutBundle(bundleQty);
-
-      const totalInnerPerBundle = productInfo.stock_by_size.reduce((sum, size) => {
-        return sum + (size.inner * size.outer);
-    }, 0);
-
-    setTotalInnerPcsPerBundle(totalInnerPerBundle);
 
       const totalPcs = productInfo?.stock_by_size.reduce((sum, item) => {
         return sum + (item.innerPcs * item.outerPcs * bundleQty);
@@ -788,12 +769,12 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
 
           <div className="flex items-center justify-center my-8" >
               <div className="flex flex-col gap-4 p-5 bg-gray-100 w-fit">
-                {/* <div className="flex justify-between gap-5">
+                <div className="flex justify-between gap-5">
                   <label className="block text-sm font-medium text-gray-700">
                     Total Pcs per Bundle
                   </label>
-                  <span>{totalInnerPcsPerBundle}</span>
-                </div> */}
+                  <span>{productInfo?.pcs_per_bundle}</span>
+                </div>
                 <div className="flex justify-between gap-5">
                   <label className="block font-bold text-gray-700 text-md">
                     Total Pcs

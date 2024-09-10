@@ -3,7 +3,6 @@ import closeIcon from "../../../assets/close-modal-icon.svg";
 import apiService from "../../../apiService";
 
 const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
-  const [sizes, setSizes] = useState([]);
   const [assortmentType, setAssortmentType] = useState("");
   const [innerPcs, setInnerPcs] = useState({});
 
@@ -15,6 +14,7 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
   const [totalInnerPcsPerBundle, setTotalInnerPcsPerBundle] = useState(null);
   const [stockInBundle, setStockInBundle] = useState(null);
   const [totalPcs, setTotalPcs] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Suggestion warehouse states
   const [warehouseDropdown, setWarehouseDropdown] = useState(false);
@@ -164,10 +164,9 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
     try {
       const response = await apiService.get(`/stocks/stockIn/${editIndex}`);
       setStockInData(response.data);
-      setAssortmentType(response.data.packing_type);
       console.log(response.data);
-      // Fill the input fields based on the fetched stock-in data
-      setSizes(response.data.Size.sizes);
+      setAssortmentType(response.data.packing_type);
+
       setSelectedProduct(response.data);
     } catch (error) {
       console.error("Error fetching stock In data:", error);
@@ -265,7 +264,7 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
         total_pcs: totalPcs,
       });
     } else {
-      setTotalPcs(0);
+      setTotalPcs(stockInData?.total_pcs);
     }
   }, [stockInData]);
 
@@ -337,6 +336,15 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
         setErrorMessage(error.message);
       }
     }
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  // Function to handle closing the modal
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
   if (!showModal) return null;
@@ -575,18 +583,6 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
                 disabled
               />
             </div>
-            <div className="relative flex flex-col gap-2">
-              <label className="font-semibold" htmlFor="measurement">
-                Measurement Chart:
-              </label>
-              <input
-                type="text"
-                id="measurement"
-                value={stockInData?.Product.MeasurementChart.name}
-                className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
-                disabled
-              />
-            </div>
 
             <div className="relative flex flex-col gap-2">
               <label className="font-semibold" htmlFor="warehouse">
@@ -623,6 +619,46 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
                 </ul>
               )}
             </div>
+            <div className="relative flex flex-col gap-2">
+              <label className="font-semibold" htmlFor="measurement">
+                Measurement Chart:
+              </label>
+              <input
+                type="text"
+                id="measurement"
+                value={stockInData?.Product.MeasurementChart.name}
+                className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
+                disabled
+              />
+            </div>
+            <button
+              className="px-2 py-1 mt-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+              onClick={openModal}
+            >
+              Image Preview
+            </button>
+
+            {isModalOpen && (
+              <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                <div className="relative p-4 bg-white rounded shadow-lg">
+                  <button
+                    className="absolute text-gray-600 top-2 right-2 hover:text-gray-800"
+                    onClick={closeModal}
+                  >
+                    &#x2715;
+                  </button>
+                  <h2 className="mb-4 text-lg font-semibold">Image Preview</h2>
+                  <img
+                    src={
+                      stockInData?.Product.MeasurementChart.sample_size_file ||
+                      "https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?t=st=1722163869~exp=1722167469~hmac=37361beb0ca1a1c652d36c9ca94818f793a54d21822edab80e80c6e43a9b7b37&w=740"
+                    }
+                    alt="Measurement Preview"
+                    className="object-cover h-64 rounded w-60"
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="flex items-center justify-center h-64 mt-10 border border-gray-400">
@@ -715,14 +751,14 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
                     </div>
                     <div className="flex flex-col gap-2">
                       <label className="block text-sm font-medium text-gray-700">
-                        no of Inner Box
+                        no.of Inner Box
                       </label>
                       <input
                         type="number"
                         value={stock.outerPcs || null}
                         onChange={(e) => handleOuterPcsChange(e, stock.size)}
                         placeholder="Outer Pcs"
-                        className="px-2 py-1 border border-gray-300 rounded-md w-28"
+                        className="w-24 px-2 py-1 border border-gray-300 rounded-md"
                       />
                     </div>
                   </div>
@@ -751,7 +787,7 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
                 </div>
                 <div className="flex justify-between gap-5">
                   <label className="block text-sm font-medium text-gray-700">
-                    Total Inner Boxes
+                    Total Outer Pcs
                   </label>
                   <span>{stockInOuterTotals}</span>
                 </div>

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import closeIcon from "../../../assets/close-modal-icon.svg";
 import apiService from "../../../apiService";
 import AddStockOutModel from "../../stocks/stock-out/AddStockOutModel";
+import BuyerAddModal from "../../products/AddNewProductMaster/BuyerAddModal";
+import AddProductModal from "../../products/add-products/AddProductModal";
 
 const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
   const [buyer, setBuyer] = useState("");
@@ -29,11 +31,12 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
   const [sleeve, setSleeve] = useState("");
   const [length, setLength] = useState("");
   const [measurementChart, setMeasurementChart] = useState("");
-  const [selectedMeasurementImage, setSelectedMeasurementImage] = useState(null);
+  const [selectedMeasurementImage, setSelectedMeasurementImage] =
+    useState(null);
   const [packingMethod, setPackingMethod] = useState("");
   const [shortDescription, setShortDescription] = useState("");
   const [fullDescription, setFullDescription] = useState("");
-  
+
   const [notes, setNotes] = useState("");
   const [assortmentType, setAssortmentType] = useState("assorted");
   const [innerPcs, setInnerPcs] = useState({});
@@ -43,9 +46,12 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
   const [totalOuterPcs, setTotalOuterPcs] = useState(0);
   const [totalInnerPcsPerBundle, setTotalInnerPcsPerBundle] = useState(0);
   const [totalProducts, setTotalProducts] = useState(0);
-  const [stockOutPoNo, setStockOutPoNo] = useState('');
+  const [stockOutPoNo, setStockOutPoNo] = useState("");
   const [stockOutOrder, setStockOutOrder] = useState({});
   const [showStockOut, setShowStockOut] = useState(false);
+
+  const [isAddBuyerModalOpen, setIsAddBuyerModalOpen] = useState(false);
+  const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
 
   const handleDeliveryDateChange = (e) => {
     const inputDate = e.target.value;
@@ -95,11 +101,15 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
   };
 
   const handleAddNewBuyer = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new buyer:", buyer);
-    // Close the dropdown after adding the buyer
     setBuyerDropdown(false);
+    setIsAddBuyerModalOpen(true);
   };
+
+  const closeAddBuyerModal = () => {
+    setIsAddBuyerModalOpen(false);
+  };
+
 
   // fetch styleNo
   const fetchStyleSuggestions = async (styleInput) => {
@@ -122,9 +132,9 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
   const handleStyleChange = (e) => {
     const styleInput = e.target.value;
     if (styleInput.length > 0) {
-    setStyleNumber(styleInput);
-    setStyleDropdown(true);
-    fetchStyleSuggestions(styleInput);
+      setStyleNumber(styleInput);
+      setStyleDropdown(true);
+      fetchStyleSuggestions(styleInput);
     } else {
       setStyleNumber("");
       setStyleDropdown(false);
@@ -186,11 +196,16 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
   };
 
   const handleAddNewStyleNo = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new style no:", styleNumber);
-    // Close the dropdown after adding the buyer
     setStyleDropdown(false);
+    setIsAddProductModalOpen(true);
   };
+
+  const closeAddProductModal = () => {
+    setIsAddProductModalOpen(false);
+    onClose();
+  };
+
 
   // handle size quantity change
   const handleAssortmentTypeChange = (e) => {
@@ -209,28 +224,33 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
   const handleInnerPcsChange = (size, value) => {
     setInnerPcs((prev) => ({
       ...prev,
-      [size]: Number(value)
+      [size]: Number(value),
     }));
   };
 
   const handleOuterPcsChange = (size, value) => {
     setOuterPcs((prev) => ({
       ...prev,
-      [size]: Number(value)
+      [size]: Number(value),
     }));
   };
 
-  
   useEffect(() => {
-    const totalInner = Object.values(innerPcs).reduce((sum, pcs) => sum + Number(pcs || 0), 0);
-    const totalOuter = Object.values(outerPcs).reduce((sum, pcs) => sum + Number(pcs || 0), 0);
+    const totalInner = Object.values(innerPcs).reduce(
+      (sum, pcs) => sum + Number(pcs || 0),
+      0
+    );
+    const totalOuter = Object.values(outerPcs).reduce(
+      (sum, pcs) => sum + Number(pcs || 0),
+      0
+    );
     setTotalInnerPcs(totalInner);
     setTotalOuterPcs(totalOuter);
-    
+
     const totalInnerPerBundle = sizes.reduce((sum, size) => {
       const inner = innerPcs[size] || 0;
       const outer = outerPcs[size] || 0;
-      return sum + (inner * outer);
+      return sum + inner * outer;
     }, 0);
 
     setTotalInnerPcsPerBundle(totalInnerPerBundle);
@@ -286,6 +306,8 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
         setShortDescription("");
         setFullDescription("");
         setSelectedProduct(null);
+        setStockOutPoNo(response.data.purchase_order_number);
+        setStockOutOrder(response.data);
         handleStockOutModelShow();
         // onClose();
       } else {
@@ -297,16 +319,53 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
   };
 
   const handleStockOutModelShow = () => {
-    if(stockOutPoNo == null) {
+    if (stockOutPoNo == null) {
       setShowStockOut(false);
     } else {
-    setShowStockOut(true);
+      setShowStockOut(true);
     }
-  }
+  };
 
   const handleStockOutModelClose = () => {
     setShowStockOut(false);
-  }
+  };
+
+  const handleModalClose = () => {
+    setStyleNumber("");
+    setReferenceNo("");
+    setCategory("");
+    setProductType("");
+    setBrand("");
+    setFabric("");
+    setFabricFinish("");
+    setGsm("");
+    setKnitType("");
+    setColors("");
+    setSizes([]);
+    setDecoration("");
+    setPrintOrEmb("");
+    setStitch("");
+    setLength("");
+    setNeck("");
+    setSleeve("");
+    setMeasurementChart("");
+    setSelectedMeasurementImage("");
+    setPackingMethod("");
+    setShortDescription("");
+    setFullDescription("");
+    setSelectedProduct(null);
+    setBuyer("");
+    setBuyerLocation("");
+    setNotes("");
+    setBundles("");
+    setAssortmentType("");
+    setTotalInnerPcs(0);
+    setTotalOuterPcs(0);
+    setTotalInnerPcsPerBundle(0);
+    setTotalProducts(0);
+
+    onClose();
+  };
 
   if (!show) return null;
 
@@ -314,7 +373,7 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-black bg-opacity-50">
       <div
         className="fixed inset-0 bg-black opacity-50"
-        onClick={onClose}
+        onClick={handleModalClose}
       ></div>
       <div className="relative bg-white rounded-lg shadow-lg w-full max-w-[80vw] h-screen max-h-[90vh] overflow-auto">
         <div className="px-10 py-5">
@@ -322,7 +381,7 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
             <h2 className="text-xl font-bold">Create Without Purchase Order</h2>
             <button
               className="absolute cursor-pointer right-5"
-              onClick={onClose}
+              onClick={handleModalClose}
             >
               <img src={closeIcon} alt="Close" />
             </button>
@@ -377,6 +436,13 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                     )}
                   </ul>
                 )}
+                 <BuyerAddModal
+                  isModalOpen={isAddBuyerModalOpen}
+                  onClose={closeAddBuyerModal}
+                  fetchAllBuyers={fetchBuyerSuggestions}
+                  fetchBuyerSuggestions={fetchBuyerSuggestions}
+                  setBuyerDropdown={setBuyerDropdown}
+                />
               </div>
 
               <div className="flex flex-col gap-2">
@@ -440,6 +506,10 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                     )}
                   </ul>
                 )}
+                 <AddProductModal
+                  show={isAddProductModalOpen}
+                  onClose={closeAddProductModal}
+                />
               </div>
 
               <div className="relative flex flex-col gap-2">
@@ -675,8 +745,6 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
                   disabled
                 />
               </div>
-              
-
             </div>
 
             <div className="flex flex-col gap-2 mt-3">
@@ -720,109 +788,118 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
             </div>
 
             <div className="my-4">
-          <label className="font-semibold">Packaging Type:</label>
-          <div className="flex items-center gap-4 mt-2">
-            <label>
-              <input
-                type="radio"
-                value="assorted"
-                checked={assortmentType === "assorted"}
-                onChange={handleAssortmentTypeChange}
-                className="mx-1"
-              />
-               Assorted
-            </label>
-            <label>
-              <input
-                type="radio"
-                value="solid"
-                checked={assortmentType === "solid"}
-                onChange={handleAssortmentTypeChange}
-                className="mx-1"
-              />
-               Solid
-            </label>
-          </div>
-        </div>
+              <label className="font-semibold">Packaging Type:</label>
+              <div className="flex items-center gap-4 mt-2">
+                <label>
+                  <input
+                    type="radio"
+                    value="assorted"
+                    checked={assortmentType === "assorted"}
+                    onChange={handleAssortmentTypeChange}
+                    className="mx-1"
+                  />
+                  Assorted
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    value="solid"
+                    checked={assortmentType === "solid"}
+                    onChange={handleAssortmentTypeChange}
+                    className="mx-1"
+                  />
+                  Solid
+                </label>
+              </div>
+            </div>
 
             <div className="">
               <div className="flex items-center gap-2 mb-4">
                 <h3 className="text-lg font-medium">Order Info:</h3>
               </div>
               <div className="flex justify-between gap-4 px-5 border border-gray-400">
-              <div className="p-4 rounded-lg">
-              <h4 className="mb-4 text-sm font-medium">Quantity per size:</h4>
-              <div className="flex flex-col gap-4">
-              {sizes.map((size, index) => (
-              <div key={index} className="flex items-center gap-2 mb-2">
-              <div className="w-16 mt-5">{size}: </div>
-              <div className="flex flex-col gap-2">
-              <label className="block text-sm font-medium text-gray-700">Inner Pcs</label>
-              <input
-                type="number"
-                value={innerPcs[size] || ''}
-                onChange={(e) => handleInnerPcsChange(size, e.target.value)}
-                placeholder="Inner Pcs"
-                className="w-24 px-2 py-1 border border-gray-300 rounded-md"
-                disabled={assortmentType === "solid"}
-              />
-              </div>
-              <div className="flex flex-col gap-2">
-              <label className="block text-sm font-medium text-gray-700">no of Inner box</label>
-              <input
-                type="number"
-                value={outerPcs[size] || ''}
-                onChange={(e) => handleOuterPcsChange(size, e.target.value)}
-                placeholder="Outer Pcs"
-                className="px-2 py-1 border border-gray-300 rounded-md w-28"
-              />
-              </div>
-            </div>
-          ))}
-              </div>
-            </div>
+                <div className="p-4 rounded-lg">
+                  <h4 className="mb-4 text-sm font-medium">
+                    Quantity per size:
+                  </h4>
+                  <div className="flex flex-col gap-4">
+                    {sizes.map((size, index) => (
+                      <div key={index} className="flex items-center gap-2 mb-2">
+                        <div className="w-16 mt-5">{size}: </div>
+                        <div className="flex flex-col gap-2">
+                          <label className="block text-sm font-medium text-gray-700">
+                            Inner Pcs
+                          </label>
+                          <input
+                            type="number"
+                            value={innerPcs[size] || ""}
+                            onChange={(e) =>
+                              handleInnerPcsChange(size, e.target.value)
+                            }
+                            placeholder="Inner Pcs"
+                            className="w-24 px-2 py-1 border border-gray-300 rounded-md"
+                            disabled={assortmentType === "solid"}
+                          />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <label className="block text-sm font-medium text-gray-700">
+                            no of Inner box
+                          </label>
+                          <input
+                            type="number"
+                            value={outerPcs[size] || ""}
+                            onChange={(e) =>
+                              handleOuterPcsChange(size, e.target.value)
+                            }
+                            placeholder="Outer Pcs"
+                            className="px-2 py-1 border border-gray-300 rounded-md w-28"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
-            <div className="content-center px-20">
-          <label className="font-semibold">Number of Bundles: </label>
-          <input
-            type="number"
-            value={bundles}
-            onChange={(e) => setBundles(Number(e.target.value))}
-            placeholder="Bundles"
-            className="w-24 px-2 py-1 border border-gray-300 rounded-md"
-          />
-        </div>
+                <div className="content-center px-20">
+                  <label className="font-semibold">Number of Bundles: </label>
+                  <input
+                    type="number"
+                    value={bundles}
+                    onChange={(e) => setBundles(Number(e.target.value))}
+                    placeholder="Bundles"
+                    className="w-24 px-2 py-1 border border-gray-300 rounded-md"
+                  />
+                </div>
 
-        <div className="flex items-center justify-center p-4 mt-8 mb-8 bg-gray-100">
-              <div className="flex flex-col gap-4">
-                <div className="flex justify-between gap-5">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Total Inner Pcs
-                  </label>
-                  <span>{totalInnerPcs}</span>
-                </div>
-                <div className="flex justify-between gap-5">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Total Inner Boxes
-                  </label>
-                  <span>{totalOuterPcs}</span>
-                </div>
-                <div className="flex justify-between gap-5">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Total Pcs per Bundle
-                  </label>
-                  <span>{totalInnerPcsPerBundle}</span>
-                </div>
-                <div className="flex justify-between gap-5">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Total Pcs
-                  </label>
-                  <span>{totalProducts}</span>
+                <div className="flex items-center justify-center p-4 mt-8 mb-8 bg-gray-100">
+                  <div className="flex flex-col gap-4">
+                    <div className="flex justify-between gap-5">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Total Inner Pcs
+                      </label>
+                      <span>{totalInnerPcs}</span>
+                    </div>
+                    <div className="flex justify-between gap-5">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Total Outer Pcs
+                      </label>
+                      <span>{totalOuterPcs}</span>
+                    </div>
+                    <div className="flex justify-between gap-5">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Total Pcs per Bundle
+                      </label>
+                      <span>{totalInnerPcsPerBundle}</span>
+                    </div>
+                    <div className="flex justify-between gap-5">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Total Pcs
+                      </label>
+                      <span>{totalProducts}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-
-          </div>
             </div>
           </div>
           <div className="flex justify-center px-20 mt-5">
@@ -835,6 +912,12 @@ const CreateWithoutPOModel = ({ show, onClose, getAllPurchaseOrder }) => {
           </div>
         </div>
       </div>
+      <AddStockOutModel
+        show={showStockOut}
+        onClose={handleStockOutModelClose}
+        stockOutPoNo={stockOutPoNo}
+        stockOutOrder={stockOutOrder}
+      />
     </div>
   );
 };

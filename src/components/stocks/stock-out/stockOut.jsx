@@ -6,7 +6,6 @@ import leftArrowIcon from "../../../assets/left-arrow-icon.svg";
 import rightArrowIcon from "../../../assets/right-arrow-icon.svg";
 import tickIcon from "../../../assets/tick-icon.svg";
 import EditStockOutModel from "./EditstockOutModel";
-import AddStockOutModel from "./AddStockOutModel";
 import apiService from "../../../apiService";
 import StockSelectOptionModel from "./StockSelectOptionModel";
 
@@ -289,7 +288,6 @@ const StockOut = () => {
         onClose={handleCloseModal}
         stockOutId={selectedProductId}
       />
-      {/* <AddStockOutModel show={showAddModal} onClose={handleAddModalClose} fetchStockOut={fetchStockOut}/> */}
       <StockSelectOptionModel show={showAddModal} onClose={handleAddModalClose} fetchStockOut={fetchStockOut}/>
     </>
   );

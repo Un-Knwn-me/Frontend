@@ -104,8 +104,9 @@ const EditPoModal = ({ show, onClose, withPoId, getAllPurchaseOrder }) => {
     try {
       const response = await apiService.get(`/purchases/${withPoId}`);
       setWithPoData(response.data);
-      setAssortmentType(response.data.packing_type);
       console.log(response.data);
+      setAssortmentType(response.data.packing_type);
+
       // Fill the input fields based on the fetched stock-in data
     } catch (error) {
       console.error(
@@ -184,10 +185,8 @@ const EditPoModal = ({ show, onClose, withPoId, getAllPurchaseOrder }) => {
   };
 
   const handleAddNewBuyer = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new buyer:", withPoData.Buyer.name);
     console.log("Adding new buyer:", withPoData.Buyer.location);
-    // Close the dropdown after adding the buyer
     setBuyerDropdown(false);
   };
 
@@ -300,7 +299,7 @@ const EditPoModal = ({ show, onClose, withPoId, getAllPurchaseOrder }) => {
         req_purchase_qty: totalPcs,
       });
     } else {
-      setTotalPcs(0);
+      setTotalPcs(withPoData?.req_purchase_qty);
     }
   }, [withPoData]);
 
@@ -362,8 +361,8 @@ const EditPoModal = ({ show, onClose, withPoId, getAllPurchaseOrder }) => {
         setUpdatedwithPoData({});
         setTimeout(() => {
           setSuccessMessage("");
-          onClose();
           getAllPurchaseOrder();
+          onClose();
         }, 1500);
       }
     } catch (error) {
@@ -854,7 +853,7 @@ const EditPoModal = ({ show, onClose, withPoId, getAllPurchaseOrder }) => {
                     </div>
                     <div className="flex justify-between gap-5">
                       <label className="block text-sm font-medium text-gray-700">
-                        Total Inner Boxes
+                        Total Outer Pcs
                       </label>
                       <span>{totalOuterPcs}</span>
                     </div>

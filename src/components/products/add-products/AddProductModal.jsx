@@ -2,6 +2,25 @@ import React, { useState } from "react";
 import closeIcon from "../../../assets/close-modal-icon.svg";
 import apiService from "../../../apiService";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import AddBrandModal from "../AddNewProductMaster/AddBrandModal";
+import ReferenceNoAddModal from "../AddNewProductMaster/ReferenceNoAddModal";
+import CategoryAddModal from "../AddNewProductMaster/CategoryAddModal";
+import ProductTypesAddModal from "../AddNewProductMaster/ProductTypesAddModal";
+import FabricAddModal from "../AddNewProductMaster/FabricAddModal";
+import FabricFinishAddModal from "../AddNewProductMaster/FabricFinishAddModal";
+import GsmAddModal from "../AddNewProductMaster/GsmAddModal";
+import KnitTypeAddModal from "../AddNewProductMaster/KnitTypeAddModal";
+import ColorsAddModal from "../AddNewProductMaster/ColorsAddModal";
+import SizesAddModal from "../AddNewProductMaster/SizesAddModal";
+import DecorationsAddModal from "../AddNewProductMaster/DecorationsAddModal";
+import PrintOrEmbAddModal from "../AddNewProductMaster/PrintOrEmbAddModal";
+import StitchDetailsAddModal from "../AddNewProductMaster/StitchDetailsAddModal";
+import NeckAddModal from "../AddNewProductMaster/NeckAddModal";
+import SleeveAddModal from "../AddNewProductMaster/SleeveAddModal";
+import LengthAddModal from "../AddNewProductMaster/LengthAddModal";
+import PackingMethodAddModal from "../AddNewProductMaster/PackingMethodAddModal";
+import MesasurementModal from "../Mesasurement-model";
+import MeasurementChartAddModal from "../AddNewProductMaster/MeasurementChartAddModal";
 
 const AddProductModal = ({ show, onClose }) => {
   const [styleNo, setStyleNo] = useState("");
@@ -20,7 +39,6 @@ const AddProductModal = ({ show, onClose }) => {
   const [sleeve, setSleeve] = useState("");
   const [length, setLength] = useState("");
   const [measurementChart, setMeasurementChart] = useState("");
-  const [selectedMeasurementImage, setSelectedMeasurementImage] = useState(null);
   const [packingMethod, setPackingMethod] = useState("");
   const [category, setCategory] = useState("");
   const [productTypes, setProductTypes] = useState("");
@@ -126,6 +144,30 @@ const AddProductModal = ({ show, onClose }) => {
 
   const [loading, setLoading] = useState(false);
 
+  const [isAddBrandModalOpen, setIsAddBrandModalOpen] = useState(false);
+  const [isAddRefNoModalOpen, setIsAddRefNoModalOpen] = useState(false);
+  const [isAddCategoryModalOpen, setIsAddCategoryModalOpen] = useState(false);
+  const [isAddProductTypeModalOpen, setIsAddProductTypeModalOpen] =
+    useState(false);
+  const [isAddFabricModalOpen, setIsAddFabricModalOpen] = useState(false);
+  const [isAddFabricFinishModalOpen, setIsAddFabricFinishModalOpen] =
+    useState(false);
+  const [isAddGsmModalOpen, setIsAddGsmModalOpen] = useState(false);
+  const [isAddKnitTypeModalOpen, setIsAddKnitTypeModalOpen] = useState(false);
+  const [isAddColorModalOpen, setIsAddColorModalOpen] = useState(false);
+  const [isAddSizeModalOpen, setIsAddSizeModalOpen] = useState(false);
+  const [isAddDecorationModalOpen, setIsAddDecorationModalOpen] =
+    useState(false);
+  const [isAddPrintModalOpen, setIsAddPrintModalOpen] = useState(false);
+  const [isAddStitchModalOpen, setIsAddStitchModalOpen] = useState(false);
+  const [isAddNeckModalOpen, setIsAddNeckModalOpen] = useState(false);
+  const [isAddSleeveModalOpen, setIsAddSleeveModalOpen] = useState(false);
+  const [isAddLengthModalOpen, setIsAddLengthModalOpen] = useState(false);
+  const [isAddPackingMethodModalOpen, setIsAddPackingMethodModalOpen] =
+    useState(false);
+  const [isAddMeasurementChartModalOpen, setIsAddMeasurementChartModalOpen] =
+    useState(false);
+
   // fetch brand
   const fetchBrandSuggestions = async (brandInput) => {
     try {
@@ -158,10 +200,13 @@ const AddProductModal = ({ show, onClose }) => {
   };
 
   const handleAddNewBrand = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new brand:", brand);
-    // Close the dropdown after adding the buyer
     setBrandDropdown(false);
+    setIsAddBrandModalOpen(true);
+  };
+
+  const closeAddBrandModal = () => {
+    setIsAddBrandModalOpen(false);
   };
 
   // fetch reference no
@@ -196,10 +241,13 @@ const AddProductModal = ({ show, onClose }) => {
   };
 
   const handleAddNewReference = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new reference NO:", referenceNo);
-    // Close the dropdown after adding the buyer
     setReferenceDropdown(false);
+    setIsAddRefNoModalOpen(true);
+  };
+
+  const closeAddRefNoModal = () => {
+    setIsAddRefNoModalOpen(false);
   };
 
   // fetch fabric
@@ -234,10 +282,13 @@ const AddProductModal = ({ show, onClose }) => {
   };
 
   const handleAddNewFabric = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new fabric:", fabric);
-    // Close the dropdown after adding the buyer
     setFabricDropdown(false);
+    setIsAddFabricModalOpen(true);
+  };
+
+  const closeAddFabricModal = () => {
+    setIsAddFabricModalOpen(false);
   };
 
   // fetch Fabric Finish
@@ -274,10 +325,13 @@ const AddProductModal = ({ show, onClose }) => {
   };
 
   const handleAddNewFabricFinish = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new fabric finish:", fabricFinish);
-    // Close the dropdown after adding the buyer
     setFabricFinishDropdown(false);
+    setIsAddFabricFinishModalOpen(true);
+  };
+
+  const closeAddFabricFinishModal = () => {
+    setIsAddFabricFinishModalOpen(false);
   };
 
   // fetch GSM
@@ -313,10 +367,13 @@ const AddProductModal = ({ show, onClose }) => {
   };
 
   const handleAddNewGsm = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new gsm:", gsm);
-    // Close the dropdown after adding the buyer
     setGsmDropdown(false);
+    setIsAddGsmModalOpen(true);
+  };
+
+  const closeAddGsmModal = () => {
+    setIsAddGsmModalOpen(false);
   };
 
   // fetch knit type
@@ -351,10 +408,13 @@ const AddProductModal = ({ show, onClose }) => {
   };
 
   const handleAddNewKnitType = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new knit type:", knitType);
-    // Close the dropdown after adding the buyer
     setKnitDropdown(false);
+    setIsAddKnitTypeModalOpen(true);
+  };
+
+  const closeAddKnitTypeModal = () => {
+    setIsAddKnitTypeModalOpen(false);
   };
 
   // fetch color
@@ -389,10 +449,13 @@ const AddProductModal = ({ show, onClose }) => {
   };
 
   const handleAddNewColor = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new color:", colors);
-    // Close the dropdown after adding the buyer
     setColorDropdown(false);
+    setIsAddColorModalOpen(true);
+  };
+
+  const closeAddColorModal = () => {
+    setIsAddColorModalOpen(false);
   };
 
   // fetch size
@@ -427,10 +490,13 @@ const AddProductModal = ({ show, onClose }) => {
   };
 
   const handleAddNewSize = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new size:", sizes);
-    // Close the dropdown after adding the buyer
     setSizeDropdown(false);
+    setIsAddSizeModalOpen(true);
+  };
+
+  const closeAddSizeModal = () => {
+    setIsAddSizeModalOpen(false);
   };
 
   // fetch decoration
@@ -467,10 +533,13 @@ const AddProductModal = ({ show, onClose }) => {
   };
 
   const handleAddNewDecoration = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new decoration:", decorations);
-    // Close the dropdown after adding the buyer
     setDecorationDropdown(false);
+    setIsAddDecorationModalOpen(true);
+  };
+
+  const closeAddDecorationModal = () => {
+    setIsAddDecorationModalOpen(false);
   };
 
   // fetch print
@@ -505,10 +574,13 @@ const AddProductModal = ({ show, onClose }) => {
   };
 
   const handleAddNewPrint = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new print/Emb:", printOrEmbName);
-    // Close the dropdown after adding the buyer
     setPrintDropdown(false);
+    setIsAddPrintModalOpen(true);
+  };
+
+  const closeAddPrintModal = () => {
+    setIsAddPrintModalOpen(false);
   };
 
   // fetch stitchDetails
@@ -543,10 +615,13 @@ const AddProductModal = ({ show, onClose }) => {
   };
 
   const handleAddNewStitch = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new stitch detail:", stitchDetails);
-    // Close the dropdown after adding the buyer
     setStitchDetailDropdown(false);
+    setIsAddStitchModalOpen(true);
+  };
+
+  const closeAddStitchModal = () => {
+    setIsAddStitchModalOpen(false);
   };
 
   // fetch neck
@@ -581,10 +656,13 @@ const AddProductModal = ({ show, onClose }) => {
   };
 
   const handleAddNewNeck = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new neck:", neck);
-    // Close the dropdown after adding the buyer
     setNeckDropdown(false);
+    setIsAddNeckModalOpen(true);
+  };
+
+  const closeAddNeckModal = () => {
+    setIsAddNeckModalOpen(false);
   };
 
   // fetch sleeve
@@ -619,10 +697,13 @@ const AddProductModal = ({ show, onClose }) => {
   };
 
   const handleAddNewSleeve = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new sleeve:", sleeve);
-    // Close the dropdown after adding the buyer
     setSleeveDropdown(false);
+    setIsAddSleeveModalOpen(true);
+  };
+
+  const closeAddSleeveModal = () => {
+    setIsAddSleeveModalOpen(false);
   };
 
   // fetch length
@@ -657,10 +738,13 @@ const AddProductModal = ({ show, onClose }) => {
   };
 
   const handleAddNewLength = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new length:", length);
-    // Close the dropdown after adding the buyer
     setLengthDropdown(false);
+    setIsAddLengthModalOpen(true);
+  };
+
+  const closeAddLengthModal = () => {
+    setIsAddLengthModalOpen(false);
   };
 
   // fetch packingMethods
@@ -697,10 +781,13 @@ const AddProductModal = ({ show, onClose }) => {
   };
 
   const handleAddNewPackingMethod = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new packing method:", packingMethod);
-    // Close the dropdown after adding the buyer
     setPackingDropdown(false);
+    setIsAddPackingMethodModalOpen(true);
+  };
+
+  const closeAddPackingMethodModal = () => {
+    setIsAddPackingMethodModalOpen(false);
   };
 
   // fetch mesurementChart
@@ -729,7 +816,6 @@ const AddProductModal = ({ show, onClose }) => {
 
   const handleMesurementChartSelect = (mesurementChart) => {
     setMeasurementChart(mesurementChart.name);
-    setSelectedMeasurementImage(mesurementChart.sample_size_file);
     setSelectedMesurement(mesurementChart);
     setSelectedMesurementId(mesurementChart.id);
     setMesurementSuggestions([]);
@@ -737,10 +823,13 @@ const AddProductModal = ({ show, onClose }) => {
   };
 
   const handleAddNewMeasurement = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new Measurements:", measurementChart);
-    // Close the dropdown after adding the buyer
     setMesurementDropdown(false);
+    setIsAddMeasurementChartModalOpen(true);
+  };
+
+  const closeAddMeasurementChartModal = () => {
+    setIsAddMeasurementChartModalOpen(false);
   };
 
   // fetch categorie
@@ -779,10 +868,15 @@ const AddProductModal = ({ show, onClose }) => {
     console.log("Adding new category:", category);
     // Close the dropdown after adding the buyer
     setCategoryDropdown(false);
+    setIsAddCategoryModalOpen(true);
   };
 
-   // fetch product types
-   const fetchProductTypesSuggestions = async (productTypesInput) => {
+  const closeAddCategoryModal = () => {
+    setIsAddCategoryModalOpen(false);
+  };
+
+  // fetch product types
+  const fetchProductTypesSuggestions = async (productTypesInput) => {
     try {
       if (productTypesInput.length > 0) {
         const response = await apiService.get("/productTypes/getall");
@@ -813,10 +907,13 @@ const AddProductModal = ({ show, onClose }) => {
   };
 
   const handleAddNewProductType = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new product types:", productTypes);
-    // Close the dropdown after adding the buyer
     setProductTypesDropdown(false);
+    setIsAddProductTypeModalOpen(true);
+  };
+
+  const closeAddProductTypeModal = () => {
+    setIsAddProductTypeModalOpen(false);
   };
 
   // Image uploader
@@ -865,16 +962,15 @@ const AddProductModal = ({ show, onClose }) => {
     setPreviews(newPreviews);
   };
 
-  
   const handleSubmit = async () => {
     setLoading(true);
 
-     // Ensure primary image is first
-     const updatedImages = [...images];
-     if (updatedImages[0] !== images[0]) {
-       const primaryImage = updatedImages.splice(images.indexOf(images[0]), 1);
-       updatedImages.unshift(primaryImage[0]);
-     }
+    // Ensure primary image is first
+    const updatedImages = [...images];
+    if (updatedImages[0] !== images[0]) {
+      const primaryImage = updatedImages.splice(images.indexOf(images[0]), 1);
+      updatedImages.unshift(primaryImage[0]);
+    }
 
     const formData = new FormData();
     formData.append("style_no", styleNo);
@@ -900,9 +996,9 @@ const AddProductModal = ({ show, onClose }) => {
     formData.append("short_description", shortDescription);
     formData.append("full_description", fullDescription);
     images.forEach((image) => {
-      formData.append("images", image); 
+      formData.append("images", image);
     });
-  
+
     try {
       const response = await apiService.post("/products/create", formData, {
         headers: {
@@ -947,7 +1043,7 @@ const AddProductModal = ({ show, onClose }) => {
       setLoading(false);
     }
   };
-  
+
   if (!show) return null;
 
   const handleModalClose = () => {
@@ -972,6 +1068,10 @@ const AddProductModal = ({ show, onClose }) => {
     setPackingMethod("");
     setInnerPcs(null);
     setMeasurementChart("");
+
+    setShortDescription("");
+    setFullDescription("");
+    setSelectedMesurement(null);
     onClose();
   };
 
@@ -988,7 +1088,7 @@ const AddProductModal = ({ show, onClose }) => {
             {/* Centering the title */}
             <h2 className="text-lg font-bold">Add Product</h2>
             <button
-              className="absolute right-5 cursor-pointer"
+              className="absolute cursor-pointer right-5"
               onClick={handleModalClose}
             >
               <img src={closeIcon} alt="Close" />
@@ -996,79 +1096,86 @@ const AddProductModal = ({ show, onClose }) => {
           </div>
           <hr className="my-2" />
           <div className="px-40">
+            <div className="flex flex-col gap-3 mt-10">
+              <div className="flex gap-4">
+                <h1 className="font-bold">Product Images</h1>
+                <span className="relative px-2 mt-1 text-sm text-gray-400">
+                  <span className="absolute top-0 left-0 text-gray-600">*</span>
+                  Choose up to 13 images
+                </span>
+              </div>
 
-          <div className="flex flex-col gap-3 mt-10">
-      <div className="flex gap-4">
-        <h1 className="font-bold">Product Images</h1>
-        <span className="text-sm text-gray-400 mt-1 relative px-2">
-          <span className="absolute left-0 top-0 text-gray-600">*</span>
-          Choose up to 13 images
-        </span>
-      </div>
-
-      <div className="min-h-40 bg-gray-100 flex items-center justify-center">
-        <div className="container mx-auto px-4 py-4">
-          <div className="mb-4">
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handleImageChange}
-              className="block w-full text-sm text-gray-500 file:mr-2 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
-            />
-          </div>
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable droppableId="images" direction="horizontal">
-              {(provided) => (
-                <div
-                  className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4"
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                >
-                  {previews.map((preview, index) => (
-                    <Draggable key={index} draggableId={index.toString()} index={index}>
+              <div className="flex items-center justify-center bg-gray-100 min-h-40">
+                <div className="container px-4 py-4 mx-auto">
+                  <div className="mb-4">
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="block w-full text-sm text-gray-500 file:mr-2 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
+                    />
+                  </div>
+                  <DragDropContext onDragEnd={handleDragEnd}>
+                    <Droppable droppableId="images" direction="horizontal">
                       {(provided) => (
                         <div
+                          className="grid grid-cols-2 gap-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8"
+                          {...provided.droppableProps}
                           ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          className="relative cursor-pointer"
-                          onClick={() => handleSelectPrimary(index)}
                         >
-                          <img
-                            src={preview}
-                            alt={`Preview ${index}`}
-                            className={`w-full h-32 object-cover rounded-lg shadow-md ${index === 0 ? 'border-4 border-blue-500' : ''}`}
-                          />
-                          {index === 0 && (
-                            <span className="absolute -top-2 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white rounded-lg px-2 py-1 text-xs">
-                              Primary
-                            </span>
-                          )}
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              removeImage(index);
-                            }}
-                            className="absolute top-2 right-2 bg-red-600 text-white rounded-full px-1.5 focus:outline-none"
-                          >
-                            &times;
-                          </button>
+                          {previews.map((preview, index) => (
+                            <Draggable
+                              key={index}
+                              draggableId={index.toString()}
+                              index={index}
+                            >
+                              {(provided) => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  className="relative cursor-pointer"
+                                  onClick={() => handleSelectPrimary(index)}
+                                >
+                                  <img
+                                    src={preview}
+                                    alt={`Preview ${index}`}
+                                    className={`w-full h-32 object-cover rounded-lg shadow-md ${
+                                      index === 0
+                                        ? "border-4 border-blue-500"
+                                        : ""
+                                    }`}
+                                  />
+                                  {index === 0 && (
+                                    <span className="absolute px-2 py-1 text-xs text-white transform -translate-x-1/2 bg-blue-500 rounded-lg -top-2 left-1/2">
+                                      Primary
+                                    </span>
+                                  )}
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      removeImage(index);
+                                    }}
+                                    className="absolute top-2 right-2 bg-red-600 text-white rounded-full px-1.5 focus:outline-none"
+                                  >
+                                    &times;
+                                  </button>
+                                </div>
+                              )}
+                            </Draggable>
+                          ))}
+                          {provided.placeholder}
                         </div>
                       )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
+                    </Droppable>
+                  </DragDropContext>
                 </div>
-              )}
-            </Droppable>
-          </DragDropContext>
-        </div>
-      </div>
-    </div>
-            <div className="mt-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              <div className="flex flex-col gap-2 relative">
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4 mt-10 md:grid-cols-3 lg:grid-cols-4">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="styleNo">
                   Style No:
                 </label>
@@ -1077,12 +1184,12 @@ const AddProductModal = ({ show, onClose }) => {
                   id="styleNo"
                   value={styleNo}
                   onChange={(e) => setStyleNo(e.target.value)}
-                  className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Style No"
                 />
               </div>
 
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="RefNo">
                   Reference Number:
                 </label>
@@ -1091,34 +1198,41 @@ const AddProductModal = ({ show, onClose }) => {
                   id="referenceNo"
                   value={referenceNo}
                   onChange={handleReferenceChange}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Reference Number"
                 />
                 {referenceDropdown && referenceNo && (
-                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
+                  <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
                     {referenceSuggestions.length > 0 ? (
                       referenceSuggestions.map((item) => (
                         <li
                           key={item.id}
                           onClick={() => handleReferenceSelect(item)}
-                          className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                         >
                           {item.reference_no}
                         </li>
                       ))
                     ) : (
                       <li
-                        className="px-4 py-2 cursor-pointer text-sm text-blue-600 hover:bg-gray-200"
+                        className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
                         onClick={handleAddNewReference}
                       >
-                        Add New Buyer: "{referenceNo}"
+                        Add New referenceNo: "{referenceNo}"
                       </li>
                     )}
                   </ul>
                 )}
+                <ReferenceNoAddModal
+                  isModalOpen={isAddRefNoModalOpen}
+                  onClose={closeAddRefNoModal}
+                  fetchAllRefNo={fetchReferenceSuggestions}
+                  fetchReferenceSuggestions={fetchReferenceSuggestions}
+                  setReferenceDropdown={setReferenceDropdown}
+                />
               </div>
 
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="category">
                   Category:
                 </label>
@@ -1127,25 +1241,41 @@ const AddProductModal = ({ show, onClose }) => {
                   id="category"
                   value={category}
                   onChange={handleCategoryChange}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Category Name"
                 />
                 {categoryDropdown && category && (
-                  <ul className="absolute top-16 left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
-                    {categorySuggestions.map((item) => (
+                  <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
+                    {categorySuggestions.length > 0 ? (
+                      categorySuggestions.map((item) => (
+                        <li
+                          key={item.id}
+                          onClick={() => handleCategorySelect(item)}
+                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                        >
+                          {item.categoryName}
+                        </li>
+                      ))
+                    ) : (
                       <li
-                        key={item.id}
-                        onClick={() => handleCategorySelect(item)}
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                        className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
+                        onClick={handleAddNewCategory}
                       >
-                        {item.categoryName}
+                        Add New category: "{category}"
                       </li>
-                    ))}
+                    )}
                   </ul>
                 )}
+                <CategoryAddModal
+                  isModalOpen={isAddCategoryModalOpen}
+                  onClose={closeAddCategoryModal}
+                  fetchAllCategorys={fetchCategorySuggestions}
+                  fetchCategorySuggestions={fetchCategorySuggestions}
+                  setCategoryDropdown={setCategoryDropdown}
+                />
               </div>
 
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="categorie">
                   Product Type:
                 </label>
@@ -1154,25 +1284,41 @@ const AddProductModal = ({ show, onClose }) => {
                   id="categorie"
                   value={productTypes}
                   onChange={handleProductTypesChange}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Category Name"
                 />
                 {productTypesDropdown && productTypes && (
-                  <ul className="absolute top-16 left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
-                    {productTypesSuggestions.map((item) => (
+                  <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
+                    {productTypesSuggestions.length > 0 ? (
+                      productTypesSuggestions.map((item) => (
+                        <li
+                          key={item.id}
+                          onClick={() => handleProductTypesSelect(item)}
+                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                        >
+                          {item.product}
+                        </li>
+                      ))
+                    ) : (
                       <li
-                        key={item.id}
-                        onClick={() => handleProductTypesSelect(item)}
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                        className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
+                        onClick={handleAddNewProductType}
                       >
-                        {item.product}
+                        Add New productTypes: "{productTypes}"
                       </li>
-                    ))}
+                    )}
                   </ul>
                 )}
+                <ProductTypesAddModal
+                  isModalOpen={isAddProductTypeModalOpen}
+                  onClose={closeAddProductTypeModal}
+                  fetchAllProductTypes={fetchProductTypesSuggestions}
+                  fetchProductTypesSuggestions={fetchProductTypesSuggestions}
+                  setProductTypesDropdown={setProductTypesDropdown}
+                />
               </div>
 
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="brand">
                   Brand Name:
                 </label>
@@ -1181,24 +1327,40 @@ const AddProductModal = ({ show, onClose }) => {
                   id="brand"
                   value={brand}
                   onChange={handleBrandChange}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Brand Name"
                 />
                 {brandDropdown && brand && (
-                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
-                    {brandSuggestions.map((item) => (
+                  <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
+                    {brandSuggestions.length > 0 ? (
+                      brandSuggestions.map((item) => (
+                        <li
+                          key={item.id}
+                          onClick={() => handleBrandSelect(item)}
+                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                        >
+                          {item.brandName}
+                        </li>
+                      ))
+                    ) : (
                       <li
-                        key={item.id}
-                        onClick={() => handleBrandSelect(item)}
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                        className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
+                        onClick={handleAddNewBrand}
                       >
-                        {item.brandName}
+                        Add New brand: "{brand}"
                       </li>
-                    ))}
+                    )}
                   </ul>
                 )}
+                <AddBrandModal
+                  isModalOpen={isAddBrandModalOpen}
+                  onClose={closeAddBrandModal}
+                  fetchAllBrands={fetchBrandSuggestions}
+                  fetchBrandSuggestions={fetchBrandSuggestions}
+                  setBrandDropdown={setBrandDropdown}
+                />
               </div>
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="fabric">
                   Fabric:
                 </label>
@@ -1207,24 +1369,40 @@ const AddProductModal = ({ show, onClose }) => {
                   id="fabric"
                   value={fabric}
                   onChange={handleFabricChange}
-                  className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Fabric"
                 />
                 {fabricDropdown && fabric && (
-                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
-                    {fabricSuggestions.map((item) => (
+                  <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
+                    {fabricSuggestions.length > 0 ? (
+                      fabricSuggestions.map((item) => (
+                        <li
+                          key={item.id}
+                          onClick={() => handleFabricSelect(item)}
+                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                        >
+                          {item.fabricName}
+                        </li>
+                      ))
+                    ) : (
                       <li
-                        key={item.id}
-                        onClick={() => handleFabricSelect(item)}
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                        className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
+                        onClick={handleAddNewFabric}
                       >
-                        {item.fabricName}
+                        Add New fabric: "{fabric}"
                       </li>
-                    ))}
+                    )}
                   </ul>
                 )}
+                <FabricAddModal
+                  isModalOpen={isAddFabricModalOpen}
+                  onClose={closeAddFabricModal}
+                  fetchAllfabrics={fetchFabricSuggestions}
+                  fetchFabricSuggestions={fetchFabricSuggestions}
+                  setFabricDropdown={setFabricDropdown}
+                />
               </div>
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="fabricFinish">
                   Fabric Finish:
                 </label>
@@ -1233,24 +1411,40 @@ const AddProductModal = ({ show, onClose }) => {
                   id="fabricFinish"
                   value={fabricFinish}
                   onChange={handleFabricFinishChange}
-                  className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Fabric Finish"
                 />
                 {fabricFinishDropdown && fabricFinish && (
-                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
-                    {fabricFinishSuggestions.map((item) => (
+                  <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
+                    {fabricFinishSuggestions.length > 0 ? (
+                      fabricFinishSuggestions.map((item) => (
+                        <li
+                          key={item.id}
+                          onClick={() => handleFabricFinishSelect(item)}
+                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                        >
+                          {item.fabricFinishName}
+                        </li>
+                      ))
+                    ) : (
                       <li
-                        key={item.id}
-                        onClick={() => handleFabricFinishSelect(item)}
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                        className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
+                        onClick={handleAddNewFabricFinish}
                       >
-                        {item.fabricFinishName}
+                        Add New fabricFinish: "{fabricFinish}"
                       </li>
-                    ))}
+                    )}
                   </ul>
                 )}
+                <FabricFinishAddModal
+                  isModalOpen={isAddFabricFinishModalOpen}
+                  onClose={closeAddFabricFinishModal}
+                  fetchAllfabricFinishes={fetchFabricFinishSuggestions}
+                  fetchFabricFinishSuggestions={fetchFabricFinishSuggestions}
+                  setFabricFinishDropdown={setFabricFinishDropdown}
+                />
               </div>
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="gsm">
                   GSM:
                 </label>
@@ -1259,24 +1453,40 @@ const AddProductModal = ({ show, onClose }) => {
                   id="gsm"
                   value={gsm}
                   onChange={handleGsmChange}
-                  className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter GSM"
                 />
                 {gsmDropdown && gsm && (
-                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
-                    {gsmSuggestions.map((item) => (
+                  <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
+                    {gsmSuggestions.length > 0 ? (
+                      gsmSuggestions.map((item) => (
+                        <li
+                          key={item.id}
+                          onClick={() => handleGsmSelect(item)}
+                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                        >
+                          {item.gsmValue}
+                        </li>
+                      ))
+                    ) : (
                       <li
-                        key={item.id}
-                        onClick={() => handleGsmSelect(item)}
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                        className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
+                        onClick={handleAddNewGsm}
                       >
-                        {item.gsmValue}
+                        Add New GSM: "{gsm}"
                       </li>
-                    ))}
+                    )}
                   </ul>
                 )}
+                <GsmAddModal
+                  isModalOpen={isAddGsmModalOpen}
+                  onClose={closeAddGsmModal}
+                  fetchAllgsms={fetchGsmSuggestions}
+                  fetchGsmSuggestions={fetchGsmSuggestions}
+                  setGsmDropdown={setGsmDropdown}
+                />
               </div>
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="knitType">
                   Knit Type:
                 </label>
@@ -1285,24 +1495,40 @@ const AddProductModal = ({ show, onClose }) => {
                   id="knitType"
                   value={knitType}
                   onChange={handleKnitChange}
-                  className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Knit Type"
                 />
                 {knitDropdown && knitType && (
-                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
-                    {knitSuggestions.map((item) => (
+                  <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
+                    {knitSuggestions.length > 0 ? (
+                      knitSuggestions.map((item) => (
+                        <li
+                          key={item.id}
+                          onClick={() => handleKnitSelect(item)}
+                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                        >
+                          {item.knitType}
+                        </li>
+                      ))
+                    ) : (
                       <li
-                        key={item.id}
-                        onClick={() => handleKnitSelect(item)}
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                        className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
+                        onClick={handleAddNewKnitType}
                       >
-                        {item.knitType}
+                        Add New knitType: "{knitType}"
                       </li>
-                    ))}
+                    )}
                   </ul>
                 )}
+                <KnitTypeAddModal
+                  isModalOpen={isAddKnitTypeModalOpen}
+                  onClose={closeAddKnitTypeModal}
+                  fetchAllKints={fetchKnitSuggestions}
+                  fetchKnitSuggestions={fetchKnitSuggestions}
+                  setKnitDropdown={setKnitDropdown}
+                />
               </div>
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="colors">
                   Colors:
                 </label>
@@ -1311,24 +1537,40 @@ const AddProductModal = ({ show, onClose }) => {
                   id="colors"
                   value={colors}
                   onChange={handleColorChange}
-                  className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Colors"
                 />
                 {colorDropdown && colors && (
-                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
-                    {colorSuggestions.map((item) => (
+                  <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
+                    {colorSuggestions.length > 0 ? (
+                      colorSuggestions.map((item) => (
+                        <li
+                          key={item.id}
+                          onClick={() => handleColorSelect(item)}
+                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                        >
+                          {item.colorName}
+                        </li>
+                      ))
+                    ) : (
                       <li
-                        key={item.id}
-                        onClick={() => handleColorSelect(item)}
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                        className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
+                        onClick={handleAddNewColor}
                       >
-                        {item.colorName}
+                        Add New colors: "{colors}"
                       </li>
-                    ))}
+                    )}
                   </ul>
                 )}
+                <ColorsAddModal
+                  isModalOpen={isAddColorModalOpen}
+                  onClose={closeAddColorModal}
+                  fetchAllColors={fetchColorSuggestions}
+                  fetchColorSuggestions={fetchColorSuggestions}
+                  setColorDropdown={setColorDropdown}
+                />
               </div>
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="sizes">
                   Sizes:
                 </label>
@@ -1337,24 +1579,40 @@ const AddProductModal = ({ show, onClose }) => {
                   id="sizes"
                   value={sizes}
                   onChange={handleSizeChange}
-                  className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Sizes"
                 />
                 {sizeDropdown && sizes && (
-                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
-                    {sizeSuggestions.map((item) => (
+                  <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
+                    {sizeSuggestions.length > 0 ? (
+                      sizeSuggestions.map((item) => (
+                        <li
+                          key={item.id}
+                          onClick={() => handleSizeSelect(item)}
+                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                        >
+                          {item.type_name}
+                        </li>
+                      ))
+                    ) : (
                       <li
-                        key={item.id}
-                        onClick={() => handleSizeSelect(item)}
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                        className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
+                        onClick={handleAddNewSize}
                       >
-                        {item.type_name}
+                        Add New sizes: "{sizes}"
                       </li>
-                    ))}
+                    )}
                   </ul>
                 )}
+                <SizesAddModal
+                  isModalOpen={isAddSizeModalOpen}
+                  onClose={closeAddSizeModal}
+                  fetchAllSizes={fetchSizeSuggestions}
+                  fetchSizeSuggestions={fetchSizeSuggestions}
+                  setSizeDropdown={setSizeDropdown}
+                />
               </div>
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="decorations">
                   Decorations:
                 </label>
@@ -1363,24 +1621,40 @@ const AddProductModal = ({ show, onClose }) => {
                   id="decorations"
                   value={decorations}
                   onChange={handleDecorationChange}
-                  className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Decorations"
                 />
                 {decorationDropdown && decorations && (
-                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
-                    {decorationSuggestions.map((item) => (
+                  <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
+                    {decorationSuggestions.length > 0 ? (
+                      decorationSuggestions.map((item) => (
+                        <li
+                          key={item.id}
+                          onClick={() => handleDecorationSelect(item)}
+                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                        >
+                          {item.decorationName}
+                        </li>
+                      ))
+                    ) : (
                       <li
-                        key={item.id}
-                        onClick={() => handleDecorationSelect(item)}
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                        className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
+                        onClick={handleAddNewDecoration}
                       >
-                        {item.decorationName}
+                        Add New decorations: "{decorations}"
                       </li>
-                    ))}
+                    )}
                   </ul>
                 )}
+                <DecorationsAddModal
+                  isModalOpen={isAddDecorationModalOpen}
+                  onClose={closeAddDecorationModal}
+                  fetchAllDecorations={fetchDecorationSuggestions}
+                  fetchDecorationSuggestions={fetchDecorationSuggestions}
+                  setDecorationDropdown={setDecorationDropdown}
+                />
               </div>
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="printOrEmbName">
                   Print {"("}or{")"} Emb Name:
                 </label>
@@ -1389,24 +1663,40 @@ const AddProductModal = ({ show, onClose }) => {
                   id="printorEmbName"
                   value={printOrEmbName}
                   onChange={handlePrintChange}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Print (or) Emb Name"
                 />
                 {printDropdown && printOrEmbName && (
-                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
-                    {printSuggestions.map((item) => (
+                  <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
+                    {printSuggestions.length > 0 ? (
+                      printSuggestions.map((item) => (
+                        <li
+                          key={item.id}
+                          onClick={() => handlePrintSelect(item)}
+                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                        >
+                          {item.printType}
+                        </li>
+                      ))
+                    ) : (
                       <li
-                        key={item.id}
-                        onClick={() => handlePrintSelect(item)}
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                        className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
+                        onClick={handleAddNewPrint}
                       >
-                        {item.printType}
+                        Add New printOrEmbName: "{printOrEmbName}"
                       </li>
-                    ))}
+                    )}
                   </ul>
                 )}
+                <PrintOrEmbAddModal
+                  isModalOpen={isAddPrintModalOpen}
+                  onClose={closeAddPrintModal}
+                  fetchAllPrints={fetchPrintSuggestions}
+                  fetchPrintSuggestions={fetchPrintSuggestions}
+                  setPrintDropdown={setPrintDropdown}
+                />
               </div>
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="stitchDetails">
                   Stitch Details:
                 </label>
@@ -1415,24 +1705,40 @@ const AddProductModal = ({ show, onClose }) => {
                   id="stitchDetails"
                   value={stitchDetails}
                   onChange={handleStitchDetailChange}
-                  className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Stitch Details"
                 />
                 {stitchDetailDropdown && stitchDetails && (
-                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
-                    {stitchDetailSuggestions.map((item) => (
+                  <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
+                    {stitchDetailSuggestions.length > 0 ? (
+                      stitchDetailSuggestions.map((item) => (
+                        <li
+                          key={item.id}
+                          onClick={() => handleStitchDetailSelect(item)}
+                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                        >
+                          {item.stictchDetail}
+                        </li>
+                      ))
+                    ) : (
                       <li
-                        key={item.id}
-                        onClick={() => handleStitchDetailSelect(item)}
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                        className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
+                        onClick={handleAddNewStitch}
                       >
-                        {item.stictchDetail}
+                        Add New stitchDetails: "{stitchDetails}"
                       </li>
-                    ))}
+                    )}
                   </ul>
                 )}
+                <StitchDetailsAddModal
+                  isModalOpen={isAddStitchModalOpen}
+                  onClose={closeAddStitchModal}
+                  fetchAllStitch={fetchStitchSuggestions}
+                  fetchStitchSuggestions={fetchStitchSuggestions}
+                  setStitchDetailDropdown={setStitchDetailDropdown}
+                />
               </div>
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="neck">
                   Neck:
                 </label>
@@ -1441,24 +1747,40 @@ const AddProductModal = ({ show, onClose }) => {
                   id="neck"
                   value={neck}
                   onChange={handleNeckChange}
-                  className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Neck"
                 />
                 {neckDropdown && neck && (
-                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
-                    {neckSuggestions.map((item) => (
+                  <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
+                    {neckSuggestions.length > 0 ? (
+                      neckSuggestions.map((item) => (
+                        <li
+                          key={item.id}
+                          onClick={() => handleNeckSelect(item)}
+                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                        >
+                          {item.neckType}
+                        </li>
+                      ))
+                    ) : (
                       <li
-                        key={item.id}
-                        onClick={() => handleNeckSelect(item)}
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                        className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
+                        onClick={handleAddNewNeck}
                       >
-                        {item.neckType}
+                        Add New neck: "{neck}"
                       </li>
-                    ))}
+                    )}
                   </ul>
                 )}
+                <NeckAddModal
+                  isModalOpen={isAddNeckModalOpen}
+                  onClose={closeAddNeckModal}
+                  fetchAllNecks={fetchNeckSuggestions}
+                  fetchNeckSuggestions={fetchNeckSuggestions}
+                  setNeckDropdown={setNeckDropdown}
+                />
               </div>
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="sleeve">
                   Sleeve:
                 </label>
@@ -1467,24 +1789,40 @@ const AddProductModal = ({ show, onClose }) => {
                   id="sleeve"
                   value={sleeve}
                   onChange={handleSleeveChange}
-                  className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Sleeve"
                 />
                 {sleeveDropdown && sleeve && (
-                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
-                    {sleeveSuggestions.map((item) => (
+                  <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
+                    {sleeveSuggestions.length > 0 ? (
+                      sleeveSuggestions.map((item) => (
+                        <li
+                          key={item.id}
+                          onClick={() => handleSleeveSelect(item)}
+                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                        >
+                          {item.sleeveName}
+                        </li>
+                      ))
+                    ) : (
                       <li
-                        key={item.id}
-                        onClick={() => handleSleeveSelect(item)}
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                        className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
+                        onClick={handleAddNewSleeve}
                       >
-                        {item.sleeveName}
+                        Add New sleeve: "{sleeve}"
                       </li>
-                    ))}
+                    )}
                   </ul>
                 )}
+                <SleeveAddModal
+                  isModalOpen={isAddSleeveModalOpen}
+                  onClose={closeAddSleeveModal}
+                  fetchAllSleeves={fetchSleeveSuggestions}
+                  fetchSleeveSuggestions={fetchSleeveSuggestions}
+                  setSleeveDropdown={setSleeveDropdown}
+                />
               </div>
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="length">
                   Length:
                 </label>
@@ -1493,24 +1831,40 @@ const AddProductModal = ({ show, onClose }) => {
                   id="length"
                   value={length}
                   onChange={handleLengthChange}
-                  className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Length"
                 />
                 {lengthDropdown && length && (
-                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
-                    {lengthSuggestions.map((item) => (
+                  <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
+                    {lengthSuggestions.length > 0 ? (
+                      lengthSuggestions.map((item) => (
+                        <li
+                          key={item.id}
+                          onClick={() => handleLengthSelect(item)}
+                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                        >
+                          {item.lengthType}
+                        </li>
+                      ))
+                    ) : (
                       <li
-                        key={item.id}
-                        onClick={() => handleLengthSelect(item)}
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                        className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
+                        onClick={handleAddNewLength}
                       >
-                        {item.lengthType}
+                        Add New length: "{length}"
                       </li>
-                    ))}
+                    )}
                   </ul>
                 )}
+                <LengthAddModal
+                  isModalOpen={isAddLengthModalOpen}
+                  onClose={closeAddLengthModal}
+                  fetchAllLengths={fetchLengthSuggestions}
+                  fetchLengthSuggestions={fetchLengthSuggestions}
+                  setLengthDropdown={setLengthDropdown}
+                />
               </div>
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="packingMethod">
                   Packing Method:
                 </label>
@@ -1519,24 +1873,40 @@ const AddProductModal = ({ show, onClose }) => {
                   id="packingMethod"
                   value={packingMethod}
                   onChange={handlePackingMethodChange}
-                  className="border border-gray-300  rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Packing Method"
                 />
                 {packingDropdown && packingMethod && (
-                  <ul className="absolute top-full left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
-                    {packingSuggestions.map((item) => (
+                  <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
+                    {packingSuggestions.length > 0 ? (
+                      packingSuggestions.map((item) => (
+                        <li
+                          key={item.id}
+                          onClick={() => handlePackingMethodSelect(item)}
+                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                        >
+                          {item.packingType}
+                        </li>
+                      ))
+                    ) : (
                       <li
-                        key={item.id}
-                        onClick={() => handlePackingMethodSelect(item)}
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                        className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
+                        onClick={handleAddNewPackingMethod}
                       >
-                        {item.packingType}
+                        Add New packingMethod: "{packingMethod}"
                       </li>
-                    ))}
+                    )}
                   </ul>
                 )}
+                <PackingMethodAddModal
+                  isModalOpen={isAddPackingMethodModalOpen}
+                  onClose={closeAddPackingMethodModal}
+                  fetchAllPacking={fetchPackingMethodSuggestions}
+                  fetchPackingMethodSuggestions={fetchPackingMethodSuggestions}
+                  setPackingDropdown={setPackingDropdown}
+                />
               </div>
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="piecesPerInner">
                   No.of pcs per inner:
                 </label>
@@ -1545,12 +1915,12 @@ const AddProductModal = ({ show, onClose }) => {
                   id="piecesPerInner"
                   value={innerPcs}
                   onChange={(e) => setInnerPcs(e.target.value)}
-                  className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter No of pieces per inner"
                 />
               </div>
 
-              <div className="flex flex-col gap-2 relative">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="mesurementChart">
                   Measurement Chart:
                 </label>
@@ -1560,23 +1930,40 @@ const AddProductModal = ({ show, onClose }) => {
                     id="mesurementChart"
                     value={measurementChart}
                     onChange={handleMesurementChartChange}
-                    className="border border-gray-300 rounded-md px-2 py-1 bg-zinc-200"
+                    className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                     placeholder="Enter Measurement Chart"
-                  />                
-                {mesurementDropdown && measurementChart && (
-                  <ul className="absolute top-16 left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1">
-                    {mesurementSuggestions.map((item) => (
-                      <li
-                        key={item.id}
-                        onClick={() => handleMesurementChartSelect(item)}
-                        className="cursor-pointer px-4 py-2 hover:bg-gray-100"
-                      >
-                        {item.name}
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                  />
+                  {mesurementDropdown && measurementChart && (
+                    <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
+                      {mesurementSuggestions.length > 0 ? (
+                        mesurementSuggestions.map((item) => (
+                          <li
+                            key={item.id}
+                            onClick={() => handleMesurementChartSelect(item)}
+                            className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                          >
+                            {item.name}
+                          </li>
+                        ))
+                      ) : (
+                        <li
+                          className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
+                          onClick={handleAddNewMeasurement}
+                        >
+                          Add New measurementChart: "{measurementChart}"
+                        </li>
+                      )}
+                    </ul>
+                  )}
                 </div>
+                <MeasurementChartAddModal
+                  isModalOpen={isAddMeasurementChartModalOpen}
+                  onClose={closeAddMeasurementChartModal}
+                  fetchMesurementChartSuggestions={
+                    fetchMesurementChartSuggestions
+                  }
+                  setMesurementDropdown={setMesurementDropdown}
+                />
               </div>
 
               {selectedMesurement && selectedMesurement.sample_size_file && (
@@ -1584,19 +1971,19 @@ const AddProductModal = ({ show, onClose }) => {
                   <img
                     src={selectedMesurement.sample_size_file}
                     alt="Measurement Chart"
-                    className="max-w-full h-auto rounded-md"
+                    className="h-auto max-w-full rounded-md"
                   />
                 </div>
               )}
             </div>
-            
+
             {successMessage && (
-              <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 my-4">
+              <div className="p-4 my-4 text-green-700 bg-green-100 border-l-4 border-green-500">
                 <p>{successMessage}</p>
               </div>
             )}
             {errorMessage && (
-              <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 my-4">
+              <div className="p-4 my-4 text-red-700 bg-red-100 border-l-4 border-red-500">
                 <p>{errorMessage}</p>
               </div>
             )}
@@ -1609,7 +1996,7 @@ const AddProductModal = ({ show, onClose }) => {
                 id="shortDescription"
                 value={shortDescription}
                 onChange={(e) => setShortDescription(e.target.value)}
-                className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                 rows="1"
                 placeholder="Enter Short Description"
               />
@@ -1623,22 +2010,22 @@ const AddProductModal = ({ show, onClose }) => {
                 id="fullDescription"
                 value={fullDescription}
                 onChange={(e) => setFullDescription(e.target.value)}
-                className="border border-gray-300 rounded-md px-2 py-2 bg-zinc-200"
+                className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                 rows="2"
                 placeholder="Enter Full Description"
               />
             </div>
-            
-            <div className="mt-10 flex justify-center gap-4">
+
+            <div className="flex justify-center gap-4 mt-10">
               <button
-                className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                className="px-4 py-2 text-white bg-blue-500 rounded-md"
                 onClick={handleSubmit}
                 disabled={loading}
               >
                 {loading ? "Adding..." : "Add Product"}
               </button>
               <button
-                className="bg-red-500 text-white px-4 py-2 rounded-md"
+                className="px-4 py-2 text-white bg-red-500 rounded-md"
                 onClick={onClose}
               >
                 Cancel

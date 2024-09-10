@@ -1,24 +1,22 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import dropdownIcon from '../../assets/dropdown-icon.svg';
 import apiService from '../../apiService';
-import leftArrowIcon from '../../assets/left-arrow-icon.svg';
-import rightArrowIcon from '../../assets/right-arrow-icon.svg';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import { Document, Page, pdfjs } from 'react-pdf';
 import * as XLSX from 'xlsx';
+
+// Use the correct path for the pdfjs worker
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 const Reports = () => {
   const [selectedPreset, setSelectedPreset] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [recordsPerPage, setRecordsPerPage] = useState(5);
-  const [reportData, setReportData] = useState([]);
+  const [pdfUrl, setPdfUrl] = useState(null);  // PDF URL for rendering on screen
   const [isLoading, setIsLoading] = useState(false);
-  const tableRef = useRef();
+  const [numPages, setNumPages] = useState(null);  // Track total pages in PDF
 
   const presets = [
     { id: 'pr1', value: 'Overall Stocks', label: 'Overall Stocks' },
-    { id: 'pr2', value: 'Agewise Stocks', label: 'Agewise Stocks' },
+    // { id: 'pr2', value: 'Agewise Stocks', label: 'Agewise Stocks' },
     { id: 'pr3', value: 'Print wise', label: 'Print wise' },
     { id: 'pr4', value: 'Style wise', label: 'Style wise' },
     { id: 'pr5', value: 'Category wise', label: 'Category wise' },
@@ -26,71 +24,43 @@ const Reports = () => {
     { id: 'pr7', value: 'Size wise', label: 'Size wise' }
   ];
 
-  const fetchReportData = async (preset) => {
+  const fetchPdfReport = async (preset) => {
     try {
       setIsLoading(true);
-      let endpoint = '';  
-  
+      let endpoint = '';
+
       switch (preset) {
         case 'Overall Stocks':
-          endpoint = '/reports/overallStock';
-          break;
-        case 'Agewise Stocks':
-          endpoint = '/reports/agewise-stocks';
-          break;
-        case 'Print wise':
-          endpoint = '/reports/print-wise-stocks';
-          break;
-        case 'Style wise':
-          endpoint = '/reports/style-number-wise-stocks';
-          break;
-        case 'Category wise':
-          endpoint = '/reports/category-wise-stocks';
+          endpoint = '/reports/stock-report';
           break;
         case 'Brand wise':
-          endpoint = '/reports/brand-wise-stocks';
+          endpoint = '/reports/brand-report';
           break;
-        case 'Size wise':
-          endpoint = '/reports/size-wise-stocks';
+        case 'Print wise':
+          endpoint = '/reports/print-report';
           break;
         default:
-          endpoint = '';
-          break;
+          console.error('Invalid report type selected');
+          setIsLoading(false);
+          return;
       }
+
+      const response = await apiService.get(endpoint, { responseType: 'blob' });
+      const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+      const pdfUrl = URL.createObjectURL(pdfBlob);
       
-      if (endpoint) {
-        const response = await apiService.get(endpoint);
-        console.log('API Response:', response.data);
-        // const formattedData = response.data.map(product => ({
-        //   ...product,
-        //   Stocks: product.Stocks.map(stock => ({
-        //     ...stock,
-        //     stockInDate: new Date(stock.created_at).toLocaleDateString('en-GB'),
-        //   })),
-        // }));
-        setReportData(response.data);
-        console.log('format: ', response.data);
-      } else {
-        console.error('No endpoint defined for preset:', preset);
-      }
-  
+      setPdfUrl(pdfUrl);  // Set the PDF URL to render
       setIsLoading(false);
     } catch (error) {
-      console.error('Error fetching report data:', error);
+      console.error('Error fetching PDF report:', error);
       setIsLoading(false);
     }
   };
-  
-
-  useEffect(() => {
-    if (selectedPreset) {
-      fetchReportData(selectedPreset);
-    }
-  }, [selectedPreset]);
 
   const handlePresetChange = (value) => {
     setSelectedPreset(value);
     setIsDropdownOpen(false);
+    fetchPdfReport(value);  // Fetch and display the selected report
   };
 
   const toggleDropdown = () => {
@@ -105,161 +75,11 @@ const Reports = () => {
     return selectedCategory ? selectedCategory.label : 'Select Category';
   };
 
-  const handlePageChange = (direction) => {
-    if (direction === 'prev' && currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    } else if (direction === 'next' && currentPage < Math.ceil(reportData.length / recordsPerPage)) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handleRecordsPerPageChange = (e) => {
-    setRecordsPerPage(Number(e.target.value));
-    setCurrentPage(1);
-  };
-
-  const generateSpreadsheet = () => {
-    // Create a new workbook
-    const workbook = XLSX.utils.book_new();
-    const worksheetData = [];
-
-    // Define headers
-    const headers = [
-        'SL No',
-        'Images',
-        'Style No',
-        'Brand',
-        'Category',
-        'Color',
-        'Decoration',
-        'Fabric',
-        'Fabric Finish',
-        'Gsm',
-        'Knit Type',
-        'Length',
-        'Neck',
-        'Packing Method',
-        'Print & Embeded',
-        'Type',
-        'Sleeve',
-        'Stitch Detail',
-        'Short Description',
-        'Full Description',
-        'Stock Info',
-        'Stock-In Date',
-        'Total Pcs'
-    ];
-
-    // Push headers to worksheet data
-    worksheetData.push(headers);
-
-    // Iterate over products and add data
-    reportData.forEach((product, index) => {
-        product.Stocks.forEach((stock) => {
-            const rowData = [
-                index + 1,
-                product.product.images[0] || '',
-                product.product_style_number || '',
-                product.Brand.brandName || '',
-                product.Category.categoryName || '',
-                product.Color.colorName || '',
-                product.Decoration.decorationName || '',
-                product.Fabric.fabricName || '',
-                product.FabricFinish.fabricFinishName || '',
-                product.Gsm.gsmValue || '',
-                product.KnitType.knitType || '',
-                product.Length.lengthType || '',
-                product.Neck.neckType || '',
-                product.PackingMethod.packingType || '',
-                product.PrintEmbName.printType || '',
-                product.ProductType.product || '',
-                product.Sleeve.sleeveName || '',
-                product.StitchDetail.stictchDetail || '',
-                product.short_description || '',
-                product.full_description || '',
-                stock.total_pcs || '',
-                stock.stockInDate || '',
-            ];
-
-            worksheetData.push(rowData);
-        });
-    });
-
-    // Create a worksheet from the data
-    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-
-    // Add the worksheet to the workbook
-    XLSX.utils.book_append_sheet(workbook, worksheet, selectedPreset || 'report');
-
-    // Generate and save the file
-    const fileName = `report_${(selectedPreset || 'report').replace(/\s+/g, '_').toLowerCase()}.xlsx`;
-    XLSX.writeFile(workbook, fileName);
-  };
-
-  const generatePDF = () => {
-    html2canvas(tableRef.current).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      const imgWidth = 210; // A4 width in mm
-      const pageHeight = 295; // A4 height in mm
-      const imgHeight = canvas.height * imgWidth / canvas.width;
-      let heightLeft = imgHeight;
-
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      let position = 0;
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
-
-      pdf.save(`report_${(selectedPreset || 'report').replace(/\s+/g, '_').toLowerCase()}.pdf`);
-    });
-  };
-
-  const startIndex = (currentPage - 1) * recordsPerPage;
-  const endIndex = startIndex + recordsPerPage;
-  const data = reportData.flatMap((brandEntry, brandIndex) => 
-    brandEntry.stocks.map((stock, stockIndex) => ({
-      index: startIndex + brandIndex + stockIndex + 1,
-      brand: stock.product.Brand.brandName,
-      style_no: stock.product.style_no,
-      product: stock.product,
-      stockInfo: stock,
-    }))
-  ).slice(startIndex, endIndex);  
-
-  console.log('data: ', reportData);
-
-  const handleDownload = async () => {
-    try {
-      // Request the backend to generate the PDF and download it
-      const response = await apiService.get('/reports/stock-report', {
-        responseType: 'blob', // Important to specify the response type as blob
-      });
-
-      // Create a new Blob object using the response data
-      const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
-
-      // Create a link element
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(pdfBlob);
-      link.download = 'stock_report.pdf'; // The name of the downloaded file
-
-      // Append the link to the body
-      document.body.appendChild(link);
-
-      // Programmatically click the link to trigger the download
-      link.click();
-
-      // Clean up by removing the link after downloading
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error('Error downloading the PDF', error);
-    }
+  const downloadPdf = () => {
+    const link = document.createElement('a');
+    link.href = pdfUrl;
+    link.download = `report_${(selectedPreset || 'report').replace(/\s+/g, '_').toLowerCase()}.pdf`;
+    link.click();
   };
 
   return (
@@ -290,108 +110,31 @@ const Reports = () => {
         )}
       </div>
 
-      <div>
-      <button
-        onClick={handleDownload}
-        className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
-      >
-        Download Stock Report
-      </button>
-    </div>
+      <div className="flex justify-center mt-4">
+        {pdfUrl && (
+          <>
+            <button
+              onClick={downloadPdf}
+              className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+            >
+              Download PDF
+            </button>
 
-      {data.length > 0 && (
-        <>
-          <div className="flex justify-center mt-4">
-            <button
-              className="px-3 py-1 mx-2 text-sm text-white bg-green-500 rounded hover:bg-green-600"
-              onClick={generateSpreadsheet}
-            >
-              Export to Excel
-            </button>
-            <button
-              className="px-3 py-1 mx-2 text-sm text-white bg-red-500 rounded hover:bg-red-600"
-              onClick={generatePDF}
-            >
-              Export to PDF
-            </button>
-          </div>
-          <div className="relative mt-4 overflow-y-auto overflow-h-auto">
-            <table className="w-full text-sm text-center text-gray-500" ref={tableRef}>
-              <thead className="text-xs text-gray-700 uppercase bg-gray-100">
-                <tr>
-                  <th scope="col" className="px-6 py-3">SL No</th>
-                  <th scope="col" className="px-6 py-3">Images</th>
-                  <th scope="col" className="px-6 py-3">Style No</th>
-                  <th scope="col" className="px-6 py-3">Brand</th>
-                  <th scope="col" className="px-6 py-3">Category</th>
-                  <th scope="col" className="px-6 py-3">Color</th>
-                  <th scope="col" className="px-6 py-3">Decoration</th>
-                  <th scope="col" className="px-6 py-3">Fabric</th>
-                  <th scope="col" className="px-6 py-3">Fabric Finish</th>
-                  <th scope="col" className="px-6 py-3">Gsm</th>
-                  <th scope="col" className="px-6 py-3">Knit Type</th>
-                  <th scope="col" className="px-6 py-3">Length</th>
-                  <th scope="col" className="px-6 py-3">Neck</th>
-                  <th scope="col" className="px-6 py-3">Packing Method</th>
-                  <th scope="col" className="px-6 py-3">Print & Embeded</th>
-                  <th scope="col" className="px-6 py-3">Type</th>
-                  <th scope="col" className="px-6 py-3">Sleeve</th>
-                  <th scope="col" className="px-6 py-3">Stitch Detail</th>
-                  <th scope="col" className="px-6 py-3">Short Description</th>
-                  <th scope="col" className="px-6 py-3">Full Description</th>
-                  <th scope="col" className="px-6 py-3">Total Pcs</th>
-                  <th scope="col" className="px-6 py-3">Stock-In Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.map((item, index) => (
-                  <tr key={item.stockInfo.id} className="bg-white border-b">
-                    <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{item.index}</td>
-                    <td className="px-6 py-4"><img src={item.product.images[0]} alt="Product" className="w-10 h-10" /></td>
-                    <td className="px-6 py-4">{item.style_no}</td>
-                    <td className="px-6 py-4">{item.brand}</td>
-                    <td className="px-6 py-4">{item.product.Category.categoryName}</td>
-                    <td className="px-6 py-4">{item.product.Color.colorName}</td>
-                    <td className="px-6 py-4">{item.product.Decoration.decorationName}</td>
-                    <td className="px-6 py-4">{item.product.Fabric.fabricName}</td>
-                    <td className="px-6 py-4">{item.product.FabricFinish.fabricFinishName}</td>
-                    <td className="px-6 py-4">{item.product.Gsm.gsmValue}</td>
-                    <td className="px-6 py-4">{item.product.KnitType.knitType}</td>
-                    <td className="px-6 py-4">{item.product.Length.lengthType}</td>
-                    <td className="px-6 py-4">{item.product.Neck.neckType}</td>
-                    <td className="px-6 py-4">{item.product.PackingMethod.packingType}</td>
-                    <td className="px-6 py-4">{item.product.PrintEmbName.printType}</td>
-                    <td className="px-6 py-4">{item.product.ProductType.product}</td>
-                    <td className="px-6 py-4">{item.product.Sleeve.sleeveName}</td>
-                    <td className="px-6 py-4">{item.product.StitchDetail.stictchDetail}</td>
-                    <td className="px-6 py-4">{item.product.short_description}</td>
-                    <td className="px-6 py-4">{item.product.full_description}</td>
-                    <td className="px-6 py-4">{item.stockInfo.total_pcs}</td>
-                    <td className="px-6 py-4">{new Date(item.stockInfo.created_at).toLocaleDateString('en-GB')}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="flex justify-between mt-4">
-            <button
-              className="px-3 py-1 text-sm text-black rounded hover:bg-blue-600"
-              onClick={() => handlePageChange('prev')}
-              disabled={currentPage === 1}
-            >
-              <img src={leftArrowIcon} alt="Previous" />
-            </button>
-            <span>Page {currentPage} of {Math.ceil(reportData.length / recordsPerPage)}</span>
-            <button
-              className="px-3 py-1 text-sm text-black rounded hover:bg-blue-600"
-              onClick={() => handlePageChange('next')}
-              disabled={currentPage === Math.ceil(reportData.length / recordsPerPage)}
-            >
-              <img src={rightArrowIcon} alt="Next" />
-            </button>
-          </div>
-        </>
-      )}
+            {/* Render the PDF */}
+            <div className="mt-4">
+              <Document
+                file={pdfUrl}
+                onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+                onLoadError={(error) => console.error('Error loading PDF:', error)}
+              >
+                <Page pageNumber={1} />
+              </Document>
+            </div>
+          </>
+        )}
+
+        {isLoading && <p>Loading PDF...</p>}
+      </div>
     </div>
   );
 };

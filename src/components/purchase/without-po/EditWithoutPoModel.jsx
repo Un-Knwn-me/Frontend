@@ -291,7 +291,7 @@ const EditWithoutPoModal = ({ show, onClose, withPoOutId, getAllPurchaseOrder })
       });
 
     } else {
-      setTotalPcs(0);
+      setTotalPcs(withPoData?.req_purchase_qty);
     }
   }, [withPoData]);
 
@@ -845,7 +845,7 @@ const EditWithoutPoModal = ({ show, onClose, withPoOutId, getAllPurchaseOrder })
                     </div>
                     <div className="flex justify-between gap-5">
                       <label className="block text-sm font-medium text-gray-700">
-                        Total Inner Boxes
+                        Total Outer Pcs
                       </label>
                       <span>{totalOuterPcs}</span>
                     </div>

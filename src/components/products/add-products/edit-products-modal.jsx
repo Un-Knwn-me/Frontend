@@ -4,7 +4,24 @@ import closeIcon from "../../../assets/close-modal-icon.svg";
 import apiService from "../../../apiService";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useParams } from "react-router-dom";
-import { error } from "pdf-lib";
+import AddBrandModal from "../AddNewProductMaster/AddBrandModal";
+import ReferenceNoAddModal from "../AddNewProductMaster/ReferenceNoAddModal";
+import CategoryAddModal from "../AddNewProductMaster/CategoryAddModal";
+import ProductTypesAddModal from "../AddNewProductMaster/ProductTypesAddModal";
+import FabricAddModal from "../AddNewProductMaster/FabricAddModal";
+import FabricFinishAddModal from "../AddNewProductMaster/FabricFinishAddModal";
+import GsmAddModal from "../AddNewProductMaster/GsmAddModal";
+import KnitTypeAddModal from "../AddNewProductMaster/KnitTypeAddModal";
+import ColorsAddModal from "../AddNewProductMaster/ColorsAddModal";
+import SizesAddModal from "../AddNewProductMaster/SizesAddModal";
+import DecorationsAddModal from "../AddNewProductMaster/DecorationsAddModal";
+import PrintOrEmbAddModal from "../AddNewProductMaster/PrintOrEmbAddModal";
+import StitchDetailsAddModal from "../AddNewProductMaster/StitchDetailsAddModal";
+import NeckAddModal from "../AddNewProductMaster/NeckAddModal";
+import SleeveAddModal from "../AddNewProductMaster/SleeveAddModal";
+import LengthAddModal from "../AddNewProductMaster/LengthAddModal";
+import PackingMethodAddModal from "../AddNewProductMaster/PackingMethodAddModal";
+import MeasurementChartAddModal from "../AddNewProductMaster/MeasurementChartAddModal";
 
 const EditProductModal = ({ show, onClose, productId }) => {
   const [productData, setProductData] = useState({
@@ -16,8 +33,6 @@ const EditProductModal = ({ show, onClose, productId }) => {
   const [images, setImages] = useState([]);
   const [primaryImageIndex, setPrimaryImageIndex] = useState(0);
   const [loading, setLoading] = useState(true);
-
-
 
   //suggestion brand states
   const [brandDropdown, setBrandDropdown] = useState(false);
@@ -111,6 +126,42 @@ const EditProductModal = ({ show, onClose, productId }) => {
   const [productTypesSuggestions, setProductTypesSuggestions] = useState([]);
   const [selectedProductTypesId, setSelectedProductTypesId] = useState(null);
 
+  const [isAddBrandModalOpen, setIsAddBrandModalOpen] = useState(false);
+  const [isAddRefNoModalOpen, setIsAddRefNoModalOpen] = useState(false);
+  const [isAddCategoryModalOpen, setIsAddCategoryModalOpen] = useState(false);
+  const [isAddProductTypeModalOpen, setIsAddProductTypeModalOpen] =
+    useState(false);
+  const [isAddFabricModalOpen, setIsAddFabricModalOpen] = useState(false);
+  const [isAddFabricFinishModalOpen, setIsAddFabricFinishModalOpen] =
+    useState(false);
+  const [isAddGsmModalOpen, setIsAddGsmModalOpen] = useState(false);
+  const [isAddKnitTypeModalOpen, setIsAddKnitTypeModalOpen] = useState(false);
+  const [isAddColorModalOpen, setIsAddColorModalOpen] = useState(false);
+  const [isAddSizeModalOpen, setIsAddSizeModalOpen] = useState(false);
+  const [isAddDecorationModalOpen, setIsAddDecorationModalOpen] =
+    useState(false);
+  const [isAddPrintModalOpen, setIsAddPrintModalOpen] = useState(false);
+  const [isAddStitchModalOpen, setIsAddStitchModalOpen] = useState(false);
+  const [isAddNeckModalOpen, setIsAddNeckModalOpen] = useState(false);
+  const [isAddSleeveModalOpen, setIsAddSleeveModalOpen] = useState(false);
+  const [isAddLengthModalOpen, setIsAddLengthModalOpen] = useState(false);
+  const [isAddPackingMethodModalOpen, setIsAddPackingMethodModalOpen] =
+    useState(false);
+  const [isAddMeasurementChartModalOpen, setIsAddMeasurementChartModalOpen] =
+    useState(false);
+
+  const handleStyleNoChange = (e) => {
+    const styleNo = e.target.value;
+    setProductData({
+      ...productData,
+      style_no: styleNo,
+    });
+    setUpdatedProductData({
+      ...updatedProductData,
+      style_no: styleNo,
+    });
+  };
+
   // fetch brand
   const fetchBrandSuggestions = async (brandInput) => {
     try {
@@ -161,10 +212,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
   };
 
   const handleAddNewBrand = () => {
-    // Implement the logic to add a new brand here
     console.log("Adding new brand:", productData.Brand.brandName);
-    // Close the dropdown after adding the brand
     setBrandDropdown(false);
+    setIsAddBrandModalOpen(true);
+  };
+
+  const closeAddBrandModal = () => {
+    setIsAddBrandModalOpen(false);
   };
 
   // fetch fabric
@@ -218,10 +272,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
   };
 
   const handleAddNewFabric = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new fabric:", productData.Fabric.fabricName);
-    // Close the dropdown after adding the buyer
     setFabricDropdown(false);
+    setIsAddFabricModalOpen(true);
+  };
+
+  const closeAddFabricModal = () => {
+    setIsAddFabricModalOpen(false);
   };
 
   // fetch refNo
@@ -274,10 +331,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
   };
 
   const handleAddNewRef = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new reference NO:", productData.Reference.reference_no);
-    // Close the dropdown after adding the buyer
     setRefDropdown(false);
+    setIsAddRefNoModalOpen(true);
+  };
+
+  const closeAddRefNoModal = () => {
+    setIsAddRefNoModalOpen(false);
   };
 
   // fetch Fabric Finish
@@ -332,13 +392,16 @@ const EditProductModal = ({ show, onClose, productId }) => {
   };
 
   const handleAddNewFabricFinish = () => {
-    // Implement the logic to add a new buyer here
     console.log(
       "Adding new fabric finish:",
       productData.FabricFinish.fabricFinishName
     );
-    // Close the dropdown after adding the buyer
     setFabricFinishDropdown(false);
+    setIsAddFabricFinishModalOpen(true);
+  };
+
+  const closeAddFabricFinishModal = () => {
+    setIsAddFabricFinishModalOpen(false);
   };
 
   // fetch GSM
@@ -392,10 +455,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
   };
 
   const handleAddNewGsm = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new gsm:", productData.Gsm.gsmValue);
-    // Close the dropdown after adding the buyer
     setGsmDropdown(false);
+    setIsAddGsmModalOpen(true);
+  };
+
+  const closeAddGsmModal = () => {
+    setIsAddGsmModalOpen(false);
   };
 
   // fetch knit type
@@ -448,10 +514,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
   };
 
   const handleAddNewKnitType = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new knit type:", productData.KnitType.knitType);
-    // Close the dropdown after adding the buyer
     setKnitDropdown(false);
+    setIsAddKnitTypeModalOpen(true);
+  };
+
+  const closeAddKnitTypeModal = () => {
+    setIsAddKnitTypeModalOpen(false);
   };
 
   // fetch color
@@ -504,10 +573,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
   };
 
   const handleAddNewColor = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new color:", productData.Color.colorName);
-    // Close the dropdown after adding the buyer
     setColorDropdown(false);
+    setIsAddColorModalOpen(true);
+  };
+
+  const closeAddColorModal = () => {
+    setIsAddColorModalOpen(false);
   };
 
   // fetch size
@@ -560,10 +632,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
   };
 
   const handleAddNewSize = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new size:", productData.Size.sizes);
-    // Close the dropdown after adding the buyer
     setSizeDropdown(false);
+    setIsAddSizeModalOpen(true);
+  };
+
+  const closeAddSizeModal = () => {
+    setIsAddSizeModalOpen(false);
   };
 
   // fetch decoration
@@ -618,13 +693,16 @@ const EditProductModal = ({ show, onClose, productId }) => {
   };
 
   const handleAddNewDecoration = () => {
-    // Implement the logic to add a new buyer here
     console.log(
       "Adding new decoration:",
       productData.Decoration.decorationName
     );
-    // Close the dropdown after adding the buyer
     setDecorationDropdown(false);
+    setIsAddDecorationModalOpen(true);
+  };
+
+  const closeAddDecorationModal = () => {
+    setIsAddDecorationModalOpen(false);
   };
 
   // fetch print
@@ -677,10 +755,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
   };
 
   const handleAddNewPrint = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new print/Emb:", productData.PrintEmbName.printType);
-    // Close the dropdown after adding the buyer
     setPrintDropdown(false);
+    setIsAddPrintModalOpen(true);
+  };
+
+  const closeAddPrintModal = () => {
+    setIsAddPrintModalOpen(false);
   };
 
   // fetch stitchDetails
@@ -733,13 +814,16 @@ const EditProductModal = ({ show, onClose, productId }) => {
   };
 
   const handleAddNewStitch = () => {
-    // Implement the logic to add a new buyer here
     console.log(
       "Adding new stitch detail:",
       productData.StitchDetail.stictchDetail
     );
-    // Close the dropdown after adding the buyer
     setStitchDetailDropdown(false);
+    setIsAddStitchModalOpen(true);
+  };
+
+  const closeAddStitchModal = () => {
+    setIsAddStitchModalOpen(false);
   };
 
   // fetch neck
@@ -792,10 +876,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
   };
 
   const handleAddNewNeck = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new neck:", productData.Neck.neckType);
-    // Close the dropdown after adding the buyer
     setNeckDropdown(false);
+    setIsAddNeckModalOpen(true);
+  };
+
+  const closeAddNeckModal = () => {
+    setIsAddNeckModalOpen(false);
   };
 
   // fetch sleeve
@@ -848,10 +935,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
   };
 
   const handleAddNewSleeve = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new sleeve:", productData.Sleeve.sleeveName);
-    // Close the dropdown after adding the buyer
     setSleeveDropdown(false);
+    setIsAddSleeveModalOpen(true);
+  };
+
+  const closeAddSleeveModal = () => {
+    setIsAddSleeveModalOpen(false);
   };
 
   // fetch length
@@ -904,10 +994,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
   };
 
   const handleAddNewLength = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new length:", productData.Length.lengthType);
-    // Close the dropdown after adding the buyer
     setLengthDropdown(false);
+    setIsAddLengthModalOpen(true);
+  };
+
+  const closeAddLengthModal = () => {
+    setIsAddLengthModalOpen(false);
   };
 
   // fetch packingMethods
@@ -962,17 +1055,20 @@ const EditProductModal = ({ show, onClose, productId }) => {
   };
 
   const handleAddNewPackingMethod = () => {
-    // Implement the logic to add a new buyer here
     console.log(
       "Adding new packing method:",
       productData.PackingMethod.packingType
     );
-    // Close the dropdown after adding the buyer
     setPackingDropdown(false);
+    setIsAddPackingMethodModalOpen(true);
   };
 
-   // fetch mesurementChart
-   const fetchMesurementChartSuggestions = async (mesurementChartInput) => {
+  const closeAddPackingMethodModal = () => {
+    setIsAddPackingMethodModalOpen(false);
+  };
+
+  // fetch mesurementChart
+  const fetchMesurementChartSuggestions = async (mesurementChartInput) => {
     try {
       if (mesurementChartInput.length > 0) {
         const response = await apiService.get("/mesurementCharts/getall");
@@ -1010,7 +1106,7 @@ const EditProductModal = ({ show, onClose, productId }) => {
         sample_size_file: mesurementChart.sample_size_file,
       },
     });
-   
+
     setSelectedMesurement(mesurementChart);
     setSelectedMesurementId(mesurementChart.id);
     setMesurementSuggestions([]);
@@ -1024,10 +1120,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
   };
 
   const handleAddNewMeasurement = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new Measurements:", productData.MeasurementChart.name);
-    // Close the dropdown after adding the buyer
     setMesurementDropdown(false);
+    setIsAddMeasurementChartModalOpen(true);
+  };
+
+  const closeAddMeasurementChartModal = () => {
+    setIsAddMeasurementChartModalOpen(false);
   };
 
   // fetch categorie
@@ -1066,10 +1165,9 @@ const EditProductModal = ({ show, onClose, productId }) => {
       Category: {
         ...productData.Category,
         categoryName: categorie.categoryName,
-      
       },
     });
-   
+
     setSelectedCategorieId(categorie.id);
     setCategorieSuggestions([]);
     setCategorieDropdown(false);
@@ -1082,13 +1180,15 @@ const EditProductModal = ({ show, onClose, productId }) => {
   };
 
   const handleAddNewCategory = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new category:", productData.Category.categoryName);
-    // Close the dropdown after adding the buyer
-    categorieDropdown(false);
+    setCategorieDropdown(false);
+    setIsAddCategoryModalOpen(true);
   };
 
-  
+  const closeAddCategoryModal = () => {
+    setIsAddCategoryModalOpen(false);
+  };
+
   // fetch product types
   const fetchProductTypesSuggestions = async (productTypesInput) => {
     try {
@@ -1125,7 +1225,6 @@ const EditProductModal = ({ show, onClose, productId }) => {
       ProductType: {
         ...productData.ProductType,
         product: productTypes.product,
-      
       },
     });
     setSelectedProductTypesId(productTypes.id);
@@ -1140,10 +1239,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
   };
 
   const handleAddNewProductType = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new product types:", productData.ProductType.product);
-    // Close the dropdown after adding the buyer
     setProductTypesDropdown(false);
+    setIsAddProductTypeModalOpen(true);
+  };
+
+  const closeAddProductTypeModal = () => {
+    setIsAddProductTypeModalOpen(false);
   };
 
   const handleNumberOfPcsChange = (e) => {
@@ -1159,27 +1261,30 @@ const EditProductModal = ({ show, onClose, productId }) => {
   };
 
   useEffect(() => {
-    console.log("Product ID:", productId);
-      fetchProductData(productId);
-  }, [productId]);
+    console.log("Product ID:", productId); // Log the productId
 
-  const fetchProductData = async (productId) => {
-    try {
-      const response = await apiService.get(`/products/${productId}`);
-      setProductData(response.data);
-      console.log(response.data);
-      setLoading(false);
+    const fetchProductData = async () => {
+      try {
+        const response = await apiService.get(`/products/${productId}`);
+        setProductData(response.data);
+        console.log(response.data);
+        setLoading(false);
 
-      // Assuming response.data.images is an array of image URLs
-      if (response.data.images) {
-        setPreviews(response.data.images);
-        setImages(response.data.images.map((image) => ({ url: image })));
+        // Assuming response.data.images is an array of image URLs
+        if (response.data.images) {
+          setPreviews(response.data.images);
+          setImages(response.data.images.map((image) => ({ url: image })));
+        }
+      } catch (error) {
+        console.error("Error fetching product data:", error);
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error fetching product data:", error);
-      setLoading(false);
+    };
+
+    if (productId) {
+      fetchProductData();
     }
-  };
+  }, [productId]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -1188,20 +1293,6 @@ const EditProductModal = ({ show, onClose, productId }) => {
   if (!productData) {
     return <div>No data available</div>;
   }
-
-  // const handleChange = (e) => {
-  //   setValues({ ...values, [e.target.name]: e.target.value });
-  // };
-
-  // const handleUpdate = async () => {
-  //   try {
-  //     const response = await apiService.put(/products/${values.id}, values);
-  //     console.log('Product updated successfully:', response.data);
-  //     onClose();
-  //   } catch (error) {
-  //     console.error('Error updating product:', error);
-  //   }
-  // };
 
   if (!show) {
     return null;
@@ -1223,30 +1314,15 @@ const EditProductModal = ({ show, onClose, productId }) => {
     setPreviews([...previews, ...newPreviews.map((image) => image.url)]);
   };
 
-  const removeImage = async (index, id) => {
+  const removeImage = async (index) => {
     try {
-      const imageToRemove = images[index];
-      const imageUrl = imageToRemove.url;
-      console.log('image link: ', imageUrl);
-      const response = await apiService.delete(`/products/deleteImage/${id}`, {
-        data: { imageUrl }
-      });
-      console.log(response);
+      await apiService.delete(`/products/deleteImage/${productId}`);
 
-      fetchProductData(id);
-      
-    //  // Fetch the updated product data after removing the image
-    // const updatedProduct = await apiService.get(`/products/${productId}`);
-    
-    // // Update the images and previews states with the new product data
-    // const newImages = updatedProduct.images.map(image => ({
-    //   file: null, // Since the image is from the server, there's no file associated with it
-    //   url: image.url,
-    // }));
-    // setImages(newImages);
+      const newImages = images.filter((_, i) => i !== index);
+      setImages(newImages);
 
-    // const newPreviews = newImages.map(image => image.url);
-    // setPreviews(newPreviews);
+      const newPreviews = previews.filter((_, i) => i !== index);
+      setPreviews(newPreviews);
     } catch (error) {
       console.error("Error removing image:", error);
     }
@@ -1260,8 +1336,6 @@ const EditProductModal = ({ show, onClose, productId }) => {
     const newPreviews = [...previews];
     const primaryPreview = newPreviews.splice(index, 1);
     setPreviews([primaryPreview[0], ...newPreviews]);
-
-   
   };
 
   const handleDragEnd = (result) => {
@@ -1322,44 +1396,40 @@ const EditProductModal = ({ show, onClose, productId }) => {
 
   const handleUpdate = async () => {
     try {
+      console.log(updatedProductData);
       const formData = new FormData();
 
-       // Append the product data
-    formData.append("productData", JSON.stringify(productData));
-    
-    // Append new images
-    images.forEach((image, index) => {
-      if (image.file) {
-        formData.append("images", image.file);
-      } else {
-        formData.append("existingImages", image.url);
-      }
-    });
-  
+      // Append the product data
+      formData.append("productData", JSON.stringify(productData));
+      onClose();
+
+      // Append new images
+      images.forEach((image, index) => {
+        if (image.file) {
+          formData.append("images", image.file);
+        } else {
+          formData.append("existingImages", image.url);
+        }
+      });
 
       Object.entries(updatedProductData).map(([key, value]) => {
         formData.append(key, value);
       });
 
-      const response = await apiService.put(`/products/${productId}`,formData,
+      const response = await apiService.put(
+        `/products/${productId}`,
+        formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         }
       );
-      
-      if(response.status === 200){
-        onClose();
-        console.log(" updated successfully:", response.data);
-      } else {
-        console.log(response.error)
-      }
+      console.log(" updated successfully:", response.data);
     } catch (error) {
       console.error("Error updating :", error);
     }
   };
-
 
   if (!show) return null;
 
@@ -1383,7 +1453,7 @@ const EditProductModal = ({ show, onClose, productId }) => {
             </button>
           </div>
           <hr className="my-2" />
-          <div className="px-20">
+          <div className="px-40">
             <div className="flex flex-col gap-3 mt-10">
               <div className="flex gap-4">
                 <h1 className="font-bold">Product Images</h1>
@@ -1408,50 +1478,52 @@ const EditProductModal = ({ show, onClose, productId }) => {
                     <Droppable droppableId="images" direction="horizontal">
                       {(provided) => (
                         <div
-                          className="grid grid-cols-2 gap-4 sm:grid-cols-4 md:grid-cols-6 2xl:grid-cols-8"
+                          className="grid grid-cols-2 gap-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8"
                           {...provided.droppableProps}
                           ref={provided.innerRef}
                         >
                           {previews.map((preview, index) => (
-                              <Draggable
-                                key={preview.url} 
-                                draggableId={preview.url} 
-                                index={index}
-                              >
-                                {(provided) => (
-                                  <div
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    className="relative cursor-pointer"
-                                    onClick={() => handleSelectPrimary(index)}
+                            <Draggable
+                              key={index}
+                              draggableId={index.toString()}
+                              index={index}
+                            >
+                              {(provided) => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  className="relative cursor-pointer"
+                                  onClick={() => handleSelectPrimary(index)}
+                                >
+                                  <img
+                                    src={preview}
+                                    alt={`Preview ${index}`}
+                                    className={`w-full h-32 object-cover rounded-lg shadow-md ${
+                                      index === 0
+                                        ? "border-4 border-blue-500"
+                                        : ""
+                                    }`}
+                                  />
+                                  {index === primaryImageIndex && (
+                                    <span className="absolute px-2 py-1 text-xs text-white transform -translate-x-1/2 bg-blue-500 rounded-lg -top-2 left-1/2">
+                                      Primary
+                                    </span>
+                                  )}
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      removeImage(index, productId);
+                                    }}
+                                    className="absolute top-2 right-2 bg-red-600 text-white rounded-full px-1.5 focus:outline-none"
                                   >
-                                    <img
-                                      src={preview}
-                                      alt={`Preview ${index}`}
-                                      className={`w-full h-32 object-cover rounded-lg shadow-md ${
-                                        index === 0 ? "border-4 border-blue-500" : ""
-                                      }`}
-                                    />
-                                    {index === primaryImageIndex && (
-                                      <span className="absolute px-2 py-1 text-xs text-white transform -translate-x-1/2 bg-blue-500 rounded-lg -top-2 left-1/2">
-                                        Primary
-                                      </span>
-                                    )}
-                                    <button
-                                      type="button"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        removeImage(index, productId);
-                                      }}
-                                      className="absolute top-2 right-2 bg-red-600 text-white rounded-full px-1.5 focus:outline-none"
-                                    >
-                                      &times;
-                                    </button>
-                                  </div>
-                                )}
-                              </Draggable>
-                            ))}
+                                    &times;
+                                  </button>
+                                </div>
+                              )}
+                            </Draggable>
+                          ))}
                           {provided.placeholder}
                         </div>
                       )}
@@ -1469,13 +1541,14 @@ const EditProductModal = ({ show, onClose, productId }) => {
                   type="text"
                   id="styleNo"
                   value={productData.style_no}
+                  onChange={handleStyleNoChange}
                   className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
-                  disabled
+                  placeholder="Enter Style No"
                 />
               </div>
 
               <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="ReferenceNo">
+                <label className="font-semibold" htmlFor="RefNo">
                   Reference Number:
                 </label>
                 <input
@@ -1503,11 +1576,19 @@ const EditProductModal = ({ show, onClose, productId }) => {
                         className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
                         onClick={handleAddNewRef}
                       >
-                        Add New Buyer: "{productData.Reference.reference_no}"
+                        Add New Reference: "{productData.Reference.reference_no}
+                        "
                       </li>
                     )}
                   </ul>
                 )}
+                <ReferenceNoAddModal
+                  isModalOpen={isAddRefNoModalOpen}
+                  onClose={closeAddRefNoModal}
+                  fetchAllRefNo={fetchRefSuggestions}
+                  fetchReferenceSuggestions={fetchRefSuggestions}
+                  setReferenceDropdown={setRefDropdown}
+                />
               </div>
 
               <div className="relative flex flex-col gap-2">
@@ -1544,6 +1625,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
                     )}
                   </ul>
                 )}
+                <CategoryAddModal
+                  isModalOpen={isAddCategoryModalOpen}
+                  onClose={closeAddCategoryModal}
+                  fetchAllCategorys={fetchCategorieSuggestions}
+                  fetchCategorySuggestions={fetchCategorieSuggestions}
+                  setCategoryDropdown={setCategorieDropdown}
+                />
               </div>
 
               <div className="relative flex flex-col gap-2">
@@ -1558,7 +1646,7 @@ const EditProductModal = ({ show, onClose, productId }) => {
                   className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Category Name"
                 />
-                 {productTypesDropdown && productData.ProductType.product && (
+                {productTypesDropdown && productData.ProductType.product && (
                   <ul className="absolute left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg top-full">
                     {productTypesSuggestions.length > 0 ? (
                       productTypesSuggestions.map((suggestion) => (
@@ -1575,11 +1663,19 @@ const EditProductModal = ({ show, onClose, productId }) => {
                         className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
                         onClick={handleAddNewProductType}
                       >
-                        Add New product type: "{productData.ProductType.product}"
+                        Add New product type: "{productData.ProductType.product}
+                        "
                       </li>
                     )}
                   </ul>
                 )}
+                <ProductTypesAddModal
+                  isModalOpen={isAddProductTypeModalOpen}
+                  onClose={closeAddProductTypeModal}
+                  fetchAllProductTypes={fetchProductTypesSuggestions}
+                  fetchProductTypesSuggestions={fetchProductTypesSuggestions}
+                  setProductTypesDropdown={setProductTypesDropdown}
+                />
               </div>
 
               <div className="relative flex flex-col gap-2">
@@ -1616,6 +1712,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
                     )}
                   </ul>
                 )}
+                <AddBrandModal
+                  isModalOpen={isAddBrandModalOpen}
+                  onClose={closeAddBrandModal}
+                  fetchAllBrands={fetchBrandSuggestions}
+                  fetchBrandSuggestions={fetchBrandSuggestions}
+                  setBrandDropdown={setBrandDropdown}
+                />
               </div>
 
               <div className="relative flex flex-col gap-2">
@@ -1652,6 +1755,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
                     )}
                   </ul>
                 )}
+                <FabricAddModal
+                  isModalOpen={isAddFabricModalOpen}
+                  onClose={closeAddFabricModal}
+                  fetchAllfabrics={fetchFabricSuggestions}
+                  fetchFabricSuggestions={fetchFabricSuggestions}
+                  setFabricDropdown={setFabricDropdown}
+                />
               </div>
 
               <div className="relative flex flex-col gap-2">
@@ -1690,6 +1800,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
                       )}
                     </ul>
                   )}
+                <FabricFinishAddModal
+                  isModalOpen={isAddFabricFinishModalOpen}
+                  onClose={closeAddFabricFinishModal}
+                  fetchAllfabricFinishes={fetchFabricFinishSuggestions}
+                  fetchFabricFinishSuggestions={fetchFabricFinishSuggestions}
+                  setFabricFinishDropdown={setFabricFinishDropdown}
+                />
               </div>
               <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="gsm">
@@ -1725,6 +1842,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
                     )}
                   </ul>
                 )}
+                <GsmAddModal
+                  isModalOpen={isAddGsmModalOpen}
+                  onClose={closeAddGsmModal}
+                  fetchAllgsms={fetchGsmSuggestions}
+                  fetchGsmSuggestions={fetchGsmSuggestions}
+                  setGsmDropdown={setGsmDropdown}
+                />
               </div>
               <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="knitType">
@@ -1760,6 +1884,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
                     )}
                   </ul>
                 )}
+                <KnitTypeAddModal
+                  isModalOpen={isAddKnitTypeModalOpen}
+                  onClose={closeAddKnitTypeModal}
+                  fetchAllKints={fetchKnitSuggestions}
+                  fetchKnitSuggestions={fetchKnitSuggestions}
+                  setKnitDropdown={setKnitDropdown}
+                />
               </div>
               <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="colors">
@@ -1795,6 +1926,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
                     )}
                   </ul>
                 )}
+                <ColorsAddModal
+                  isModalOpen={isAddColorModalOpen}
+                  onClose={closeAddColorModal}
+                  fetchAllColors={fetchColorSuggestions}
+                  fetchColorSuggestions={fetchColorSuggestions}
+                  setColorDropdown={setColorDropdown}
+                />
               </div>
               <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="sizes">
@@ -1830,6 +1968,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
                     )}
                   </ul>
                 )}
+                <SizesAddModal
+                  isModalOpen={isAddSizeModalOpen}
+                  onClose={closeAddSizeModal}
+                  fetchAllSizes={fetchSizeSuggestions}
+                  fetchSizeSuggestions={fetchSizeSuggestions}
+                  setSizeDropdown={setSizeDropdown}
+                />
               </div>
               <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="decorations">
@@ -1867,6 +2012,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
                       )}
                     </ul>
                   )}
+                <DecorationsAddModal
+                  isModalOpen={isAddDecorationModalOpen}
+                  onClose={closeAddDecorationModal}
+                  fetchAllDecorations={fetchDecorationSuggestions}
+                  fetchDecorationSuggestions={fetchDecorationSuggestions}
+                  setDecorationDropdown={setDecorationDropdown}
+                />
               </div>
               <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="printOrEmbName">
@@ -1903,6 +2055,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
                     )}
                   </ul>
                 )}
+                <PrintOrEmbAddModal
+                  isModalOpen={isAddPrintModalOpen}
+                  onClose={closeAddPrintModal}
+                  fetchAllPrints={fetchPrintSuggestions}
+                  fetchPrintSuggestions={fetchPrintSuggestions}
+                  setPrintDropdown={setPrintDropdown}
+                />
               </div>
               <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="stitchDetails">
@@ -1940,6 +2099,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
                       )}
                     </ul>
                   )}
+                <StitchDetailsAddModal
+                  isModalOpen={isAddStitchModalOpen}
+                  onClose={closeAddStitchModal}
+                  fetchAllStitch={fetchStitchSuggestions}
+                  fetchStitchSuggestions={fetchStitchSuggestions}
+                  setStitchDetailDropdown={setStitchDetailDropdown}
+                />
               </div>
               <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="neck">
@@ -1975,6 +2141,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
                     )}
                   </ul>
                 )}
+                <NeckAddModal
+                  isModalOpen={isAddNeckModalOpen}
+                  onClose={closeAddNeckModal}
+                  fetchAllNecks={fetchNeckSuggestions}
+                  fetchNeckSuggestions={fetchNeckSuggestions}
+                  setNeckDropdown={setNeckDropdown}
+                />
               </div>
               <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="sleeve">
@@ -2010,6 +2183,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
                     )}
                   </ul>
                 )}
+                <SleeveAddModal
+                  isModalOpen={isAddSleeveModalOpen}
+                  onClose={closeAddSleeveModal}
+                  fetchAllSleeves={fetchSleeveSuggestions}
+                  fetchSleeveSuggestions={fetchSleeveSuggestions}
+                  setSleeveDropdown={setSleeveDropdown}
+                />
               </div>
               <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="length">
@@ -2045,6 +2225,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
                     )}
                   </ul>
                 )}
+                <LengthAddModal
+                  isModalOpen={isAddLengthModalOpen}
+                  onClose={closeAddLengthModal}
+                  fetchAllLengths={fetchLengthSuggestions}
+                  fetchLengthSuggestions={fetchLengthSuggestions}
+                  setLengthDropdown={setLengthDropdown}
+                />
               </div>
               <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="packingMethod">
@@ -2081,6 +2268,13 @@ const EditProductModal = ({ show, onClose, productId }) => {
                     )}
                   </ul>
                 )}
+                <PackingMethodAddModal
+                  isModalOpen={isAddPackingMethodModalOpen}
+                  onClose={closeAddPackingMethodModal}
+                  fetchAllPacking={fetchPackingMethodSuggestions}
+                  fetchPackingMethodSuggestions={fetchPackingMethodSuggestions}
+                  setPackingDropdown={setPackingDropdown}
+                />
               </div>
               <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="piecesPerInner">
@@ -2090,7 +2284,7 @@ const EditProductModal = ({ show, onClose, productId }) => {
                   type="number"
                   id="piecesPerInner"
                   value={productData.inner_pcs}
-                onChange={handleNumberOfPcsChange}
+                  onChange={handleNumberOfPcsChange}
                   className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter No of pieces per inner"
                 />
@@ -2100,23 +2294,25 @@ const EditProductModal = ({ show, onClose, productId }) => {
                 <label className="font-semibold" htmlFor="mesurementChart">
                   Measurement Chart:
                 </label>
-             
-                  <input
-                    type="text"
-                    id="mesurementChart"
-                    value={productData.MeasurementChart.name}
-                    onChange={handleMesurementChartChange}
-                    className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
-                    placeholder="Enter Measurement Chart"
-                  />
-                  {mesurementDropdown && productData.MeasurementChart.name && (
+
+                <input
+                  type="text"
+                  id="mesurementChart"
+                  value={productData.MeasurementChart.name}
+                  onChange={handleMesurementChartChange}
+                  className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
+                  placeholder="Enter Measurement Chart"
+                />
+                {mesurementDropdown && productData.MeasurementChart.name && (
                   <ul className="absolute left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg top-full">
                     {mesurementSuggestions.length > 0 ? (
                       mesurementSuggestions.map((suggestion) => (
                         <li
                           key={suggestion.id}
                           className="px-4 py-2 cursor-pointer hover:bg-gray-200"
-                          onClick={() => handleMesurementChartSelect(suggestion)}
+                          onClick={() =>
+                            handleMesurementChartSelect(suggestion)
+                          }
                         >
                           {suggestion.name}
                         </li>
@@ -2126,13 +2322,20 @@ const EditProductModal = ({ show, onClose, productId }) => {
                         className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
                         onClick={handleAddNewMeasurement}
                       >
-                        Add New measurement chart: "{productData.MeasurementChart.name}"
+                        Add New measurement chart: "
+                        {productData.MeasurementChart.name}"
                       </li>
                     )}
                   </ul>
                 )}
-              
-               
+                <MeasurementChartAddModal
+                  isModalOpen={isAddMeasurementChartModalOpen}
+                  onClose={closeAddMeasurementChartModal}
+                  fetchMesurementChartSuggestions={
+                    fetchMesurementChartSuggestions
+                  }
+                  setMesurementDropdown={setMesurementDropdown}
+                />
               </div>
 
               {productData.MeasurementChart &&
