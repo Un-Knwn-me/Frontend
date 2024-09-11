@@ -109,10 +109,7 @@ const EditPoModal = ({ show, onClose, withPoId, getAllPurchaseOrder }) => {
 
       // Fill the input fields based on the fetched stock-in data
     } catch (error) {
-      console.error(
-        "Error fetching With Po  data:",
-        error.response || error.message
-      );
+      console.error("Error fetching With Po  data:", error.response || error.message);
     }
   };
 
@@ -180,23 +177,11 @@ const EditPoModal = ({ show, onClose, withPoId, getAllPurchaseOrder }) => {
       ...updatedWithPoData,
       buyer_id: buyer.id,
     });
-    console.log(buyer.name);
-    console.log(buyer.location);
   };
 
   const handleAddNewBuyer = () => {
-    console.log("Adding new buyer:", withPoData.Buyer.name);
-    console.log("Adding new buyer:", withPoData.Buyer.location);
     setBuyerDropdown(false);
   };
-
-  // // handle PO number change
-  // const handlePurchaseOrderNoChange = (e) => {
-  //   setWithPoData((prevState) => ({
-  //     ...prevState,
-  //     purchase_order_number: e.target.value,
-  //   }));
-  // };
 
   const handleDeliveryDateChange = (e) => {
     const inputDate = e.target.value;
@@ -238,7 +223,6 @@ const EditPoModal = ({ show, onClose, withPoId, getAllPurchaseOrder }) => {
           : {};
 
       setInnerPcs(initialInnerPcs);
-      console.log(innerPcs);
     } else {
       setInnerPcs({});
     }
@@ -246,62 +230,67 @@ const EditPoModal = ({ show, onClose, withPoId, getAllPurchaseOrder }) => {
 
   const handleInnerPcsChange = (e, size) => {
     const newInnerPcs = parseInt(e.target.value, 10) || null; // Ensure the value is a number
-    const sizeData =
-      withPoData.purchase_by_size.find((item) => item.size === size) || {};
+    const sizeData = withPoData.purchase_by_size.find((item) => item.size === size) || {};
 
     // Update the stock data with new inner pcs and existing outer pcs
     handleStockBySizeChange(size, newInnerPcs, sizeData.outerPcs || null);
-
-    console.log("Inner pieces updated for size", size);
   };
 
   const handleOuterPcsChange = (e, size) => {
     const newOuterPcs = parseInt(e.target.value, 10) || null; // Ensure the value is a number
-    const sizeData =
-      withPoData.purchase_by_size.find((item) => item.size === size) || {};
+    const sizeData = withPoData.purchase_by_size.find((item) => item.size === size) || {};
 
     // Update the stock data with new outer pcs and existing inner pcs
     handleStockBySizeChange(size, sizeData.innerPcs || null, newOuterPcs);
-
-    console.log("Outer pieces updated for size", size);
   };
 
   useEffect(() => {
-    if (withPoData?.purchase_by_size) {
-      const totalwithPoInnerPcs = calculateTotalInnerPcs(
-        withPoData.purchase_by_size
-      );
-      setTotalInnerPcs(totalwithPoInnerPcs);
-
-      const totalwithPoOuterPcs = calculateTotalOuterPcs(
-        withPoData.purchase_by_size
-      );
-      setTotalOuterPcs(totalwithPoOuterPcs);
-
-      const totalInnerPerBundle = calculateTotalInnerPerBundle(
-        withPoData.purchase_by_size
-      );
-      setTotalInnerPcsPerBundle(totalInnerPerBundle);
-    }
-
-    if (withPoData?.req_bundle !== undefined) {
-      setWithPoBundle(withPoData.req_bundle);
-    }
-
-    if (withPoBundle > 0 && withPoData?.purchase_by_size) {
-      const totalPcs = withPoData.purchase_by_size.reduce((sum, item) => {
-        return sum + (item.innerPcs || 0) * (item.outerPcs || 0) * withPoBundle;
-      }, 0);
-
-      setTotalPcs(totalPcs);
-      setUpdatedwithPoData({
-        ...updatedWithPoData,
-        req_purchase_qty: totalPcs,
-      });
-    } else {
-      setTotalPcs(withPoData?.req_purchase_qty);
-    }
-  }, [withPoData]);
+    const calculateWithPoData = async () => {
+      if (withPoData?.purchase_by_size) {
+        // Calculate total inner pieces
+        const totalwithPoInnerPcs = calculateTotalInnerPcs(withPoData.purchase_by_size);
+        setTotalInnerPcs(totalwithPoInnerPcs);
+  
+        // Calculate total outer pieces
+        const totalwithPoOuterPcs = calculateTotalOuterPcs(withPoData.purchase_by_size);
+        setTotalOuterPcs(totalwithPoOuterPcs);
+  
+        // Calculate total inner pieces per bundle (async call)
+        const totalInnerPerBundle = await calculateTotalInnerPerBundle(withPoData.purchase_by_size);
+        setTotalInnerPcsPerBundle(totalInnerPerBundle);
+  
+        // Update the data with pcs_per_bundle after innerPcsPerBundle is calculated
+        setUpdatedwithPoData(prevData => ({
+          ...prevData,
+          pcs_per_bundle: totalInnerPerBundle,
+        }));
+      }
+  
+      // If req_bundle exists, set the withPoBundle
+      if (withPoData?.req_bundle !== undefined) {
+        setWithPoBundle(withPoData.req_bundle);
+      }
+  
+      // If withPoBundle is greater than 0, calculate total pcs
+      if (withPoBundle > 0 && withPoData?.purchase_by_size) {
+        const totalPcs = withPoData.purchase_by_size.reduce((sum, item) => {
+          return sum + (item.innerPcs || 0) * (item.outerPcs || 0) * withPoBundle;
+        }, 0);
+  
+        setTotalPcs(totalPcs);
+        setUpdatedwithPoData(prevData => ({
+          ...prevData,
+          req_purchase_qty: totalPcs,
+        }));
+      } else {
+        setTotalPcs(withPoData?.req_purchase_qty);
+      }
+    };
+  
+    // Call the async function
+    calculateWithPoData();
+    
+  }, [withPoData, withPoBundle]);  
 
   const calculateTotalInnerPcs = (data) => {
     return data.reduce((total, item) => total + item.innerPcs, 0);
@@ -341,13 +330,8 @@ const EditPoModal = ({ show, onClose, withPoId, getAllPurchaseOrder }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("updatedWithPoData", updatedWithPoData);
-
     try {
-      const response = await apiService.put(
-        `/purchases/${withPoId}`,
-        updatedWithPoData,
-        {
+      const response = await apiService.put( `/purchases/${withPoId}`, updatedWithPoData, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -362,7 +346,7 @@ const EditPoModal = ({ show, onClose, withPoId, getAllPurchaseOrder }) => {
         setTimeout(() => {
           setSuccessMessage("");
           getAllPurchaseOrder();
-          onClose();
+          handleClose();
         }, 1500);
       }
     } catch (error) {
@@ -846,27 +830,19 @@ const EditPoModal = ({ show, onClose, withPoId, getAllPurchaseOrder }) => {
                 <div className="flex items-center justify-center p-4 mt-8 mb-8 bg-gray-100">
                   <div className="flex flex-col gap-4">
                     <div className="flex justify-between gap-5">
-                      <label className="block text-sm font-medium text-gray-700">
-                        Total Inner Pcs
-                      </label>
+                      <label className="block text-sm font-medium text-gray-700"> Total Inner Pcs </label>
                       <span>{totalInnerPcs}</span>
                     </div>
                     <div className="flex justify-between gap-5">
-                      <label className="block text-sm font-medium text-gray-700">
-                        Total Outer Pcs
-                      </label>
+                      <label className="block text-sm font-medium text-gray-700"> Total Outer Pcs </label>
                       <span>{totalOuterPcs}</span>
                     </div>
                     <div className="flex justify-between gap-5">
-                      <label className="block text-sm font-medium text-gray-700">
-                        Total Pcs per Bundle
-                      </label>
+                      <label className="block text-sm font-medium text-gray-700"> Total Pcs per Bundle </label>
                       <span>{totalInnerPcsPerBundle}</span>
                     </div>
                     <div className="flex justify-between gap-5">
-                      <label className="block text-sm font-medium text-gray-700">
-                        Total Pcs
-                      </label>
+                      <label className="block text-sm font-medium text-gray-700"> Total Pcs </label>
                       <span>{totalPcs}</span>
                     </div>
                   </div>
@@ -885,10 +861,7 @@ const EditPoModal = ({ show, onClose, withPoId, getAllPurchaseOrder }) => {
             </div>
           )}
           <div className="flex justify-center px-20 mt-5">
-            <button
-              onClick={handleSubmit}
-              className="px-4 py-2 font-semibold text-white bg-blue-500 rounded hover:bg-blue-600"
-            >
+            <button onClick={handleSubmit} className="px-4 py-2 font-semibold text-white bg-blue-500 rounded hover:bg-blue-600">
               CREATE PURCHASE ORDER
             </button>
           </div>

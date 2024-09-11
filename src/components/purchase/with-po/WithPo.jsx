@@ -20,25 +20,24 @@ const WithPo = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState(null);
 
-
-   // Function to fetch all orders
-   const getAllPurchaseOrder = async () => {
+  // Fetch all PO data
+  const getAllPurchaseOrder = async () => {
     try {
-      const poType = "po"
+      const poType = "po";
       const response = await apiService.get(`/purchases/type/${poType}`, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
       // Format the created_at date
-    const formattedData = response.data.map(stock => ({
-      ...stock,
-      created_at: new Date(stock.created_at).toLocaleDateString('en-GB')
-    }));
+      const formattedData = response.data.map(stock => ({
+        ...stock,
+        created_at: new Date(stock.created_at).toLocaleDateString('en-GB')
+      }));
 
-    console.log(formattedData);
-    setInitialData(formattedData);
-    setFilteredData(formattedData);
+      console.log(formattedData);
+      setInitialData(formattedData);
+      setFilteredData(formattedData);
     } catch (error) {
       console.error('Error fetching products:', error);
     }
@@ -46,7 +45,7 @@ const WithPo = () => {
 
   useEffect(() => {
     getAllPurchaseOrder();
-  }, []);
+  }, []); 
 
   const handleSearch = (searchValue) => {
     const lowercasedSearchValue = searchValue.toLowerCase();

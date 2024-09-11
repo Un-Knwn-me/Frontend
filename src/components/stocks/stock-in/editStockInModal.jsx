@@ -5,7 +5,6 @@ import apiService from "../../../apiService";
 const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
   const [assortmentType, setAssortmentType] = useState("");
   const [innerPcs, setInnerPcs] = useState({});
-
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -21,7 +20,6 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
   const [warehouseSuggestions, setWarehouseSuggestions] = useState([]);
   const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
   const [updatedWarehouseData, setUpdatedWarehouseData] = useState({});
-
   const [updatedStockInData, setUpdatedStockInData] = useState({});
 
   const [stockInData, setStockInData] = useState({
@@ -175,9 +173,7 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
 
   const handleStockBySizeChange = (size, innerPcs, outerPcs) => {
     const updatedStockBySize = stockInData.stock_by_size.map((item) =>
-      item.size === size
-        ? { ...item, innerPcs, outerPcs } // Update only the matching size
-        : item
+      item.size === size ? { ...item, innerPcs, outerPcs } : item
     );
 
     setStockInData((prevState) => ({
@@ -220,7 +216,7 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
   };
 
   const handleOuterPcsChange = (e, size) => {
-    const newOuterPcs = parseInt(e.target.value, 10) || null; // Ensure the value is a number
+    const newOuterPcs = parseInt(e.target.value, 10) || null; 
     const sizeData =
       stockInData.stock_by_size.find((item) => item.size === size) || {};
 
