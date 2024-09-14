@@ -16,7 +16,7 @@ const Reports = () => {
 
   const presets = [
     { id: 'pr1', value: 'Overall Stocks', label: 'Overall Stocks' },
-    // { id: 'pr2', value: 'Agewise Stocks', label: 'Agewise Stocks' },
+    { id: 'pr2', value: 'Buyer wise', label: 'Stockout by Buyer' },
     { id: 'pr3', value: 'Print wise', label: 'Print wise' },
     { id: 'pr4', value: 'Style wise', label: 'Style wise' },
     { id: 'pr5', value: 'Category wise', label: 'Category wise' },
@@ -47,6 +47,9 @@ const Reports = () => {
           break;
         case 'Size wise':
           endpoint = '/reports/size-report';
+          break;
+        case 'Buyer wise':
+          endpoint = '/reports/buyer-report';
           break;
         default:
           console.error('Invalid report type selected');
