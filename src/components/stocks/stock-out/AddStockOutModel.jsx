@@ -154,6 +154,7 @@ const AddStockOutModel = ({ show, onClose, fetchStockOut }) => {
     try {
       const stockData = {
         dc_number: dcNumber,
+        buyer_id: orderInfo.Buyer.id,
         stock_id: productInfo.id,
         stockOut_by_size: orderInfo.purchase_by_size,
         stockOut_bundle: stockOutBundle,
