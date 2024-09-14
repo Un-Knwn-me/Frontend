@@ -362,7 +362,7 @@ const EditPoModal = ({ show, onClose, withPoId, getAllPurchaseOrder }) => {
         setTimeout(() => {
           setSuccessMessage("");
           getAllPurchaseOrder();
-          onClose();
+          handleClose();
         }, 1500);
       }
     } catch (error) {
