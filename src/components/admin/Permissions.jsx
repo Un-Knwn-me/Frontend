@@ -11,7 +11,7 @@ import stockIn from "../../assets/stock-in.jpg";
 import stockOut from "../../assets/stock-out.jpg";
 import reports from "../../assets/reports.jpg";
 import admin from "../../assets/admin.jpg";
-import AddAdminModal from "./AddAdminModal";
+import AddAdminModal from "./AddAdminModel";
 
 const Permission = (onClose, selectedDeptId) => {
   const [modalVisible, setModalVisible] = useState(false);
