@@ -82,7 +82,7 @@ const AddAdminModal = ({ isVisible, onClose, fetchAminUsers }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="relative w-3/5 h-56 max-w-2xl p-4 bg-white rounded-lg shadow-lg">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-semibold">Add Admin </h2>
+          <h2 className="text-2xl font-semibold">Add Admin</h2>
           <button onClick={handleClose} className="text-2xl font-bold">
             <img src={closeIcon} alt="Close" />
           </button>
