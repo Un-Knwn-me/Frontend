@@ -1,13 +1,27 @@
 import React, { useEffect, useState } from "react";
 import closeIcon from "../../../assets/close-modal-icon.svg";
 import apiService from "../../../apiService";
+import WareHouseAddModal from "../../products/AddNewProductMaster/WareHouseAddModal";
 
 const EditStockOutModel = ({
   show,
   onClose,
+  stockOutPoNo,
+  stockOutOrder,
   stockOutId,
 }) => {
+  const [styleNumber, setStyleNumber] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProductId, setSelectedProductId] = useState(null);
+  const [orderNumber, setOrderNumber] = useState("");
+  const [orderDropdown, setOrderDropdown] = useState(false);
+  const [orderSuggestions, setOrderSuggestions] = useState([]);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [checkSame, setCheckSame] = useState(null);
   const [orderInfo, setOrderInfo] = useState(null);
+  const [dcNumber, setDcNumber] = useState("");
+  const [warehouse, setWarehouse] = useState("");
   const [productInnerTotals, setProductInnerTotals] = useState(null);
   const [productOuterTotals, setProductOuterTotals] = useState(null);
   const [orderInnerTotals, setOrderInnerTotals] = useState(null);
@@ -16,7 +30,15 @@ const EditStockOutModel = ({
   const [stockOutOuterTotals, setStockOutOuterTotals] = useState(null);
   const [stockOutBundle, setStockOutBundle] = useState(null);
   const [totalPcs, setTotalPcs] = useState(null);
-  const [productInfo, setProductInfo] = useState(null);
+
+  const [previews, setPreviews] = useState([]);
+  const [images, setImages] = useState([]);
+  const [primaryImageIndex, setPrimaryImageIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [bundles, setBundles] = useState("");
+  const [totalProducts, setTotalProducts] = useState(0);
+
+  const [updatedStockOutData, setUpdatedStockOutData] = useState({});
 
   const [stockOutData, setStockOutData] = useState({
     PurchaseOrder: {
@@ -94,57 +116,103 @@ const EditStockOutModel = ({
     stock_id: null,
   });
 
-  // fetch styleNo
-
-
   useEffect(() => {
     if (stockOutData?.Stock?.stock_by_size) {
-      const totalStockInnerPcs = calculateTotalInnerPcs(stockOutData.Stock.stock_by_size);
+      const totalStockInnerPcs = calculateTotalInnerPcs(
+        stockOutData.Stock.stock_by_size
+      );
       setProductInnerTotals(totalStockInnerPcs);
 
-      const totalStockOuterPcs = calculateTotalOuterPcs(stockOutData.Stock.stock_by_size);
+      const totalStockOuterPcs = calculateTotalOuterPcs(
+        stockOutData.Stock.stock_by_size
+      );
       setProductOuterTotals(totalStockOuterPcs);
     }
 
     if (stockOutData?.PurchaseOrder?.purchase_by_size) {
-      const totalOrderInnerPcs = calculateTotalInnerPcs(stockOutData.PurchaseOrder.purchase_by_size);
+      const totalOrderInnerPcs = calculateTotalInnerPcs(
+        stockOutData.PurchaseOrder.purchase_by_size
+      );
       setOrderInnerTotals(totalOrderInnerPcs);
 
-      const totalOrderOuterPcs = calculateTotalOuterPcs(stockOutData.PurchaseOrder.purchase_by_size);
+      const totalOrderOuterPcs = calculateTotalOuterPcs(
+        stockOutData.PurchaseOrder.purchase_by_size
+      );
       setOrderOuterTotals(totalOrderOuterPcs);
     }
 
     if (stockOutData?.stockOut_by_size) {
-      const totalStockOutInnerPcs = calculateTotalInnerPcs(stockOutData.stockOut_by_size);
+      const totalStockOutInnerPcs = calculateTotalInnerPcs(
+        stockOutData.stockOut_by_size
+      );
       setStockOutInnerTotals(totalStockOutInnerPcs);
 
-      const totalStockOutOuterPcs = calculateTotalOuterPcs(stockOutData.stockOut_by_size);
+      const totalStockOutOuterPcs = calculateTotalOuterPcs(
+        stockOutData.stockOut_by_size
+      );
       setStockOutOuterTotals(totalStockOutOuterPcs);
     }
   }, [stockOutData]);
 
-  useEffect(() => {
-    if (stockOutId) {
-      fetchStockOutData(stockOutId);
-    }
-  }, [stockOutId]);
-
-  const fetchStockOutData = async (stockOutId) => {
+  // fetch orderNo
+  const fetchOrderSuggestions = async (orderInput) => {
     try {
-      console.log("Fetching stock out data for ID:", stockOutId);
-
-      const response = await apiService.get(`/stockOut/${stockOutId}`);
-      console.log("Stock out data:", response.data);
-      setStockOutData(response.data);
+      if (orderInput.length > 0) {
+        const response = await apiService.get("/purchases/all");
+        const filteredProduct = response.data.filter(
+          (e) =>
+            e.purchase_order_number &&
+            e.purchase_order_number
+              .toLowerCase()
+              .startsWith(orderInput.toLowerCase())
+        );
+        const formattedData = filteredProduct.map((order) => ({
+          ...order,
+          delivery_date: new Date(order.delivery_date).toLocaleDateString(
+            "en-GB"
+          ),
+        }));
+        setOrderSuggestions(formattedData);
+      } else {
+        setOrderSuggestions([]);
+      }
     } catch (error) {
-      console.error(
-        "Error fetching stock out data:",
-        error.response || error.message
-      );
-      // Optionally, set an error state to display an error message in the UI
-      // setError("Failed to fetch stock out data. Please try again later.");
+      console.error("Error fetching Purchase order:", error);
     }
   };
+
+  useEffect(() => {
+    const fetchStockOutData = async () => {
+      try {
+        console.log("Fetching stock out data for ID:", stockOutId);
+
+        const response = await apiService.get(`/stockOut/${stockOutId}`);
+        console.log("Stock out data:", response.data);
+        setStockOutData(response.data);
+
+        setLoading(false);
+
+        // Assuming response.data.images is an array of image URLs
+        if (response.data.images) {
+          setPreviews(response.data.images);
+          setImages(response.data.images.map((image) => ({ url: image })));
+        }
+      } catch (error) {
+        console.error(
+          "Error fetching stock out data:",
+          error.response || error.message
+        );
+        setLoading(false);
+
+        // Optionally, set an error state to display an error message in the UI
+        // setError("Failed to fetch stock out data. Please try again later.");
+      }
+    };
+
+    if (stockOutId) {
+      fetchStockOutData();
+    }
+  }, [stockOutId]);
 
   const handleBundleChange = async (e) => {
     try {
@@ -169,17 +237,27 @@ const EditStockOutModel = ({
     return data.reduce((total, item) => total + item.outerPcs, 0);
   };
 
+  const handleDcNumberChange = (e) => {
+    const newDcNumber = e.target.value;
+    setStockOutData((prevData) => ({
+      ...prevData,
+      dc_number: newDcNumber,
+    }));
+  };
+
   const handleSubmit = async () => {
     try {
       const stockData = {
         stock_id: stockOutData.stock_id,
         updated_stockOut_bundle: stockOutBundle,
         updated_total_pcs: totalPcs,
+        updated_dc_number: stockOutData.dc_number,
       };
 
-      console.log("Stock out: ", stockData);
-
-      const response = await apiService.put(`/stockOut/${stockOutId}`, stockData);
+      const response = await apiService.put(
+        `/stockOut/${stockOutId}`,
+        stockData
+      );
 
       if (response.status === 200) {
         console.log("Stock created:", response.data);
@@ -219,7 +297,7 @@ const EditStockOutModel = ({
                     <input
                       type="text"
                       id="purchaseOrderNo"
-                      value={stockOutData.PurchaseOrder.purchase_order_number}
+                      value={stockOutData.purchase_order_number}
                       className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                       disabled
                     />
@@ -237,6 +315,51 @@ const EditStockOutModel = ({
                       disabled
                     />
                   </div>
+
+                  <div className="relative flex flex-col gap-2">
+                    <label className="font-semibold" htmlFor="dc-number">
+                      DC Number:
+                    </label>
+                    <input
+                      type="text"
+                      id="dc-number"
+                      value={stockOutData.dc_number}
+                      onChange={handleDcNumberChange}
+                      className="px-2 py-2 border border-gray-300 rounded-md hover:border-cyan-300 active:boder-cyan-300 focus:border-cyan-300"
+                      placeholder="Enter dc number"
+                    />
+                  </div>
+
+                  <div className="relative flex flex-col gap-2">
+                    <label className="font-semibold" htmlFor="warehouse">
+                      Warehouse:
+                    </label>
+                    <input
+                      type="text"
+                      id="warehouse"
+                      value={stockOutData?.Stock?.Warehouse?.warehouse}
+                      className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
+                      disabled
+                    />
+                  </div>
+                </div>
+
+                <div className="relative flex items-center my-4">
+                  {checkSame !== null && (
+                    <div className="mt-4 text-lg font-semibold text-center">
+                      {checkSame ? (
+                        <span className="text-green-600">
+                          "The Style number on Purchase order and Stock is
+                          SAME!"
+                        </span>
+                      ) : (
+                        <span className="text-red-600">
+                          "The Style number on Purchase order and Stock is NOT
+                          the same!"
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -635,7 +758,7 @@ const EditStockOutModel = ({
               </label>
               <textarea
                 id="notes"
-                value={stockOutData.PurchaseOrder.notes || ""}
+                value={stockOutData?.PurchaseOrder.notes || ""}
                 className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                 rows="3"
                 disabled
@@ -644,14 +767,16 @@ const EditStockOutModel = ({
 
             <div className="grid grid-cols-1 gap-10 mt-10 md:grid-cols-2">
               <div className="text-center">
-                <h3 className="text-lg font-semibold">Available Quantities:</h3>
+                <h3 className="text-lg font-semibold text-green-500">
+                  Available Quantities:
+                </h3>
                 <div className="">
                   <table className="min-w-full mt-6 bg-white border border-gray-300 rounded-md">
                     <thead>
                       <tr>
                         <th className="px-4 py-2 border-b">Size</th>
                         <th className="px-4 py-2 border-b">Inner Pieces</th>
-                        <th className="px-4 py-2 border-b">Inner Boxes</th>
+                        <th className="px-4 py-2 border-b">Outer Pieces</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -683,7 +808,7 @@ const EditStockOutModel = ({
                       <p>{productInnerTotals}</p>
                     </div>
                     <div className="p-2 border rounded-lg">
-                      <h4 className="font-semibold">Total Inner Boxes:</h4>
+                      <h4 className="font-semibold">Total Outer Pcs:</h4>
                       <p>{productOuterTotals}</p>
                     </div>
                     <div className="p-2 border rounded-lg">
@@ -695,14 +820,16 @@ const EditStockOutModel = ({
               </div>
 
               <div className="text-center">
-                <h3 className="text-lg font-semibold">Ordered Quantities:</h3>
+                <h3 className="text-lg font-semibold text-green-500">
+                  Purchase Quantities:
+                </h3>
                 <div className="">
                   <table className="min-w-full mt-6 bg-white border border-gray-300 rounded-md">
                     <thead>
                       <tr>
                         <th className="px-4 py-2 border-b">Size</th>
                         <th className="px-4 py-2 border-b">Inner Pieces</th>
-                        <th className="px-4 py-2 border-b">Inner Boxes</th>
+                        <th className="px-4 py-2 border-b">Outer Pieces</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -734,7 +861,7 @@ const EditStockOutModel = ({
                       <p>{orderInnerTotals}</p>
                     </div>
                     <div className="p-2 border rounded-lg">
-                      <h4 className="font-semibold">Total Inner Boxes:</h4>
+                      <h4 className="font-semibold">Total Outer Pcs:</h4>
                       <p>{orderOuterTotals}</p>
                     </div>
                     <div className="p-2 border rounded-lg">
@@ -748,14 +875,16 @@ const EditStockOutModel = ({
           </div>
 
           <div className="text-center">
-            <h3 className="text-lg font-semibold">Stock Out Quantities:</h3>
+            <h3 className="text-lg font-semibold text-green-500">
+              Stock Out Quantities:
+            </h3>
             <div className="">
               <table className="min-w-full mt-6 bg-white border border-gray-300 rounded-md">
                 <thead>
                   <tr>
                     <th className="px-4 py-2 border-b">Size</th>
                     <th className="px-4 py-2 border-b">Inner Pieces</th>
-                    <th className="px-4 py-2 border-b">Inner Boxes</th>
+                    <th className="px-4 py-2 border-b">Outer Pieces</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -774,19 +903,19 @@ const EditStockOutModel = ({
               <div className="grid grid-cols-4 gap-4 mt-4">
                 <div className="p-2 border rounded-lg">
                   <h4 className="font-semibold">Total Bundle:</h4>
-                  <p>{stockOutData?.Stock?.no_bundles}</p>
+                  <p>{stockOutData?.stockOut_bundle}</p>
                 </div>
                 <div className="p-2 border rounded-lg">
                   <h4 className="font-semibold">Total Inner Pcs:</h4>
                   <p>{stockOutInnerTotals}</p>
                 </div>
                 <div className="p-2 border rounded-lg">
-                  <h4 className="font-semibold">Total Inner Boxes:</h4>
+                  <h4 className="font-semibold">Total Outer Pcs:</h4>
                   <p>{stockOutOuterTotals}</p>
                 </div>
                 <div className="p-2 border rounded-lg">
                   <h4 className="font-semibold">Total Pieces:</h4>
-                  <p>{stockOutData?.Stock?.total_pcs}</p>
+                  <p>{stockOutData?.total_stockOut_pcs}</p>
                 </div>
               </div>
             </div>
@@ -794,23 +923,26 @@ const EditStockOutModel = ({
 
           <div className="flex flex-col items-center justify-center p-5 mt-10 mb-5 rounded ">
             <div className="grid justify-center grid-flow-row gap-3 p-10 bg-blue-100 rounded-xl">
-            <label className="mb-2 font-semibold text-gray-700" htmlFor="StockOutBundle">
-              Update Stock Out Bundle:
-            </label>
-            <input
-              className="px-2 py-2 border border-gray-300 rounded-md w-44 hover:border-cyan-300 active:boder-cyan-300 focus:border-cyan-300 "
-              type="number"
-              value={stockOutBundle}
-              onChange={handleBundleChange}
-              placeholder="Enter Bundle Value"
-            />
-            {totalPcs !== null && (
-              <div className="flex justify-start my-2 mt-4">
-                <p className="text-xl font-medium text-black">
-                  Total Pieces: {totalPcs}
-                </p>
-              </div>
-            )}
+              <label
+                className="mb-2 font-semibold text-gray-700"
+                htmlFor="StockOutBundle"
+              >
+                Update Stock Out Bundle:
+              </label>
+              <input
+                className="px-2 py-2 border border-gray-300 rounded-md w-44 hover:border-cyan-300 active:boder-cyan-300 focus:border-cyan-300 "
+                type="number"
+                value={stockOutBundle}
+                onChange={handleBundleChange}
+                placeholder="Enter Bundle Value"
+              />
+              {totalPcs !== null && (
+                <div className="flex justify-start my-2 mt-4">
+                  <p className="text-xl font-medium text-black">
+                    Total Pieces: {totalPcs}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 

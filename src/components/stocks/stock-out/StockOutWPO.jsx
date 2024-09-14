@@ -1,19 +1,32 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from "react";
 import closeIcon from "../../../assets/close-modal-icon.svg";
-import apiService from '../../../apiService';
+import apiService from "../../../apiService";
+import BuyerAddModal from "../../products/AddNewProductMaster/BuyerAddModal";
+import AddProductModal from "../../products/add-products/AddProductModal";
 
 const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
   const [buyer, setBuyer] = useState("");
   const [buyerLocation, setBuyerLocation] = useState("");
-  const [dcNumber, setDcNumber] = useState('');
+  const [dcNumber, setDcNumber] = useState(null);
+  const [deliveryDate, setDeliveryDate] = useState(new Date().toISOString());
   const [styleNumber, setStyleNumber] = useState("");
   const [styleDropdown, setStyleDropdown] = useState(false);
   const [styleSuggestions, setStyleSuggestions] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProductId, setSelectedProductId] = useState(null);
   const [productInfo, setProductInfo] = useState({});
+  const [orderInfo, setOrderInfo] = useState(null);
   const [productInnerTotals, setProductInnerTotals] = useState(null);
   const [productOuterTotals, setProductOuterTotals] = useState(null);
+  const [assortmentType, setAssortmentType] = useState("assorted");
+  const [innerPcs, setInnerPcs] = useState({});
+  const [outerPcs, setOuterPcs] = useState({});
   const [stockOutBundle, setStockOutBundle] = useState(null);
+  const [totalInnerPcs, setTotalInnerPcs] = useState(0);
+  const [totalOuterPcs, setTotalOuterPcs] = useState(0);
+  const [totalInnerPcsPerBundle, setTotalInnerPcsPerBundle] = useState(0);
   const [totalProducts, setTotalProducts] = useState(0);
+  const [totalPcs, setTotalPcs] = useState(null);
   const [notes, setNotes] = useState("");
 
   const [ReferenceNo, setReferenceNo] = useState("");
@@ -33,32 +46,38 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
   const [sleeve, setSleeve] = useState("");
   const [length, setLength] = useState("");
   const [measurementChart, setMeasurementChart] = useState("");
-  const [selectedMeasurementImage, setSelectedMeasurementImage] = useState(null);
+  const [selectedMeasurementImage, setSelectedMeasurementImage] =
+    useState(null);
   const [packingMethod, setPackingMethod] = useState("");
-  const [packingInfo, setPackingInfo] = useState('');
-  const [warehouse, setWarehouse] = useState('');
+  const [packingInfo, setPackingInfo] = useState("");
+  const [warehouse, setWarehouse] = useState("");
   const [shortDescription, setShortDescription] = useState("");
   const [fullDescription, setFullDescription] = useState("");
   const [images, setImages] = useState("");
 
-   // Suggestion buyer states
- const [buyerDropdown, setBuyerDropdown] = useState(false);
- const [buyerSuggestions, setBuyerSuggestions] = useState([]);
- const [selectedBuyerId, setSelectedBuyerId] = useState(null);
+  const [isAddBuyerModalOpen, setIsAddBuyerModalOpen] = useState(false);
+  const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
+
+  // Suggestion buyer states
+  const [buyerDropdown, setBuyerDropdown] = useState(false);
+  const [buyerSuggestions, setBuyerSuggestions] = useState([]);
+  const [selectedBuyerId, setSelectedBuyerId] = useState(null);
 
   // fetch styleNo
   const fetchStyleSuggestions = async (styleInput) => {
     try {
-        if (styleInput.length > 0) {
+      if (styleInput.length > 0) {
         const response = await apiService.get(`/stocks/stockIn/all`);
         const filteredProduct = response.data.filter((e) =>
-            e.product_style_number.toLowerCase().startsWith(styleInput.toLowerCase())
-          );
-          console.log(filteredProduct);
-          setStyleSuggestions(filteredProduct);
-        } else {
-          setStyleSuggestions([]);
-        }
+          e.product_style_number
+            .toLowerCase()
+            .startsWith(styleInput.toLowerCase())
+        );
+        console.log(response.data);
+        setStyleSuggestions(filteredProduct);
+      } else {
+        setStyleSuggestions([]);
+      }
     } catch (error) {
       console.error("Error fetching Product:", error);
     }
@@ -67,13 +86,14 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
   const handleStyleChange = (e) => {
     const styleInput = e.target.value;
     if (styleInput.length > 0) {
-    setStyleNumber(styleInput);
-    setStyleDropdown(true);
-    fetchStyleSuggestions(styleInput);
+      setStyleNumber(styleInput);
+      setStyleDropdown(true);
+      fetchStyleSuggestions(styleInput);
     } else {
       setStyleNumber("");
       setStyleDropdown(false);
-      setProductInfo(null)
+      setProductInfo(null);
+      setSelectedProduct(null);
       setReferenceNo("");
       setCategory("");
       setProductType("");
@@ -93,19 +113,21 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
       setMeasurementChart("");
       setSelectedMeasurementImage("");
       setPackingMethod("");
-      setWarehouse("");
       setShortDescription("");
+      setWarehouse("");
       setFullDescription("");
       setImages("");
     }
   };
 
-  const handleStyleSelect = async(e) => {
+  const handleStyleSelect = async (e) => {
     console.log("handleStyleSelect: ", e);
     setStyleNumber(e.Product.style_no);
+    setSelectedProduct(e);
+    setSelectedProductId(e.id);
     setStyleSuggestions([]);
     setStyleDropdown(false);
-    setProductInfo(e)
+    setProductInfo(e);
     setImages(e.Product.images[0]);
     setReferenceNo(e.Product.Reference.reference_no);
     setCategory(e.Product.Category.categoryName);
@@ -128,7 +150,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
     setShortDescription(e.Product.short_description);
     setFullDescription(e.Product.full_description);
     setSizes(e.Product.Size.sizes);
-    setPackingInfo(e.packing_type)
+    setPackingInfo(e.packing_type);
     setWarehouse(e.Warehouse.warehouse);
     const totalStockInnerPcs = await calculateTotalInnerPcs(e.stock_by_size);
     setProductInnerTotals(totalStockInnerPcs);
@@ -137,55 +159,82 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
   };
 
   const handleAddNewStyleNo = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new style no:", styleNumber);
-    // Close the dropdown after adding the buyer
     setStyleDropdown(false);
-  };  
+    setIsAddProductModalOpen(true);
+  };
 
- // Fetch buyer suggestions
- const fetchBuyerSuggestions = async (buyerInput) => {
-   try {
-     if (buyerInput.length > 0) {
-       const response = await apiService.get("/buyers/getall");
-       const filteredBuyers = response.data.filter((b) =>
-         b.name.toLowerCase().startsWith(buyerInput.toLowerCase())
-       );
-       console.log(filteredBuyers);
-       setBuyerSuggestions(filteredBuyers);
-     } else {
-       setBuyerSuggestions([]);
-     }
-   } catch (error) {
-     console.error("Error fetching buyers:", error);
-   }
- };
+  const closeAddProductModal = () => {
+    setIsAddProductModalOpen(false);
+    onClose();
+  };
 
- const handleBuyerChange = (e) => {
-   const buyerInput = e.target.value;
-   setBuyer(buyerInput);
-   setBuyerDropdown(true);
-   fetchBuyerSuggestions(buyerInput);
-   if (buyerInput === "") {
-     setBuyerLocation("");
-     setSelectedBuyerId(null);
-   }
- };
+  useEffect(() => {
+    const totalInner = productInnerTotals;
+    const totalOuter = productOuterTotals;
 
- const handleBuyerSelect = (buyer) => {
-   setBuyer(buyer.name);
-   setBuyerLocation(buyer.location);
-   setSelectedBuyerId(buyer.id);
-   setBuyerSuggestions([]);
-   setBuyerDropdown(false);
- };
+    setTotalInnerPcs(totalInner);
+    setTotalOuterPcs(totalOuter);
 
- const handleAddNewBuyer = () => {
-   // Implement the logic to add a new buyer here
-   console.log("Adding new buyer:", buyer);
-   // Close the dropdown after adding the buyer
-   setBuyerDropdown(false);
- };
+    const totalInnerPerBundle = totalInner * totalOuter;
+
+    setTotalInnerPcsPerBundle(totalInnerPerBundle);
+
+    const totalProducts = totalInnerPerBundle * stockOutBundle;
+    setTotalProducts(totalProducts);
+  }, [productInnerTotals, productOuterTotals, stockOutBundle]);
+
+  // Fetch buyer suggestions
+  const fetchBuyerSuggestions = async (buyerInput) => {
+    try {
+      if (buyerInput.length > 0) {
+        const response = await apiService.get("/buyers/getall");
+        const filteredBuyers = response.data.filter((b) =>
+          b.name.toLowerCase().startsWith(buyerInput.toLowerCase())
+        );
+        console.log(filteredBuyers);
+        setBuyerSuggestions(filteredBuyers);
+      } else {
+        setBuyerSuggestions([]);
+      }
+    } catch (error) {
+      console.error("Error fetching buyers:", error);
+    }
+  };
+
+  const handleBuyerChange = (e) => {
+    const buyerInput = e.target.value;
+    setBuyer(buyerInput);
+    setBuyerDropdown(true);
+    fetchBuyerSuggestions(buyerInput);
+    if (buyerInput === "") {
+      setBuyerLocation("");
+      setSelectedBuyerId(null);
+    }
+  };
+
+  const handleBuyerSelect = (buyer) => {
+    setBuyer(buyer.name);
+    setBuyerLocation(buyer.location);
+    setSelectedBuyerId(buyer.id);
+    setBuyerSuggestions([]);
+    setBuyerDropdown(false);
+  };
+
+  const handleAddNewBuyer = () => {
+    console.log("Adding new buyer:", buyer);
+    setBuyerDropdown(false);
+    setIsAddBuyerModalOpen(true);
+  };
+  const closeAddBuyerModal = () => {
+    setIsAddBuyerModalOpen(false);
+  };
+
+  //  handle date
+  const handleDeliveryDateChange = (e) => {
+    const inputDate = e.target.value;
+    setDeliveryDate(new Date(inputDate).toISOString());
+  };
 
   const handleBundleChange = async (e) => {
     try {
@@ -193,10 +242,10 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
       setStockOutBundle(bundleQty);
 
       const totalPcs = productInfo?.stock_by_size.reduce((sum, item) => {
-        return sum + (item.innerPcs * item.outerPcs * bundleQty);
+        return sum + item.innerPcs * item.outerPcs * bundleQty;
       }, 0);
-      
-      setTotalProducts(totalPcs);
+
+      setTotalPcs(totalPcs);
     } catch (error) {
       console.error("Error handling bundle change:", error);
     }
@@ -205,11 +254,11 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
   const calculateTotalInnerPcs = (data) => {
     return data.reduce((total, item) => total + item.innerPcs, 0);
   };
-  
+
   const calculateTotalOuterPcs = (data) => {
     return data.reduce((total, item) => total + item.outerPcs, 0);
   };
-  
+
   const handleSubmit = async () => {
     try {
       const stockData = {
@@ -223,31 +272,69 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
         packing_type: packingInfo,
         purchase_by_size: productInfo.stock_by_size,
         req_bundle: stockOutBundle,
-        req_purchase_qty: totalProducts,
-      }
+        req_purchase_qty: totalPcs,
+      };
 
-      console.log('Stock out: ', stockData);
+      console.log("Stock out: ", stockData);
 
-      const response = await apiService.post("/stockOut/createWPO/stockout", stockData);
+      const response = await apiService.post(
+        "/stockOut/createWPO/stockout",
+        stockData
+      );
 
       if (response.status === 201) {
-      console.log("Stock created:", response.data);
-      fetchStockOut();
-      onClose();
-      } 
+        console.log("Stock created:", response.data);
+        fetchStockOut();
+        onClose();
+      }
+    } catch (error) {}
+  };
 
-    } catch (error) {
-      
-    }
-  }
+  const handleModalClose = () => {
+    setBuyer("");
+    setBuyerLocation("");
+    setStyleNumber("");
+    setStyleNumber("");
+    setReferenceNo("");
+    setCategory("");
+    setProductType("");
+    setBrand("");
+    setFabric("");
+    setFabricFinish("");
+    setGsm("");
+    setKnitType("");
+    setColors("");
+    setDecoration("");
+    setPrintOrEmb("");
+    setStitch("");
+    setLength("");
+    setNeck("");
+    setSleeve("");
+    setMeasurementChart("");
+    setSelectedMeasurementImage("");
+    setPackingMethod("");
+    setShortDescription("");
+    setFullDescription("");
+    setSelectedProduct(null);
+    setImages("");
+    setAssortmentType("");
+    setStockOutBundle("");
+    setTotalInnerPcs(0);
+    setTotalOuterPcs(0);
+    setTotalInnerPcsPerBundle(0);
+    setTotalProducts(0);
+    setWarehouse("");
 
+    onClose();
+  };
+ 
   if (!show) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-black bg-opacity-50">
       <div
         className="fixed inset-0 bg-black opacity-50"
-        onClick={onClose}
+        onClick={handleModalClose}
       ></div>
       <div className="relative bg-white rounded-lg shadow-lg w-full max-w-[80vw] h-screen max-h-[90vh] overflow-auto">
         <div className="px-10 py-5">
@@ -255,151 +342,165 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
             <h2 className="text-xl font-bold">Create WPO Stock Out</h2>
             <button
               className="absolute cursor-pointer right-5"
-              onClick={onClose}
+              onClick={handleModalClose}
             >
               <img src={closeIcon} alt="Close" />
             </button>
           </div>
           <hr className="my-2" />
           <div className="px-10">
-
-          <div className="relative flex items-center justify-between gap-4 my-6">
-
-            <div className="">
-            <div className="grid grid-cols-2 gap-4">
-            
-            <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="buyer">
-                  Buyer Name:
-                </label>
-                <input
-                  type="text"
-                  id="buyer"
-                  value={buyer}
-                  onChange={handleBuyerChange}
-                  className="px-2 py-2 border border-gray-300 rounded-md hover:border-cyan-300 active:boder-cyan-300 focus:border-cyan-300"
-                  placeholder="Enter Buyer Name"
-                />
-                {buyerDropdown && buyer && (
-                  <ul className="absolute left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg top-full">
-                    {buyerSuggestions.length > 0 ? (
-                      buyerSuggestions.map((suggestion) => (
-                        <li
-                          key={suggestion.id}
-                          className="px-4 py-2 cursor-pointer hover:bg-gray-200"
-                          onClick={() => handleBuyerSelect(suggestion)}
-                        >
-                          {suggestion.name}
-                        </li>
-                      ))
-                    ) : (
-                      <li
-                        className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
-                        onClick={handleAddNewBuyer}
-                      >
-                        Add New Buyer: "{buyer}"
-                      </li>
+            <div className="relative flex items-center justify-between gap-4 my-6">
+              <div className="">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="relative flex flex-col gap-2">
+                    <label className="font-semibold" htmlFor="buyer">
+                      Buyer Name:
+                    </label>
+                    <input
+                      type="text"
+                      id="buyer"
+                      value={buyer}
+                      onChange={handleBuyerChange}
+                      className="px-2 py-2 border border-gray-300 rounded-md hover:border-cyan-300 active:boder-cyan-300 focus:border-cyan-300"
+                      placeholder="Enter Buyer Name"
+                    />
+                    {buyerDropdown && buyer && (
+                      <ul className="absolute left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg top-full">
+                        {buyerSuggestions.length > 0 ? (
+                          buyerSuggestions.map((suggestion) => (
+                            <li
+                              key={suggestion.id}
+                              className="px-4 py-2 cursor-pointer hover:bg-gray-200"
+                              onClick={() => handleBuyerSelect(suggestion)}
+                            >
+                              {suggestion.name}
+                            </li>
+                          ))
+                        ) : (
+                          <li
+                            className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
+                            onClick={handleAddNewBuyer}
+                          >
+                            Add New Buyer: "{buyer}"
+                          </li>
+                        )}
+                      </ul>
                     )}
-                  </ul>
-                )}
-              </div>
+                    <BuyerAddModal
+                      isModalOpen={isAddBuyerModalOpen}
+                      onClose={closeAddBuyerModal}
+                      fetchAllBuyers={fetchBuyerSuggestions}
+                      fetchBuyerSuggestions={fetchBuyerSuggestions}
+                      setBuyerDropdown={setBuyerDropdown}
+                    />
+                  </div>
 
-              <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="location">
-                  Buyer Location
-                </label>
-                <input
-                  type="text"
-                  id="location"
-                  value={buyerLocation}
-                  className="px-2 py-2 border border-gray-300 rounded-md hover:border-cyan-300 active:boder-cyan-300 focus:border-cyan-300"
-                  disabled
-                />
-              </div>
+                  <div className="relative flex flex-col gap-2">
+                    <label className="font-semibold" htmlFor="location">
+                      Buyer Location
+                    </label>
+                    <input
+                      type="text"
+                      id="location"
+                      value={buyerLocation}
+                      className="px-2 py-2 border border-gray-300 rounded-md hover:border-cyan-300 active:boder-cyan-300 focus:border-cyan-300"
+                      disabled
+                    />
+                  </div>
 
-              <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="dc-number">
-                  DC Number:
-                </label>
-                <input
-                  type="text"
-                  id="dc-number"
-                  value={dcNumber}
-                  onChange={(e) => setDcNumber(e.target.value)}
-                  className="px-2 py-2 border border-gray-300 rounded-md hover:border-cyan-300 active:boder-cyan-300 focus:border-cyan-300"
-                  placeholder="Enter dc number"
-                />
-              </div>
+                  <div className="relative flex flex-col gap-2">
+                    <label className="font-semibold" htmlFor="dc-number">
+                      DC Number:
+                    </label>
+                    <input
+                      type="text"
+                      id="dc-number"
+                      value={dcNumber}
+                      onChange={(e) => setDcNumber(e.target.value)}
+                      className="px-2 py-2 border border-gray-300 rounded-md hover:border-cyan-300 active:boder-cyan-300 focus:border-cyan-300"
+                      placeholder="Enter dc number"
+                    />
+                  </div>
 
-              <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="styleNo">
-                  Style No:
-                </label>
-                <input
-                  type="text"
-                  id="styleNo"
-                  value={styleNumber}
-                  onChange={handleStyleChange}
-                  className="px-2 py-2 border border-gray-300 rounded-md hover:border-cyan-300 active:boder-cyan-300 focus:border-cyan-300"
-                  placeholder="Enter Style number"
-                />
-                {styleDropdown && styleNumber && (
-                  <ul className="absolute left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg top-full">
-                    {styleSuggestions.length > 0 ? (
-                      styleSuggestions.map((suggestion) => (
-                        <li
-                          key={suggestion.id}
-                          className="px-4 py-2 cursor-pointer hover:bg-gray-200"
-                          onClick={() => handleStyleSelect(suggestion)}
-                        >
-                          {suggestion.Product.style_no}
-                        </li>
-                      ))
-                    ) : (
-                      <li
-                        className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
-                        onClick={handleAddNewStyleNo}
-                      >
-                        Add New Style: "{styleNumber}"
-                      </li>
+                  <div className="relative flex flex-col gap-2">
+                    <label className="font-semibold" htmlFor="styleNo">
+                      Style No:
+                    </label>
+                    <input
+                      type="text"
+                      id="styleNo"
+                      value={styleNumber}
+                      onChange={handleStyleChange}
+                      className="px-2 py-2 border border-gray-300 rounded-md hover:border-cyan-300 active:boder-cyan-300 focus:border-cyan-300"
+                      placeholder="Enter Style number"
+                    />
+                    {styleDropdown && styleNumber && (
+                      <ul className="absolute left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg top-full">
+                        {styleSuggestions.length > 0 ? (
+                          styleSuggestions.map((suggestion) => (
+                            <li
+                              key={suggestion.id}
+                              className="px-4 py-2 cursor-pointer hover:bg-gray-200"
+                              onClick={() => handleStyleSelect(suggestion)}
+                            >
+                              {suggestion.Product.style_no}
+                            </li>
+                          ))
+                        ) : (
+                          <li
+                            className="px-4 py-2 text-sm text-blue-600 cursor-pointer hover:bg-gray-200"
+                            onClick={handleAddNewStyleNo}
+                          >
+                            Add New Style: "{styleNumber}"
+                          </li>
+                        )}
+                      </ul>
                     )}
-                  </ul>
-                )}
+                    <AddProductModal
+                      show={isAddProductModalOpen}
+                      onClose={closeAddProductModal}
+                    />
+                  </div>
+                </div>
               </div>
+
+              <div className="grid grid-cols-2 gap-10">
+                <div className="">
+                  <h3 className="my-2 text-lg font-medium">Product Image:</h3>
+                  <div className="flex items-center justify-center border border-gray-400 max-w-48">
+                    <img
+                      src={
+                        images ||
+                        "https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?t=st=1722163869~exp=1722167469~hmac=37361beb0ca1a1c652d36c9ca94818f793a54d21822edab80e80c6e43a9b7b37&w=740"
+                      }
+                      alt="Product"
+                      className="object-cover h-40 rounded"
+                    />
+                  </div>
+                </div>
+                <div className="">
+                  <h3 className="my-2 text-lg font-medium">
+                    Measurement Chart:
+                  </h3>
+                  <div className="flex items-center justify-center border border-gray-400 max-w-48">
+                    <img
+                      src={
+                        selectedMeasurementImage ||
+                        "https://img.freepik.com/premium-vector/fashion-designer-flat-design-illustration_169137-4015.jpg?w=1380"
+                      }
+                      alt="Product"
+                      className="object-cover h-40 rounded"
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-
-            <div className='grid grid-cols-2 gap-10'>
-            <div className="">
-              <h3 className="my-2 text-lg font-medium">Product Image:</h3>
-            <div className="flex items-center justify-center border border-gray-400 max-w-48">
-              <img
-                src={images || 'https://img.freepik.com/free-vector/illustration-gallery-icon_53876-27002.jpg?t=st=1722163869~exp=1722167469~hmac=37361beb0ca1a1c652d36c9ca94818f793a54d21822edab80e80c6e43a9b7b37&w=740'}
-                alt='Product'
-                className="object-cover h-40 rounded"
-              />
-          </div>
-          </div>
-          <div className="">
-              <h3 className="my-2 text-lg font-medium">Measurement Chart:</h3>
-            <div className="flex items-center justify-center border border-gray-400 max-w-48">
-              <img
-                src={selectedMeasurementImage || 'https://img.freepik.com/premium-vector/fashion-designer-flat-design-illustration_169137-4015.jpg?w=1380'}
-                alt='Product'
-                className="object-cover h-40 rounded"
-              />
-          </div>
-          </div>
-            </div>
-
             </div>
 
             <div className="flex items-center gap-2 mt-6">
-                <h3 className="text-lg font-medium">PRODUCT INFO:</h3>
-              </div>
+              <h3 className="text-lg font-medium">PRODUCT INFO:</h3>
+            </div>
             <div className="grid grid-cols-2 gap-4 mt-5 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
-
-            <div className="relative flex flex-col gap-2">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="reference">
                   Reference No:
                 </label>
@@ -432,7 +533,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
                 <input
                   type="text"
                   id="productType"
-                  value={productType || ''}
+                  value={productType || ""}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -445,7 +546,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
                 <input
                   type="text"
                   id="brand"
-                  value={brand || ''}
+                  value={brand || ""}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -458,7 +559,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
                 <input
                   type="text"
                   id="color"
-                  value={colors || ''}
+                  value={colors || ""}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -471,7 +572,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
                 <input
                   type="text"
                   id="decoration"
-                  value={decoration || ''}
+                  value={decoration || ""}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -484,7 +585,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
                 <input
                   type="text"
                   id="fabric"
-                  value={fabric || ''}
+                  value={fabric || ""}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -497,7 +598,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
                 <input
                   type="text"
                   id="fabric fabric"
-                  value={fabricFinish || ''}
+                  value={fabricFinish || ""}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -510,7 +611,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
                 <input
                   type="text"
                   id="gsm"
-                  value={gsm || ''}
+                  value={gsm || ""}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -523,7 +624,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
                 <input
                   type="text"
                   id="knitType"
-                  value={knitType || ''}
+                  value={knitType || ""}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -536,7 +637,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
                 <input
                   type="text"
                   id="length"
-                  value={length || ''}
+                  value={length || ""}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -549,7 +650,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
                 <input
                   type="text"
                   id="neck"
-                  value={neck || ''}
+                  value={neck || ""}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -562,7 +663,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
                 <input
                   type="text"
                   id="packingMethod"
-                  value={packingMethod || ''}
+                  value={packingMethod || ""}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -575,7 +676,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
                 <input
                   type="text"
                   id="print"
-                  value={printOrEmb || ''}
+                  value={printOrEmb || ""}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -588,7 +689,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
                 <input
                   type="text"
                   id="size"
-                  value={sizes || ''}
+                  value={sizes || ""}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -601,7 +702,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
                 <input
                   type="text"
                   id="sleeve"
-                  value={sleeve || ''}
+                  value={sleeve || ""}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -614,7 +715,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
                 <input
                   type="text"
                   id="stitchDetails"
-                  value={stitch || ''}
+                  value={stitch || ""}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -627,7 +728,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
                 <input
                   type="text"
                   id="measurementChart"
-                  value={measurementChart || ''}
+                  value={measurementChart || ""}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -640,20 +741,20 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
                 <input
                   type="text"
                   id="packing"
-                  value={packingInfo || ''}
+                  value={packingInfo || ""}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
-            </div>
+              </div>
 
-            <div className="relative flex flex-col gap-2">
+              <div className="relative flex flex-col gap-2">
                 <label className="font-semibold" htmlFor="packing">
                   Warehouse:
                 </label>
                 <input
                   type="text"
                   id="packing"
-                  value={warehouse || ''}
+                  value={warehouse || ""}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   disabled
                 />
@@ -685,7 +786,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
                 disabled
               />
             </div>
-            
+
             <div className="flex flex-col gap-2 mt-3">
               <label className="font-semibold" htmlFor="notes">
                 Notes:
@@ -701,91 +802,172 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
             </div>
 
             <div className="grid grid-cols-1 gap-10 mt-10 md:grid-cols-2">
-            <div className="text-center">
-              <h3 className="text-lg font-semibold">Available Quantities:</h3>
-              {productInfo?.stock_by_size ? (
-                <>
-                  <div className=''>
-                    <table className="min-w-full mt-6 bg-white border border-gray-300 rounded-md">
-                      <thead>
-                        <tr>
-                          <th className="px-4 py-2 border-b">Size</th>
-                          <th className="px-4 py-2 border-b">Inner Pieces</th>
-                          <th className="px-4 py-2 border-b">Outer Pieces</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {productInfo.stock_by_size.map((stock, index) => (
-                          <tr key={index}>
-                            <td className="px-4 py-2 border-b">{stock.size}</td>
-                            <td className="px-4 py-2 border-b">{stock.innerPcs}</td>
-                            <td className="px-4 py-2 border-b">{stock.outerPcs}</td>
+              <div className="text-center">
+                <h3 className="text-lg font-semibold">Available Quantities:</h3>
+                {productInfo?.stock_by_size ? (
+                  <>
+                    <div className="">
+                      <table className="min-w-full mt-6 bg-white border border-gray-300 rounded-md">
+                        <thead>
+                          <tr>
+                            <th className="px-4 py-2 border-b">Size</th>
+                            <th className="px-4 py-2 border-b">Inner Pieces</th>
+                            <th className="px-4 py-2 border-b">Outer Pieces</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  <div className="my-4">
-              <h3 className="text-lg font-bold">Stock Totals</h3>
-              <div className="grid grid-cols-4 gap-4 mt-4">
-              <div className="p-2 border rounded-lg">
-                  <h4 className="font-semibold">Total Bundles:</h4>
-                  <p>{productInfo?.no_bundles}</p>
-                </div>
-                <div className="p-2 border rounded-lg">
-                  <h4 className="font-semibold">Total Inner Pcs:</h4>
-                  <p>{productInnerTotals}</p>
-                </div>
-                <div className="p-2 border rounded-lg">
-                  <h4 className="font-semibold">Total Outer:</h4>
-                  <p>{productOuterTotals}</p>
-                </div>
-                <div className="p-2 border rounded-lg">
-                  <h4 className="font-semibold">Total Pieces:</h4>
-                  <p>{productInfo?.total_pcs}</p>
-                </div>
+                        </thead>
+                        <tbody>
+                          {productInfo.stock_by_size.map((stock, index) => (
+                            <tr key={index}>
+                              <td className="px-4 py-2 border-b">
+                                {stock.size}
+                              </td>
+                              <td className="px-4 py-2 border-b">
+                                {stock.innerPcs}
+                              </td>
+                              <td className="px-4 py-2 border-b">
+                                {stock.outerPcs}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className="my-4">
+                      <h3 className="text-lg font-bold">Stock Totals</h3>
+                      <div className="grid grid-cols-4 gap-4 mt-4">
+                        <div className="p-2 border rounded-lg">
+                          <h4 className="font-semibold">Total Bundles:</h4>
+                          <p>{productInfo?.no_bundles}</p>
+                        </div>
+                        <div className="p-2 border rounded-lg">
+                          <h4 className="font-semibold">Total Inner Pcs:</h4>
+                          <p>{productInnerTotals}</p>
+                        </div>
+                        <div className="p-2 border rounded-lg">
+                          <h4 className="font-semibold">Total Outer:</h4>
+                          <p>{productOuterTotals}</p>
+                        </div>
+                        <div className="p-2 border rounded-lg">
+                          <h4 className="font-semibold">Total Pieces:</h4>
+                          <p>{productInfo?.total_pcs}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <p className="text-gray-500">
+                    No stock information available.
+                  </p>
+                )}
               </div>
-            </div>
-                </>
-              ) : (
-                <p className="text-gray-500">No stock information available.</p>
-              )}
-            </div>
-            
-            <div className="text-center">
-              <h3 className="text-lg font-semibold">Order Quantities:</h3>
-              <div className="flex flex-col items-center justify-center my-10 ">
-            <label className="mb-2 font-semibold" htmlFor="StockOutBundle">
-              Enter Stock Out Bundle:
-            </label>
-            <input
-              className="w-40 px-2 py-2 border border-gray-300 rounded-md hover:border-cyan-300 active:boder-cyan-300 focus:border-cyan-300 "
-              type="number"
-              value={stockOutBundle}
-              onChange={handleBundleChange}
-              placeholder="Enter Bundle Value"
-            />
-          </div>
 
-          <div className="flex items-center justify-center my-8" >
-              <div className="flex flex-col gap-4 p-5 bg-gray-100 w-fit">
-                <div className="flex justify-between gap-5">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Total Pcs per Bundle
+              {/* <div className="text-center">
+                <h3 className="text-lg font-semibold">Order Quantities:</h3>
+                {sizes ? (
+                  <>
+                    <div className="my-4">
+                      <label className="font-semibold">Packaging Type:</label>
+                      <div className="gap-4 mt-2">
+                        <label>
+                          <input
+                            type="radio"
+                            value="assorted"
+                            checked={assortmentType === "assorted"}
+                            onChange={handleAssortmentTypeChange}
+                            className="mx-1"
+                          />
+                          Assorted
+                        </label>
+                        <label className="ml-2">
+                          <input
+                            type="radio"
+                            value="solid"
+                            checked={assortmentType === "solid"}
+                            onChange={handleAssortmentTypeChange}
+                            className="mx-1"
+                          />
+                          Solid
+                        </label>
+                      </div>
+                    </div>
+
+                    <div className="p-4 rounded-lg">
+                      <h4 className="mb-4 text-sm font-medium">
+                        Quantity per size:
+                      </h4>
+                      <div className="flex flex-col gap-4">
+                        {sizes.map((size, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center justify-center gap-4 mb-2"
+                          >
+                            <div className="w-16">{size}: </div>
+                            <input
+                              type="number"
+                              value={innerPcs[size] || ""}
+                              onChange={(e) =>
+                                handleInnerPcsChange(size, e.target.value)
+                              }
+                              placeholder="Inner Pcs"
+                              className="w-24 px-2 py-1 border border-gray-300 rounded-md"
+                              disabled={assortmentType === "solid"}
+                            />
+                            <input
+                              type="number"
+                              value={outerPcs[size] || ""}
+                              onChange={(e) =>
+                                handleOuterPcsChange(size, e.target.value)
+                              }
+                              placeholder="Outer Pcs"
+                              className="w-24 px-2 py-1 border border-gray-300 rounded-md"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <p className="text-gray-500">
+                    No order information available.
+                  </p>
+                )}
+              </div> */}
+              <div>
+                <div className="flex flex-col items-center justify-center my-10 ">
+                  <label
+                    className="mb-2 font-semibold"
+                    htmlFor="StockOutBundle"
+                  >
+                    Enter Stock Out Bundle:
                   </label>
-                  <span>{productInfo?.pcs_per_bundle}</span>
+                  <input
+                    className="w-40 px-2 py-2 border border-gray-300 rounded-md hover:border-cyan-300 active:boder-cyan-300 focus:border-cyan-300 "
+                    type="number"
+                    value={stockOutBundle}
+                    onChange={handleBundleChange}
+                    placeholder="Enter Bundle Value"
+                  />
                 </div>
-                <div className="flex justify-between gap-5">
-                  <label className="block font-bold text-gray-700 text-md">
-                    Total Pcs
-                  </label>
-                  <span className='text-lg font-bold'>{totalProducts}</span>
+
+                <div className="flex items-center justify-center my-8">
+                  <div className="flex flex-col gap-4 p-5 bg-gray-100 w-fit">
+                    <div className="flex justify-between gap-5">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Total Pcs per Bundle
+                      </label>
+                      <span>{totalInnerPcsPerBundle}</span>
+                    </div>
+                    <div className="flex justify-between gap-5">
+                      <label className="block font-bold text-gray-700 text-md">
+                        Total Pcs
+                      </label>
+                      <span className="font-bold text-md">{totalPcs}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-            </div>
           </div>
-          </div>          
 
           <div className="flex justify-center px-20 mt-5">
             <button
@@ -798,7 +980,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default StockOutWPO
+export default StockOutWPO;

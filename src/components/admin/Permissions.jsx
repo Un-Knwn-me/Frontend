@@ -16,6 +16,7 @@ import admin from "../../assets/admin.jpg";
 
 const Permission = (onClose, selectedDeptId) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [adminModalVisible, setAdminModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [addModuleModalVisible, setAddModuleModalVisible] = useState(false);
   const [departmentName, setDepartmentName] = useState("");
@@ -177,7 +178,7 @@ const Permission = (onClose, selectedDeptId) => {
   const openDeptModal = (dept) => {
     if (dept.departmentName === "Admin") {
       setSelectedPermission("Admin");
-      setModalVisible(true);
+      setAdminModalVisible(true);
       fetchUsers("Admin"); // Fetch admin users
     } else {
       setSelectedPermission(dept.departmentName);
@@ -190,8 +191,12 @@ const Permission = (onClose, selectedDeptId) => {
 
   const closeModal = () => {
     setModalVisible(false);
-    setSelectedPermission(null);
+  setSelectedPermission(null);
   };
+
+  const adminModalClose = () => {
+    setAdminModalVisible(false);
+  }
 
   const openAddModuleModal = () => {
     setAddModuleModalVisible(true);
@@ -470,10 +475,154 @@ const Permission = (onClose, selectedDeptId) => {
                             </td>
                             <td className="w-32 px-2 py-2 text-center text-black whitespace-nowrap text-md">
                               <button
-                                onClick={() => {
-                                  handleDeleteNewPermissionsUsers(row.id);
-                                  handleDeleteNewAdmin(row.id);
+                                onClick={async () => {
+                                  await handleDeleteNewPermissionsUsers(row.id);
+                                  // await handleDeleteNewAdmin(row.id);
                                 }}
+                                className="text-red-500"
+                              >
+                                <img
+                                  src={deleteIcon}
+                                  alt="Delete"
+                                  className="w-5 h-5"
+                                />
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {adminModalVisible && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-lg p-4 w-4/5 h-4/5 max-w-4xl max-h-[85vh]">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-semibold">
+                Department: {selectedPermission}
+              </h2>
+              <button onClick={adminModalClose} className="text-2xl font-bold">
+                &times;
+              </button>
+            </div>
+
+            <div className="flex items-center justify-between mt-4 mb-4">
+              <div className="relative w-1/3">
+                <input
+                  type="text"
+                  placeholder="Search by Username.."
+                  className="w-full p-2 pl-4 pr-10 text-sm text-gray-700 bg-gray-100 rounded-md outline-none"
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-5 h-5 text-gray-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                </div>
+              </div>
+
+              <button
+                className="flex items-center px-4 py-2 ml-4 font-semibold "
+                onClick={openAddUserModal}
+              >
+                <img
+                  src={addUserIcon}
+                  alt="Add Icon"
+                  className="w-5 h-5 mr-2"
+                />
+                Add User
+              </button>
+            </div>
+
+            <div className="flex flex-col h-full mt-4">
+              <div className="flex-grow pb-5 mt-3 overflow-y-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="w-full bg-gray-100">
+                    <tr>
+                      <th className="w-20 px-6 py-2 font-medium text-center text-black uppercase text-md">
+                        Si No
+                      </th>
+                      <th className="w-64 px-6 py-2 font-medium text-left text-black uppercase text-md">
+                        User Name
+                      </th>
+                      {/* <th className="px-6 py-2 font-medium text-left text-black uppercase text-md">
+                        Module Access
+                      </th> */}
+                      {/* <th className="w-40 px-6 py-2 font-medium text-center text-black uppercase text-md">
+                        Action
+                      </th> */}
+                      <th className="w-32 px-2 py-2 font-bold text-center text-black uppercase text-md">
+                        <button onClick={handleDelete} className="text-red-500">
+                          <img
+                            src={deleteIcon}
+                            alt="Delete"
+                            className="w-5 h-5"
+                          />
+                        </button>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {filteredUsers
+                      .slice(startIndex, endIndex)
+                      .map((row, index) => {
+                        const userPermissions = row.UserPermissions?.[0] || {};
+                        return (
+                          <tr key={row.id} style={{ maxHeight: "50px" }}>
+                            <td className="w-20 px-2 py-2 text-center text-black whitespace-nowrap text-md">
+                              {index + 1}
+                            </td>
+                            <td className="w-64 px-2 py-2 text-left text-black whitespace-nowrap text-md">
+                              {row.full_name}
+                            </td>
+                            {/* <td className="flex items-center gap-2 px-6 py-2 text-lg font-medium text-left text-black">
+                              {userPermissions.create && (
+                                <span className="p-2 text-xs font-semibold text-black bg-green-200 rounded-md">
+                                  Create
+                                </span>
+                              )}
+                              {userPermissions.read && (
+                                <span className="p-2 text-xs font-semibold text-black bg-blue-200 rounded-md">
+                                  Read
+                                </span>
+                              )}
+                              {userPermissions.edit && (
+                                <span className="p-2 text-xs font-semibold text-black bg-yellow-200 rounded-md">
+                                  Edit
+                                </span>
+                              )}
+                              {userPermissions.delete && (
+                                <span className="p-2 text-xs font-semibold text-black bg-red-200 rounded-md">
+                                  Delete
+                                </span>
+                              )}
+                            </td> */}
+                            {/* <td className="w-40 px-2 py-2 text-center text-black whitespace-nowrap text-md">
+                              <button
+                                onClick={() => openEditModal(row)}
+                                className="text-center text-blue-500"
+                              >
+                                <CiEdit color="black" className="h-6 w-7" />
+                              </button>
+                            </td> */}
+                            <td className="w-32 px-2 py-2 text-center text-black whitespace-nowrap text-md">
+                              <button
+                                onClick={() => handleDeleteNewAdmin(row.id)}
                                 className="text-red-500"
                               >
                                 <img

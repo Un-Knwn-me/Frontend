@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import closeIcon from "../../../assets/close-modal-icon.svg";
 import apiService from "../../../apiService";
+import WareHouseAddModal from "../../products/AddNewProductMaster/WareHouseAddModal";
 
 const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
   const [assortmentType, setAssortmentType] = useState("");
   const [innerPcs, setInnerPcs] = useState({});
+
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -14,12 +16,14 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
   const [stockInBundle, setStockInBundle] = useState(null);
   const [totalPcs, setTotalPcs] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddWareHouseModalOpen, setIsAddWareHouseModalOpen] = useState(false);
 
   // Suggestion warehouse states
   const [warehouseDropdown, setWarehouseDropdown] = useState(false);
   const [warehouseSuggestions, setWarehouseSuggestions] = useState([]);
   const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
   const [updatedWarehouseData, setUpdatedWarehouseData] = useState({});
+
   const [updatedStockInData, setUpdatedStockInData] = useState({});
 
   const [stockInData, setStockInData] = useState({
@@ -149,9 +153,13 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
   };
 
   const handleAddNewWarehouse = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new warehouse:", stockInData.Warehouse.warehouse);
     setWarehouseDropdown(false);
+    setIsAddWareHouseModalOpen(true);
+  };
+
+  const closeAddWareHouseModal = () => {
+    setIsAddWareHouseModalOpen(false);
   };
 
   useEffect(() => {
@@ -192,6 +200,7 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
       ...updatedStockInData,
       packing_type: e.target.value,
     });
+    
     if (e.target.value === "solid" && selectedProduct) {
       const initialInnerPcs = selectedProduct.Size.sizes.reduce((acc, size) => {
         acc[size] = selectedProduct.inner_pcs;
@@ -206,24 +215,18 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
 
   const handleInnerPcsChange = (e, size) => {
     const newInnerPcs = parseInt(e.target.value, 10) || null; // Ensure the value is a number
-    const sizeData =
-      stockInData.stock_by_size.find((item) => item.size === size) || {};
+    const sizeData = stockInData.stock_by_size.find((item) => item.size === size) || {};
 
     // Update the stock data with new inner pcs and existing outer pcs
     handleStockBySizeChange(size, newInnerPcs, sizeData.outerPcs || null);
-
-    console.log("Inner pieces updated for size", size);
   };
 
   const handleOuterPcsChange = (e, size) => {
-    const newOuterPcs = parseInt(e.target.value, 10) || null; 
-    const sizeData =
-      stockInData.stock_by_size.find((item) => item.size === size) || {};
+    const newOuterPcs = parseInt(e.target.value, 10) || null; // Ensure the value is a number
+    const sizeData = stockInData.stock_by_size.find((item) => item.size === size) || {};
 
     // Update the stock data with new outer pcs and existing inner pcs
     handleStockBySizeChange(size, sizeData.innerPcs || null, newOuterPcs);
-
-    console.log("Outer pieces updated for size", size);
   };
 
   useEffect(() => {
@@ -253,7 +256,6 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
         return sum + item.innerPcs * item.outerPcs * stockInBundle;
       }, 0);
       setTotalPcs(totalPcs);
-      console.log(totalPcs);
 
       setUpdatedStockInData({
         ...updatedStockInData,
@@ -301,18 +303,14 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("updatedStockInData", updatedStockInData);
-
     try {
-      const response = await apiService.put(
-        `/stocks/stockIn/${editIndex}`,
+      const response = await apiService.put(`/stocks/stockIn/${editIndex}`,
         updatedStockInData,
         {
           headers: {
             "Content-Type": "application/json",
           },
-        }
-      );
+        });
 
       if (response.status === 200) {
         console.log("Submit response:", response);
@@ -614,6 +612,13 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
                   )}
                 </ul>
               )}
+               <WareHouseAddModal
+                isModalOpen={isAddWareHouseModalOpen}
+                onClose={closeAddWareHouseModal}
+                fetchAllWareHouses={fetchWarehouseSuggestions}
+                fetchWarehouseSuggestions={fetchWarehouseSuggestions}
+                setWarehouseDropdown={setWarehouseDropdown}
+              />
             </div>
             <div className="relative flex flex-col gap-2">
               <label className="font-semibold" htmlFor="measurement">
@@ -814,10 +819,8 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
           </div>
         )}
         <div className="flex justify-end px-20 mt-4">
-          <button
-            onClick={handleSubmit}
-            className="px-4 py-2 font-semibold text-white bg-blue-500 rounded hover:bg-blue-600"
-          >
+          <button onClick={handleSubmit}
+            className="px-4 py-2 font-semibold text-white bg-blue-500 rounded hover:bg-blue-600">
             CREATE STOCK INWARD
           </button>
         </div>

@@ -264,7 +264,7 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
       product_style_number: styleNumber,
       product_id: selectedProductId,
       packing_type: assortmentType,
-      pcs_per_bundle: totalInnerPcsPerBundle,
+      pcs_per_bundle: totalInnerPcsPerBundle, 
       total_pcs: totalProducts,
       warehouse_id: selectedWarehouseId,
       stock_by_size: sizes.map((size) => ({
@@ -284,11 +284,18 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
         // Trigger parent component to refresh the stock list
         getAllStocks();
         // Auto-close the modal
-        onClose();
+        handleModalClose();
+      } else if (response.status == 200) {
+        console.log("Stock updated with new packing details:", response.data);
+        setErrorMessage("");
+        // Trigger parent component to refresh the stock list
+        getAllStocks();
+        // Auto-close the modal
+        handleModalClose();
       }
     } catch (error) {
       if (error.response && error.response.status === 409) {
-        setErrorMessage("Reference number of the product already exists.");
+        setErrorMessage('Style number already exists with different packing details');
       } else {
         setErrorMessage("Error adding Stock.");
       }
@@ -333,7 +340,7 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
     setTotalOuterPcs(0);
     setTotalInnerPcsPerBundle(0);
     setTotalProducts(0);
-
+    setWarehouse('')
     onClose();
   };
 

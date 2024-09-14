@@ -3,7 +3,7 @@ import closeIcon from "../../../assets/close-modal-icon.svg";
 import apiService from "../../../apiService";
 import CreatePoModal from "../../purchase/with-po/CreateWithPoModel";
 
-const AddStockOutModel = ({ show, onClose }) => {
+const AddStockOutModel = ({ show, onClose, fetchStockOut }) => {
   const [styleNumber, setStyleNumber] = useState("");
   const [dcNumber, setDcNumber] = useState("");
   const [warehouse, setWarehouse] = useState("");
@@ -170,6 +170,7 @@ const AddStockOutModel = ({ show, onClose }) => {
 
       if (response.status === 200) {
         console.log("Stock created:", response.data);
+        fetchStockOut();
         onClose();
       }
     } catch (error) {}

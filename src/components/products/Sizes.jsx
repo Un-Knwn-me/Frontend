@@ -162,8 +162,7 @@ const Sizes = ({ searchQuery, isModalOpen, onClose }) => {
         setEditIndex(null);
       }
     } catch (error) {
-      console.error(`Error saving Sizes with ID ${id}:`, error);
-      // Handle error as needed
+      console.error(`Error saving Sizes with ID ${id}: `, error);
     }
   };
 

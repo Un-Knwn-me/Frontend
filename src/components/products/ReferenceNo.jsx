@@ -320,7 +320,7 @@ const ReferenceNo = ({ searchQuery, isModalOpen, onClose }) => {
                     </button>
                   )}
                 </td>
-                <td className="w-12 w-20 px-2 py-3 text-center whitespace-nowrap">
+                <td className="w-20 px-2 py-3 text-center whitespace-nowrap">
                   <input
                     type="checkbox"
                     className="form-checkbox"

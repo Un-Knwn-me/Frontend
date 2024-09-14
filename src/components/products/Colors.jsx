@@ -375,7 +375,7 @@ const Colors = ({ searchQuery, isModalOpen, onClose }) => {
             className="fixed inset-0 bg-black opacity-50"
             onClick={handleClose}
           ></div>
-          <div className="relative bg-white rounded-lg shadow-lg w-full max-w-[35vw] h-screen max-h-[50vh] overflow-y-auto lg:overflow-hidden">
+          <div className="relative bg-white rounded-lg shadow-lg w-full max-w-[35vw] h-fit overflow-y-auto lg:overflow-hidden">
             <div className="flex flex-col py-2">
               <div>
                 <div className="flex justify-center">
