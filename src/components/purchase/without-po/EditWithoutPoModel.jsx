@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import closeIcon from "../../../assets/close-modal-icon.svg";
 import apiService from "../../../apiService";
-import AddStockOutModel from "../../stocks/stock-out/AddStockOutModel";
 
-const EditWithoutPoModal = ({ show, onClose, withPoOutId, getAllPurchaseOrder }) => {
+const EditWithoutPoModal = ({ show, onClose, withPoId, getAllPurchaseOrder }) => {
   const [deliveryDate, setDeliveryDate] = useState(new Date().toISOString());
   const [selectedProduct, setSelectedProduct] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
@@ -98,15 +97,16 @@ const EditWithoutPoModal = ({ show, onClose, withPoOutId, getAllPurchaseOrder })
   });
 
   useEffect(() => {
-    fetchWithPoData(withPoOutId);
-  }, [withPoOutId]);
+    fetchWithPoData(withPoId);
+  }, [withPoId]);
 
-  const fetchWithPoData = async (withPoOutId) => {
+  const fetchWithPoData = async (withPoId) => {
     try {
-      const response = await apiService.get(`/purchases/${withPoOutId}`);
+      const response = await apiService.get(`/purchases/${withPoId}`);
       setWithPoData(response.data);
-      setAssortmentType(response.data.packing_type);
       console.log(response.data);
+      setAssortmentType(response.data.packing_type);
+
       // Fill the input fields based on the fetched stock-in data
     } catch (error) {
       console.error(
@@ -173,20 +173,10 @@ const EditWithoutPoModal = ({ show, onClose, withPoOutId, getAllPurchaseOrder })
   };
 
   const handleAddNewBuyer = () => {
-    // Implement the logic to add a new buyer here
     console.log("Adding new buyer:", withPoData.Buyer.name);
     console.log("Adding new buyer:", withPoData.Buyer.location);
-    // Close the dropdown after adding the buyer
     setBuyerDropdown(false);
   };
-
-  // // handle PO number change
-  // const handlePurchaseOrderNoChange = (e) => {
-  //   setWithPoData((prevState) => ({
-  //     ...prevState,
-  //     purchase_order_number: e.target.value,
-  //   }));
-  // };
 
   const handleDeliveryDateChange = (e) => {
     const inputDate = e.target.value;
@@ -284,12 +274,10 @@ const EditWithoutPoModal = ({ show, onClose, withPoOutId, getAllPurchaseOrder })
       }, 0);
 
       setTotalPcs(totalPcs);
-
       setUpdatedwithPoData({
         ...updatedWithPoData,
         req_purchase_qty: totalPcs,
       });
-
     } else {
       setTotalPcs(withPoData?.req_purchase_qty);
     }
@@ -337,7 +325,7 @@ const EditWithoutPoModal = ({ show, onClose, withPoOutId, getAllPurchaseOrder })
 
     try {
       const response = await apiService.put(
-        `/purchases/${withPoOutId}`,
+        `/purchases/${withPoId}`,
         updatedWithPoData,
         {
           headers: {
@@ -350,11 +338,11 @@ const EditWithoutPoModal = ({ show, onClose, withPoOutId, getAllPurchaseOrder })
         console.log("Submit response:", response);
         setSuccessMessage("With-Po updated successfully");
         setErrorMessage("");
-        setUpdatedwithPoData({});
+        setUpdatedwithPoData({});  
         setTimeout(() => {
           setSuccessMessage("");
           getAllPurchaseOrder();
-          onClose();
+          handleClose();
         }, 1500);
       }
     } catch (error) {
@@ -384,7 +372,7 @@ const EditWithoutPoModal = ({ show, onClose, withPoOutId, getAllPurchaseOrder })
       <div className="relative bg-white rounded-lg shadow-lg w-full max-w-[80vw] h-screen max-h-[90vh] overflow-auto">
         <div className="px-10 py-5">
           <div className="flex justify-center">
-            <h2 className="text-xl font-bold">Edit With Out Purchase Order</h2>
+            <h2 className="text-xl font-bold">Edit Purchase Order</h2>
             <button
               className="absolute cursor-pointer right-5"
               onClick={handleClose}
@@ -404,7 +392,6 @@ const EditWithoutPoModal = ({ show, onClose, withPoOutId, getAllPurchaseOrder })
                   id="purchaseOrderNo"
                   value={withPoData.purchase_order_number}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
-                  placeholder="Enter po number"
                   disabled
                 />
               </div>

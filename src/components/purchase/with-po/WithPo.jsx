@@ -230,7 +230,7 @@ const WithPo = () => {
         </div>
       </div>
       <CreatePoModal show={showAddModal} onClose={handleAddModalClose} getAllPurchaseOrder={getAllPurchaseOrder}/>
-      <EditPoModal show={showModal} onClose={handleCloseModal} withPoId={selectedProductId} />
+      <EditPoModal show={showModal} onClose={handleCloseModal} withPoId={selectedProductId} getAllPurchaseOrder={getAllPurchaseOrder}/>
     </>
   );
 };

@@ -190,14 +190,6 @@ const EditPoModal = ({ show, onClose, withPoId, getAllPurchaseOrder }) => {
     setBuyerDropdown(false);
   };
 
-  // // handle PO number change
-  // const handlePurchaseOrderNoChange = (e) => {
-  //   setWithPoData((prevState) => ({
-  //     ...prevState,
-  //     purchase_order_number: e.target.value,
-  //   }));
-  // };
-
   const handleDeliveryDateChange = (e) => {
     const inputDate = e.target.value;
     setDeliveryDate(new Date(inputDate).toISOString());
@@ -358,7 +350,7 @@ const EditPoModal = ({ show, onClose, withPoId, getAllPurchaseOrder }) => {
         console.log("Submit response:", response);
         setSuccessMessage("With-Po updated successfully");
         setErrorMessage("");
-        setUpdatedwithPoData({});
+        setUpdatedwithPoData({});  
         setTimeout(() => {
           setSuccessMessage("");
           getAllPurchaseOrder();

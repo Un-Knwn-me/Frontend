@@ -285,7 +285,8 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
       if (response.status === 201) {
         console.log("Stock created:", response.data);
         fetchStockOut();
-        onClose();
+        handleModalClose();
+        // onClose();
       }
     } catch (error) {}
   };

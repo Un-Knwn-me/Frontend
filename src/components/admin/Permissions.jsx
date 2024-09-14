@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import TopLayer from "../shared/TopLayer";
-import plusIcon from "../../assets/add-icon.svg";
 import closeIcon from "../../assets/close-modal-icon.svg";
 import deleteIcon from "../../assets/delete-icon.svg";
 import addUserIcon from "../../assets/add-users-icon.svg";
@@ -13,6 +11,7 @@ import stockIn from "../../assets/stock-in.jpg";
 import stockOut from "../../assets/stock-out.jpg";
 import reports from "../../assets/reports.jpg";
 import admin from "../../assets/admin.jpg";
+import AddAdminModal from "./AddAdminModal";
 
 const Permission = (onClose, selectedDeptId) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -31,11 +30,11 @@ const Permission = (onClose, selectedDeptId) => {
   const [selectedPermission, setSelectedPermission] = useState("");
   const [deptId, setDeptId] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [permissionsUsers, setPermissionsUsers] = useState("");
 
   const [users, setUsers] = useState([]);
 
   const [isAddUserModalVisible, setAddUserModalVisible] = useState(false);
+  const [isAddAdminModalVisible, setIsAddAdminModalVisible] = useState(false);
 
   const departmentImages = {
     Products: product,
@@ -112,6 +111,13 @@ const Permission = (onClose, selectedDeptId) => {
     setAddUserModalVisible(false);
   };
 
+  const openAddAdminModal = () => {
+    setIsAddAdminModalVisible(true);
+  };
+  const closeAddAdminModal = () => {
+    setIsAddAdminModalVisible(false);
+  };
+
   const handleSaveClick = async () => {
     try {
       const userId = modalData.UserPermissions[0].user_id;
@@ -179,11 +185,11 @@ const Permission = (onClose, selectedDeptId) => {
     if (dept.departmentName === "Admin") {
       setSelectedPermission("Admin");
       setAdminModalVisible(true);
-      fetchUsers("Admin"); // Fetch admin users
+      fetchUsers("Admin");
     } else {
       setSelectedPermission(dept.departmentName);
       setModalVisible(true);
-      fetchUsers(dept.id); // Fetch regular department users
+      fetchUsers(dept.id);
       setDeptId(dept.id);
     }
     console.log("Department ID:", dept.id);
@@ -191,12 +197,12 @@ const Permission = (onClose, selectedDeptId) => {
 
   const closeModal = () => {
     setModalVisible(false);
-  setSelectedPermission(null);
+    setSelectedPermission(null);
   };
 
   const adminModalClose = () => {
     setAdminModalVisible(false);
-  }
+  };
 
   const openAddModuleModal = () => {
     setAddModuleModalVisible(true);
@@ -309,12 +315,6 @@ const Permission = (onClose, selectedDeptId) => {
 
   return (
     <>
-      {/* <TopLayer
-        isAddButton={true}
-        addButtonText="Add Module"
-        addButtonIcon={plusIcon}
-        onAddButtonClick={openAddModuleModal}
-      /> */}
       <div className="flex flex-wrap justify-center gap-8 mt-10">
         {/* Dynamic Department Cards */}
         {department.map((dept, index) => {
@@ -475,9 +475,8 @@ const Permission = (onClose, selectedDeptId) => {
                             </td>
                             <td className="w-32 px-2 py-2 text-center text-black whitespace-nowrap text-md">
                               <button
-                                onClick={async () => {
-                                  await handleDeleteNewPermissionsUsers(row.id);
-                                  // await handleDeleteNewAdmin(row.id);
+                                onClick={() => {
+                                  handleDeleteNewPermissionsUsers(row.id);
                                 }}
                                 className="text-red-500"
                               >
@@ -538,14 +537,14 @@ const Permission = (onClose, selectedDeptId) => {
 
               <button
                 className="flex items-center px-4 py-2 ml-4 font-semibold "
-                onClick={openAddUserModal}
+                onClick={openAddAdminModal}
               >
                 <img
                   src={addUserIcon}
                   alt="Add Icon"
                   className="w-5 h-5 mr-2"
                 />
-                Add User
+                Add Admin
               </button>
             </div>
 
@@ -560,12 +559,6 @@ const Permission = (onClose, selectedDeptId) => {
                       <th className="w-64 px-6 py-2 font-medium text-left text-black uppercase text-md">
                         User Name
                       </th>
-                      {/* <th className="px-6 py-2 font-medium text-left text-black uppercase text-md">
-                        Module Access
-                      </th> */}
-                      {/* <th className="w-40 px-6 py-2 font-medium text-center text-black uppercase text-md">
-                        Action
-                      </th> */}
                       <th className="w-32 px-2 py-2 font-bold text-center text-black uppercase text-md">
                         <button onClick={handleDelete} className="text-red-500">
                           <img
@@ -590,36 +583,6 @@ const Permission = (onClose, selectedDeptId) => {
                             <td className="w-64 px-2 py-2 text-left text-black whitespace-nowrap text-md">
                               {row.full_name}
                             </td>
-                            {/* <td className="flex items-center gap-2 px-6 py-2 text-lg font-medium text-left text-black">
-                              {userPermissions.create && (
-                                <span className="p-2 text-xs font-semibold text-black bg-green-200 rounded-md">
-                                  Create
-                                </span>
-                              )}
-                              {userPermissions.read && (
-                                <span className="p-2 text-xs font-semibold text-black bg-blue-200 rounded-md">
-                                  Read
-                                </span>
-                              )}
-                              {userPermissions.edit && (
-                                <span className="p-2 text-xs font-semibold text-black bg-yellow-200 rounded-md">
-                                  Edit
-                                </span>
-                              )}
-                              {userPermissions.delete && (
-                                <span className="p-2 text-xs font-semibold text-black bg-red-200 rounded-md">
-                                  Delete
-                                </span>
-                              )}
-                            </td> */}
-                            {/* <td className="w-40 px-2 py-2 text-center text-black whitespace-nowrap text-md">
-                              <button
-                                onClick={() => openEditModal(row)}
-                                className="text-center text-blue-500"
-                              >
-                                <CiEdit color="black" className="h-6 w-7" />
-                              </button>
-                            </td> */}
                             <td className="w-32 px-2 py-2 text-center text-black whitespace-nowrap text-md">
                               <button
                                 onClick={() => handleDeleteNewAdmin(row.id)}
@@ -781,6 +744,11 @@ const Permission = (onClose, selectedDeptId) => {
         onClose={closeAddUserModal}
         selectedDeptId={deptId}
         fetchUsers={fetchUsers}
+        fetchAminUsers={fetchAminUsers}
+      />
+      <AddAdminModal
+        isVisible={isAddAdminModalVisible}
+        onClose={closeAddAdminModal}
         fetchAminUsers={fetchAminUsers}
       />
     </>
