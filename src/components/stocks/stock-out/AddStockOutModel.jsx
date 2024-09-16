@@ -158,6 +158,7 @@ const AddStockOutModel = ({ show, onClose, fetchStockOut }) => {
         stock_id: productInfo.id,
         stockOut_by_size: orderInfo.purchase_by_size,
         stockOut_bundle: stockOutBundle,
+        stockout_pcs_per_bundle: productInfo.pcs_per_bundle,
         total_stockOut_pcs: totalPcs,
         product_style_number: productInfo.product_style_number,
         product_id: productInfo.Product.id,

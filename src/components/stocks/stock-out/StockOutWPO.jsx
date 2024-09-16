@@ -268,6 +268,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
         product_style_number: productInfo.product_style_number,
         product_id: productInfo.Product.id,
         dc_number: dcNumber,
+        stockout_pcs_per_bundle: totalInnerPcsPerBundle,
         notes,
         packing_type: packingInfo,
         purchase_by_size: productInfo.stock_by_size,
@@ -861,78 +862,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
                   </p>
                 )}
               </div>
-
-              {/* <div className="text-center">
-                <h3 className="text-lg font-semibold">Order Quantities:</h3>
-                {sizes ? (
-                  <>
-                    <div className="my-4">
-                      <label className="font-semibold">Packaging Type:</label>
-                      <div className="gap-4 mt-2">
-                        <label>
-                          <input
-                            type="radio"
-                            value="assorted"
-                            checked={assortmentType === "assorted"}
-                            onChange={handleAssortmentTypeChange}
-                            className="mx-1"
-                          />
-                          Assorted
-                        </label>
-                        <label className="ml-2">
-                          <input
-                            type="radio"
-                            value="solid"
-                            checked={assortmentType === "solid"}
-                            onChange={handleAssortmentTypeChange}
-                            className="mx-1"
-                          />
-                          Solid
-                        </label>
-                      </div>
-                    </div>
-
-                    <div className="p-4 rounded-lg">
-                      <h4 className="mb-4 text-sm font-medium">
-                        Quantity per size:
-                      </h4>
-                      <div className="flex flex-col gap-4">
-                        {sizes.map((size, index) => (
-                          <div
-                            key={index}
-                            className="flex items-center justify-center gap-4 mb-2"
-                          >
-                            <div className="w-16">{size}: </div>
-                            <input
-                              type="number"
-                              value={innerPcs[size] || ""}
-                              onChange={(e) =>
-                                handleInnerPcsChange(size, e.target.value)
-                              }
-                              placeholder="Inner Pcs"
-                              className="w-24 px-2 py-1 border border-gray-300 rounded-md"
-                              disabled={assortmentType === "solid"}
-                            />
-                            <input
-                              type="number"
-                              value={outerPcs[size] || ""}
-                              onChange={(e) =>
-                                handleOuterPcsChange(size, e.target.value)
-                              }
-                              placeholder="Outer Pcs"
-                              className="w-24 px-2 py-1 border border-gray-300 rounded-md"
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <p className="text-gray-500">
-                    No order information available.
-                  </p>
-                )}
-              </div> */}
+              
               <div>
                 <div className="flex flex-col items-center justify-center my-10 ">
                   <label

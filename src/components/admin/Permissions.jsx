@@ -37,11 +37,11 @@ const Permission = (onClose, selectedDeptId) => {
   const [isAddAdminModalVisible, setIsAddAdminModalVisible] = useState(false);
 
   const departmentImages = {
-    Products: product,
+    "Products": product,
     "Purchase order": purchase,
     "Stock In": stockIn,
     "Stock Out": stockOut,
-    Reports: reports,
+    "Reports": reports,
   };
 
   // Fetch all departments
