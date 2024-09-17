@@ -1013,6 +1013,7 @@ const AddProductModal = ({ show, onClose }) => {
         setTimeout(() => {
           setSuccessMessage("");
           setErrorMessage("");
+          handleModalClose();
         }, 5000);
 
         setLoading(false);

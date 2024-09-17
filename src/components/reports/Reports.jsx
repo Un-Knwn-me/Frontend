@@ -123,9 +123,9 @@ const Reports = () => {
       </div>
 
       <div className="flex justify-center mt-4">
-        <button type="button" className="px-4 py-2 mx-5 text-white bg-green-500 rounded hover:bg-green-600">Download Excel</button>
         {pdfUrl && (
           <>
+        <button type="button" className="px-4 py-2 mx-5 text-white bg-green-500 rounded hover:bg-green-600">Download Excel</button>
             <button
               onClick={downloadPdf}
               className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600"
