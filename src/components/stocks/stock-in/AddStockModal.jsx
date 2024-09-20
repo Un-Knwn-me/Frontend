@@ -826,7 +826,9 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
               <input
                 type="number"
                 value={bundles}
-                onChange={(e) => setBundles(Number(e.target.value))}
+                onChange={(e) =>{ 
+                  const value = Math.max(0, Number(e.target.value));
+                  setBundles(value)}}
                 placeholder="Bundles"
                 className="w-24 px-2 py-1 border border-gray-300 rounded-md"
                 autoComplete="off"
@@ -879,7 +881,7 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
             className="px-4 py-2 font-semibold text-white bg-blue-500 rounded hover:bg-blue-600"
             disabled={loading}
           >
-            {loading ? "Creating..." : "Create Stock Inwart"}
+            {loading ? "Creating..." : "Create Stock In"}
           </button>
         </div>
       </div>

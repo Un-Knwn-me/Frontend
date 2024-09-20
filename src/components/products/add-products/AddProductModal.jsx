@@ -1933,7 +1933,9 @@ const AddProductModal = ({ show, onClose }) => {
                   type="number"
                   id="piecesPerInner"
                   value={innerPcs}
-                  onChange={(e) => {setInnerPcs(e.target.value)}}
+                  onChange={(e) => {
+                    const value = Math.max(0, Number(e.target.value));
+                    setInnerPcs(value)}}
                   className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter No of pieces per inner"
                   autoComplete="off"

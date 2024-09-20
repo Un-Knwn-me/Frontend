@@ -238,7 +238,7 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
 
   const handleBundleChange = async (e) => {
     try {
-      const bundleQty = e.target.value;
+      const bundleQty = Math.max(0, Number(e.target.value));
       setStockOutBundle(bundleQty);
 
       const totalPcs = productInfo?.stock_by_size.reduce((sum, item) => {
