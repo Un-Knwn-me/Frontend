@@ -379,7 +379,7 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
         <div className="flex justify-between gap-5 px-20 my-5 mt-6">
           <div className="grid grid-cols-3 gap-2 2xl:grid-cols-5">
             <div className="relative flex flex-col gap-2">
-              <label className="font-semibold" htmlFor="warehouse">
+              <label className="font-semibold">
                 Warehouse:
               </label>
               <input
