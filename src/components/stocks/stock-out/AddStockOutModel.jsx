@@ -806,7 +806,7 @@ const AddStockOutModel = ({ show, onClose, fetchStockOut }) => {
                           <p>{orderInnerTotals}</p>
                         </div>
                         <div className="p-2 border rounded-lg">
-                          <h4 className="font-semibold">Total Outer Pcs:</h4>
+                          <h4 className="font-semibold">Total Inner box per Bundle:</h4>
                           <p>{orderOuterTotals}</p>
                         </div>
                         <div className="p-2 border rounded-lg">
