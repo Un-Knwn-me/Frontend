@@ -389,6 +389,7 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
                 onChange={handleWarehouseChange}
                 className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                 placeholder="Enter Warehouse"
+                autoComplete="off"
               />
               {warehouseDropdown && warehouse && (
                 <ul className="absolute left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg top-full">
@@ -433,6 +434,7 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
                   onChange={handleInputChange}
                   className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Style Number"
+                  autoComplete="off"
                 />
                 {styleDropdown && styleNumber && (
                   <ul className="absolute left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg top-full">
@@ -794,6 +796,7 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
                           handleInnerPcsChange(size, e.target.value)
                         }
                         placeholder="Inner Pcs"
+                        autoComplete="off"
                         className="w-24 px-2 py-1 border border-gray-300 rounded-md"
                         disabled={assortmentType === "solid"}
                       />
@@ -809,6 +812,7 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
                           handleOuterPcsChange(size, e.target.value)
                         }
                         placeholder="Outer Pcs"
+                        autoComplete="off"
                         className="px-2 py-1 border border-gray-300 rounded-md w-28"
                       />
                     </div>
@@ -825,6 +829,7 @@ const AddStockModal = ({ show, onClose, getAllStocks }) => {
                 onChange={(e) => setBundles(Number(e.target.value))}
                 placeholder="Bundles"
                 className="w-24 px-2 py-1 border border-gray-300 rounded-md"
+                autoComplete="off"
               />
             </div>
 

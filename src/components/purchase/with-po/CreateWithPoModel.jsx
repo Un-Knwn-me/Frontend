@@ -382,6 +382,7 @@ const CreatePoModal = ({ show, onClose, getAllPurchaseOrder }) => {
                   onChange={(e) => setOrderNumber(e.target.value)}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter po number"
+                  autoComplete="off"
                 />
               </div>
 
@@ -396,6 +397,7 @@ const CreatePoModal = ({ show, onClose, getAllPurchaseOrder }) => {
                   onChange={handleBuyerChange}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Buyer Name"
+                  autoComplete="off"
                 />
                 {buyerDropdown && buyer && (
                   <ul className="absolute left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg top-full">
@@ -452,6 +454,7 @@ const CreatePoModal = ({ show, onClose, getAllPurchaseOrder }) => {
                   onChange={handleDeliveryDateChange}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter delivery date"
+                  autoComplete="off"
                 />
               </div>
 
@@ -466,6 +469,7 @@ const CreatePoModal = ({ show, onClose, getAllPurchaseOrder }) => {
                   onChange={handleStyleChange}
                   className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Style No"
+                  autoComplete="off"
                 />
                 {styleDropdown && styleNumber && (
                   <ul className="absolute left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg top-full">
@@ -767,6 +771,7 @@ const CreatePoModal = ({ show, onClose, getAllPurchaseOrder }) => {
                 className="px-2 py-2 border border-gray-300 rounded-md bg-zinc-200"
                 placeholder="Enter additional notes"
                 rows="3"
+                autoComplete="off"
               />
             </div>
 
@@ -820,6 +825,7 @@ const CreatePoModal = ({ show, onClose, getAllPurchaseOrder }) => {
                               handleInnerPcsChange(size, e.target.value)
                             }
                             placeholder="Inner Pcs"
+                            autoComplete="off"
                             className="w-24 px-2 py-1 border border-gray-300 rounded-md"
                             disabled={assortmentType === "solid"}
                           />
@@ -835,6 +841,7 @@ const CreatePoModal = ({ show, onClose, getAllPurchaseOrder }) => {
                               handleOuterPcsChange(size, e.target.value)
                             }
                             placeholder="Outer Pcs"
+                            autoComplete="off"
                             className="px-2 py-1 border border-gray-300 rounded-md w-28"
                           />
                         </div>
@@ -850,6 +857,7 @@ const CreatePoModal = ({ show, onClose, getAllPurchaseOrder }) => {
                     value={bundles}
                     onChange={(e) => setBundles(Number(e.target.value))}
                     placeholder="Bundles"
+                    autoComplete="off"
                     className="w-24 px-2 py-1 border border-gray-300 rounded-md"
                   />
                 </div>

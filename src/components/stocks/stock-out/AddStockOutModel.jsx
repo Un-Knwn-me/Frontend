@@ -223,6 +223,7 @@ const AddStockOutModel = ({ show, onClose, fetchStockOut }) => {
                       onChange={handleOrderChange}
                       className="px-2 py-2 border border-gray-300 rounded-md hover:border-cyan-300 active:boder-cyan-300 focus:border-cyan-300"
                       placeholder="Enter PO number"
+                      autoComplete="off"
                     />
                     {orderDropdown && orderNumber && (
                       <ul className="absolute left-0 z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg top-full">
@@ -263,6 +264,7 @@ const AddStockOutModel = ({ show, onClose, fetchStockOut }) => {
                       onChange={(e) => setDcNumber(e.target.value)}
                       className="px-2 py-2 border border-gray-300 rounded-md hover:border-cyan-300 active:boder-cyan-300 focus:border-cyan-300"
                       placeholder="Enter dc number"
+                      autoComplete="off"
                     />
                   </div>
 
@@ -833,6 +835,7 @@ const AddStockOutModel = ({ show, onClose, fetchStockOut }) => {
               value={stockOutBundle}
               onChange={handleBundleChange}
               placeholder="Enter Bundle Value"
+              autoComplete="off"
             />
             {totalPcs !== null && (
               <div className="flex justify-center my-2">
