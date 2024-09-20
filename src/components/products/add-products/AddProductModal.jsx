@@ -1177,7 +1177,7 @@ const AddProductModal = ({ show, onClose }) => {
             </div>
             <div className="grid grid-cols-2 gap-4 mt-10 md:grid-cols-3 lg:grid-cols-4">
               <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="styleNo">
+                <label className="font-semibold">
                   Style No:
                 </label>
                 <input
@@ -1191,7 +1191,7 @@ const AddProductModal = ({ show, onClose }) => {
               </div>
 
               <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="RefNo">
+                <label className="font-semibold">
                   Reference Number:
                 </label>
                 <input
@@ -1234,7 +1234,7 @@ const AddProductModal = ({ show, onClose }) => {
               </div>
 
               <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="category">
+                <label className="font-semibold">
                   Category:
                 </label>
                 <input
@@ -1277,7 +1277,7 @@ const AddProductModal = ({ show, onClose }) => {
               </div>
 
               <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="categorie">
+                <label className="font-semibold">
                   Product Type:
                 </label>
                 <input
@@ -1320,7 +1320,7 @@ const AddProductModal = ({ show, onClose }) => {
               </div>
 
               <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="brand">
+                <label className="font-semibold">
                   Brand Name:
                 </label>
                 <input
@@ -1362,7 +1362,7 @@ const AddProductModal = ({ show, onClose }) => {
                 />
               </div>
               <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="fabric">
+                <label className="font-semibold">
                   Fabric:
                 </label>
                 <input
@@ -1404,7 +1404,7 @@ const AddProductModal = ({ show, onClose }) => {
                 />
               </div>
               <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="fabricFinish">
+                <label className="font-semibold">
                   Fabric Finish:
                 </label>
                 <input
@@ -1446,7 +1446,7 @@ const AddProductModal = ({ show, onClose }) => {
                 />
               </div>
               <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="gsm">
+                <label className="font-semibold">
                   GSM:
                 </label>
                 <input
@@ -1488,7 +1488,7 @@ const AddProductModal = ({ show, onClose }) => {
                 />
               </div>
               <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="knitType">
+                <label className="font-semibold">
                   Knit Type:
                 </label>
                 <input
@@ -1530,7 +1530,7 @@ const AddProductModal = ({ show, onClose }) => {
                 />
               </div>
               <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="colors">
+                <label className="font-semibold">
                   Colors:
                 </label>
                 <input
@@ -1572,7 +1572,7 @@ const AddProductModal = ({ show, onClose }) => {
                 />
               </div>
               <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="sizes">
+                <label className="font-semibold">
                   Sizes:
                 </label>
                 <input
@@ -1614,7 +1614,7 @@ const AddProductModal = ({ show, onClose }) => {
                 />
               </div>
               <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="decorations">
+                <label className="font-semibold">
                   Decorations:
                 </label>
                 <input
@@ -1656,7 +1656,7 @@ const AddProductModal = ({ show, onClose }) => {
                 />
               </div>
               <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="printOrEmbName">
+                <label className="font-semibold">
                   Print {"("}or{")"} Emb Name:
                 </label>
                 <input
@@ -1698,7 +1698,7 @@ const AddProductModal = ({ show, onClose }) => {
                 />
               </div>
               <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="stitchDetails">
+                <label className="font-semibold">
                   Stitch Details:
                 </label>
                 <input
@@ -1740,7 +1740,7 @@ const AddProductModal = ({ show, onClose }) => {
                 />
               </div>
               <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="neck">
+                <label className="font-semibold">
                   Neck:
                 </label>
                 <input
@@ -1782,7 +1782,7 @@ const AddProductModal = ({ show, onClose }) => {
                 />
               </div>
               <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="sleeve">
+                <label className="font-semibold">
                   Sleeve:
                 </label>
                 <input
@@ -1824,7 +1824,7 @@ const AddProductModal = ({ show, onClose }) => {
                 />
               </div>
               <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="length">
+                <label className="font-semibold">
                   Length:
                 </label>
                 <input
@@ -1866,7 +1866,7 @@ const AddProductModal = ({ show, onClose }) => {
                 />
               </div>
               <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="packingMethod">
+                <label className="font-semibold">
                   Packing Method:
                 </label>
                 <input
@@ -1908,7 +1908,7 @@ const AddProductModal = ({ show, onClose }) => {
                 />
               </div>
               <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="piecesPerInner">
+                <label className="font-semibold">
                   No.of pcs per inner:
                 </label>
                 <input
@@ -1922,7 +1922,7 @@ const AddProductModal = ({ show, onClose }) => {
               </div>
 
               <div className="relative flex flex-col gap-2">
-                <label className="font-semibold" htmlFor="mesurementChart">
+                <label className="font-semibold">
                   Measurement Chart:
                 </label>
                 <div className="flex items-center gap-4">
