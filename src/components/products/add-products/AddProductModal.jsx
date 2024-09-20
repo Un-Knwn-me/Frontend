@@ -1187,6 +1187,7 @@ const AddProductModal = ({ show, onClose }) => {
                   onChange={(e) => setStyleNo(e.target.value)}
                   className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Style No"
+                  autoComplete="off"
                 />
               </div>
 
@@ -1201,6 +1202,7 @@ const AddProductModal = ({ show, onClose }) => {
                   onChange={handleReferenceChange}
                   className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Reference Number"
+                  autoComplete="off"
                 />
                 {referenceDropdown && referenceNo && (
                   <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
@@ -1244,6 +1246,7 @@ const AddProductModal = ({ show, onClose }) => {
                   onChange={handleCategoryChange}
                   className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Category Name"
+                  autoComplete="off"
                 />
                 {categoryDropdown && category && (
                   <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
@@ -1287,6 +1290,7 @@ const AddProductModal = ({ show, onClose }) => {
                   onChange={handleProductTypesChange}
                   className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Category Name"
+                  autoComplete="off"
                 />
                 {productTypesDropdown && productTypes && (
                   <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
@@ -1330,6 +1334,7 @@ const AddProductModal = ({ show, onClose }) => {
                   onChange={handleBrandChange}
                   className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Brand Name"
+                  autoComplete="off"
                 />
                 {brandDropdown && brand && (
                   <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
@@ -1372,6 +1377,7 @@ const AddProductModal = ({ show, onClose }) => {
                   onChange={handleFabricChange}
                   className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Fabric"
+                  autoComplete="off"
                 />
                 {fabricDropdown && fabric && (
                   <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
@@ -1414,6 +1420,7 @@ const AddProductModal = ({ show, onClose }) => {
                   onChange={handleFabricFinishChange}
                   className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Fabric Finish"
+                  autoComplete="off"
                 />
                 {fabricFinishDropdown && fabricFinish && (
                   <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
@@ -1456,6 +1463,7 @@ const AddProductModal = ({ show, onClose }) => {
                   onChange={handleGsmChange}
                   className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter GSM"
+                  autoComplete="off"
                 />
                 {gsmDropdown && gsm && (
                   <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
@@ -1498,6 +1506,7 @@ const AddProductModal = ({ show, onClose }) => {
                   onChange={handleKnitChange}
                   className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Knit Type"
+                  autoComplete="off"
                 />
                 {knitDropdown && knitType && (
                   <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
@@ -1540,6 +1549,7 @@ const AddProductModal = ({ show, onClose }) => {
                   onChange={handleColorChange}
                   className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Colors"
+                  autoComplete="off"
                 />
                 {colorDropdown && colors && (
                   <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
@@ -1582,6 +1592,7 @@ const AddProductModal = ({ show, onClose }) => {
                   onChange={handleSizeChange}
                   className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Sizes"
+                  autoComplete="off"
                 />
                 {sizeDropdown && sizes && (
                   <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
@@ -1624,6 +1635,7 @@ const AddProductModal = ({ show, onClose }) => {
                   onChange={handleDecorationChange}
                   className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Decorations"
+                  autoComplete="off"
                 />
                 {decorationDropdown && decorations && (
                   <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
@@ -1666,6 +1678,7 @@ const AddProductModal = ({ show, onClose }) => {
                   onChange={handlePrintChange}
                   className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Print (or) Emb Name"
+                  autoComplete="off"
                 />
                 {printDropdown && printOrEmbName && (
                   <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
@@ -1708,6 +1721,7 @@ const AddProductModal = ({ show, onClose }) => {
                   onChange={handleStitchDetailChange}
                   className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Stitch Details"
+                  autoComplete="off"
                 />
                 {stitchDetailDropdown && stitchDetails && (
                   <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
@@ -1750,6 +1764,7 @@ const AddProductModal = ({ show, onClose }) => {
                   onChange={handleNeckChange}
                   className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Neck"
+                  autoComplete="off"
                 />
                 {neckDropdown && neck && (
                   <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
@@ -1792,6 +1807,7 @@ const AddProductModal = ({ show, onClose }) => {
                   onChange={handleSleeveChange}
                   className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Sleeve"
+                  autoComplete="off"
                 />
                 {sleeveDropdown && sleeve && (
                   <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
@@ -1834,6 +1850,7 @@ const AddProductModal = ({ show, onClose }) => {
                   onChange={handleLengthChange}
                   className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Length"
+                  autoComplete="off"
                 />
                 {lengthDropdown && length && (
                   <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
@@ -1876,6 +1893,7 @@ const AddProductModal = ({ show, onClose }) => {
                   onChange={handlePackingMethodChange}
                   className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter Packing Method"
+                  autoComplete="off"
                 />
                 {packingDropdown && packingMethod && (
                   <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
@@ -1918,6 +1936,7 @@ const AddProductModal = ({ show, onClose }) => {
                   onChange={(e) => setInnerPcs(e.target.value)}
                   className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                   placeholder="Enter No of pieces per inner"
+                  autoComplete="off"
                 />
               </div>
 
@@ -1933,6 +1952,7 @@ const AddProductModal = ({ show, onClose }) => {
                     onChange={handleMesurementChartChange}
                     className="px-2 py-1 border border-gray-300 rounded-md bg-zinc-200"
                     placeholder="Enter Measurement Chart"
+                    autoComplete="off"
                   />
                   {mesurementDropdown && measurementChart && (
                     <ul className="absolute left-0 z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg top-full">
