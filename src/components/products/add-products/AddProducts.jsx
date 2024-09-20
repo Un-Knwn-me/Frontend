@@ -20,6 +20,7 @@ const AddProducts = ({ searchQuery }) => {
   const [showModal, setShowModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState(null);
+  const [selectedOption, setSelectedOption] = useState(null);
 
 
   // Function to fetch all products
@@ -159,14 +160,23 @@ const AddProducts = ({ searchQuery }) => {
           isSearch={true}
           onSearch={handleSearch}
           showDropdown={true}
-          options={["BrandA", "BrandB", "BrandC"]}
-          selectedOption=""
+          options={["New to Old", "Old to New"]}
+          selectedOption={selectedOption}
           setSelectedOption={(option) => {
-            const filtered = initialData.filter(
-              (item) => item.brand === option
-            );
-            setFilteredData(filtered);
-            setCurrentPage(1); // Reset to first page on new filter
+            setSelectedOption(option);
+            
+            // Sorting logic
+            const sortedData = [...initialData].sort((a, b) => {
+              if (option === "New to Old") {
+                return new Date(b.createdAt) - new Date(a.createdAt);
+              } else if (option === "Old to New") {
+                return new Date(a.createdAt) - new Date(b.createdAt);
+              }
+              return 0;
+            });
+
+            setFilteredData(sortedData);
+            setCurrentPage(1); // Reset to the first page on new sort
           }}
           isAddButton={true}
           addButtonText="Add Product"
@@ -187,7 +197,7 @@ const AddProducts = ({ searchQuery }) => {
                     Style No
                   </th>
                   <th className="w-24 px-6 py-3 font-bold text-center text-black uppercase text-md">
-                    Reference No
+                    Ref No
                   </th>
                   <th className="w-24 px-2 py-3 font-bold text-center text-black uppercase text-md">
                     Type

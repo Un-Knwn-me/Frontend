@@ -178,7 +178,7 @@ const StockIn = ({ searchQuery }) => {
               <thead className="w-full bg-gray-50">
                 <tr>
                   <th className="w-10 px-2 py-3 font-bold text-center text-black uppercase text-md">
-                    Si No
+                    S No
                   </th>
                   <th className="px-2 py-3 font-bold text-center text-black uppercase w-28 text-md">
                     Image
@@ -190,7 +190,7 @@ const StockIn = ({ searchQuery }) => {
                     Style No
                   </th>
                   <th className="w-20 px-2 py-3 font-bold text-center text-black uppercase text-md">
-                    Reference No
+                    Ref No
                   </th>
                   <th className="w-20 px-2 py-3 font-bold text-center text-black uppercase text-md">
                     Brand

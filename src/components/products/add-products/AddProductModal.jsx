@@ -1096,7 +1096,7 @@ const AddProductModal = ({ show, onClose }) => {
             </button>
           </div>
           <hr className="my-2" />
-          <div className="px-40">
+          <div className="px-20">
             <div className="flex flex-col gap-3 mt-10">
               <div className="flex gap-4">
                 <h1 className="font-bold">Product Images</h1>

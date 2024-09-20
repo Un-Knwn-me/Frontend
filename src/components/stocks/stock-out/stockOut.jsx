@@ -90,7 +90,7 @@ const StockOut = () => {
 
   const handleRecordsPerPageChange = (e) => {
     setRecordsPerPage(Number(e.target.value));
-    setCurrentPage(1); // Reset to first page on changing records per page
+    setCurrentPage(1);
   };
 
   const handleCloseModal = () => {
@@ -133,30 +133,33 @@ const StockOut = () => {
               <thead className="w-full bg-gray-50">
                 <tr>
                   <th className="w-12 px-2 py-3 font-bold text-center text-black uppercase text-md">
-                    SL No
+                    S No
                   </th>
-                  <th className="w-32 px-2 py-3 font-bold text-center text-black uppercase text-md">
+                  <th className="w-20 px-2 py-3 font-bold text-center text-black uppercase text-md">
                     Date
                   </th>
-                  <th className="px-6 py-3 font-bold text-center text-black uppercase text-md w-28">
-                    Purchase Order
+                  <th className="w-20 px-6 py-3 font-bold text-center text-black uppercase text-md">
+                    PO number
                   </th>
-                  <th className="px-2 py-3 font-bold text-center text-black uppercase text-md w-36">
+                  <th className="px-2 py-3 font-bold text-center text-black uppercase text-md w-28">
                     Buyer
                   </th>
                   <th className="px-6 py-3 font-bold text-center text-black uppercase text-md w-14">
                     Style NO
                   </th>
-                  <th className="px-6 py-3 font-bold text-center text-black uppercase text-md w-14">
+                  <th className="px-6 py-3 font-bold text-center text-black uppercase w-14 text-md">
                     Ref No
                   </th>
                   <th className="px-6 py-3 font-bold text-center text-black uppercase text-md w-14">
-                    Stock Out Bundle
+                    Bundles
                   </th>
                   <th className="px-6 py-3 font-bold text-center text-black uppercase text-md w-14">
-                    Total Stock Out Pcs
+                    pcs/Bundle
                   </th>
-                  <th className="w-12 px-2 py-3 font-bold text-center text-black uppercase text-md">
+                  <th className="px-6 py-3 font-bold text-center text-black uppercase text-md w-14">
+                    Total Pcs
+                  </th>
+                  <th className="w-10 px-2 py-3 font-bold text-center text-black uppercase text-md">
                     Action
                   </th>
                   <th className="w-8 px-2 py-3 font-bold text-center text-black uppercase text-md">
@@ -186,14 +189,14 @@ const StockOut = () => {
                     <td className="w-12 px-2 py-3 text-center text-black whitespace-nowrap text-md">
                       {startIndex + index + 1}
                     </td>
-                    <td className="w-32 px-2 py-3 text-center text-black whitespace-nowrap text-md">
+                    <td className="w-20 px-2 py-3 text-center text-black whitespace-nowrap text-md">
                       {" "}
                       {row.created_at}
                     </td>
-                    <td className="px-6 py-3 text-center text-black whitespace-nowrap text-md w-28">
+                    <td className="w-20 px-6 py-3 text-center text-black whitespace-nowrap text-md">
                       {row.PurchaseOrder.purchase_order_number}
                     </td>
-                    <td className="px-2 py-3 text-center text-black whitespace-nowrap text-md w-36">
+                    <td className="px-2 py-3 text-center text-black whitespace-nowrap text-md w-28">
                       {row.PurchaseOrder.Buyer.name},{" "}
                       {row.PurchaseOrder.Buyer.location}
                     </td>
@@ -209,7 +212,7 @@ const StockOut = () => {
                     <td className="px-2 py-3 text-center text-black whitespace-nowrap text-md w-14">
                       {row.total_stockOut_pcs}
                     </td>
-                    <td className="w-12 px-2 py-3 text-center text-black whitespace-nowrap text-md">
+                    <td className="w-10 px-2 py-3 text-center text-black whitespace-nowrap text-md">
                       {editIndex === startIndex + index ? (
                         <button
                           onClick={handleSaveClick}

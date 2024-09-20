@@ -96,56 +96,66 @@ const Reports = () => {
 
   return (
     <div className="w-full py-2 bg-white rounded-lg">
-      <div className="relative w-40">
-        <span className="mb-1 ml-4 text-xs font-medium">Select Report Type</span>
-        <div
-          className="relative flex items-center px-4 py-2 mt-2 ml-5 bg-gray-200 rounded-lg cursor-pointer min-w-48"
-          onClick={toggleDropdown}
-        >
-          <span className="flex items-center hover:underline" title={getCategoryText()}>
-            {getCategoryText()}
-          </span>
-          <img src={dropdownIcon} alt="Dropdown Icon" className="absolute w-4 h-4 ml-2 right-4" />
+      <div className="flex items-center justify-between">
+        <div className="relative w-40">
+          <span className="mb-1 ml-4 text-xs font-medium">Select Report Type</span>
+          <div
+            className="relative flex items-center px-4 py-2 mt-2 ml-5 bg-gray-200 rounded-lg cursor-pointer min-w-48"
+            onClick={toggleDropdown}
+          >
+            <span className="flex items-center hover:underline" title={getCategoryText()}>
+              {getCategoryText()}
+            </span>
+            <img src={dropdownIcon} alt="Dropdown Icon" className="absolute w-4 h-4 ml-2 right-4" />
+          </div>
+          {isDropdownOpen && (
+            <ul className="absolute w-full py-2 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg">
+              {presets.map((preset) => (
+                <li
+                  key={preset.id}
+                  className="px-4 py-2 text-sm cursor-pointer hover:bg-gray-100"
+                  onClick={() => handlePresetChange(preset.value)}
+                >
+                  {preset.label}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
-        {isDropdownOpen && (
-          <ul className="absolute w-full py-2 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg">
-            {presets.map((preset) => (
-              <li
-                key={preset.id}
-                className="px-4 py-2 text-sm cursor-pointer hover:bg-gray-100"
-                onClick={() => handlePresetChange(preset.value)}
+
+        {/* Buttons aligned to the right */}
+        <div className="flex mr-5 space-x-4">
+          {pdfUrl && (
+            <>
+              <button
+                type="button"
+                className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
               >
-                {preset.label}
-              </li>
-            ))}
-          </ul>
-        )}
+                Download Excel
+              </button>
+              <button
+                onClick={downloadPdf}
+                className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600"
+              >
+                Download PDF
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="flex justify-center mt-4">
         {pdfUrl && (
-          <>
-        <button type="button" className="px-4 py-2 mx-5 text-white bg-green-500 rounded hover:bg-green-600">Download Excel</button>
-            <button
-              onClick={downloadPdf}
-              className="px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600"
+          <div className="mt-4">
+            <Document
+              file={pdfUrl}
+              onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+              onLoadError={(error) => console.error('Error loading PDF:', error)}
             >
-              Download PDF
-            </button>
-
-            {/* Render the PDF */}
-            <div className="mt-4">
-              <Document
-                file={pdfUrl}
-                onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-                onLoadError={(error) => console.error('Error loading PDF:', error)}
-              >
-                <Page pageNumber={1} />
-              </Document>
-            </div>
-          </>
+              <Page pageNumber={1} />
+            </Document>
+          </div>
         )}
-
         {isLoading && <p>Loading PDF...</p>}
       </div>
     </div>

@@ -84,11 +84,11 @@ const TopLayer = ({
                         {buttonTitle}
                     </button>
                 )}
-                {showDropdown && (
+                {/* {showDropdown && (
                     <div className={`relative self-start`}>
                         <CustomDropdown options={options} selectedOption={selectedOption} onSelect={setSelectedOption} icon={icon} />
                     </div>
-                )}
+                )} */}
                 {isAddButton && (
                     <button
                         className="absolute flex cursor-pointer right-5"
