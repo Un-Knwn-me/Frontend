@@ -6,7 +6,6 @@ import WareHouseAddModal from "../../products/AddNewProductMaster/WareHouseAddMo
 const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
   const [assortmentType, setAssortmentType] = useState("");
   const [innerPcs, setInnerPcs] = useState({});
-
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -25,7 +24,6 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
   const [updatedWarehouseData, setUpdatedWarehouseData] = useState({});
 
   const [updatedStockInData, setUpdatedStockInData] = useState({});
-
   const [stockInData, setStockInData] = useState({
     Product: {
       style_no: "",
@@ -90,6 +88,7 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
     no_bundles: "",
     product_id: null,
     stock_by_size: [],
+    pcs_per_bundle: null,
     total_pcs: null,
     packing_type: "",
     Warehouse: {
@@ -184,13 +183,22 @@ const EditStockInModal = ({ showModal, close, editIndex, getAllStocks }) => {
       item.size === size ? { ...item, innerPcs, outerPcs } : item
     );
 
+    // Calculate new pcs_per_bundle
+  const newPcsPerBundle = updatedStockBySize.reduce((total, item) => {
+    const inner = item.innerPcs || 0;
+    const outer = item.outerPcs || 0;
+    return total + inner * outer;
+  }, 0);
+
     setStockInData((prevState) => ({
       ...prevState,
       stock_by_size: updatedStockBySize,
+      pcs_per_bundle: newPcsPerBundle,
     }));
     setUpdatedStockInData({
       ...updatedStockInData,
       stock_by_size: updatedStockBySize,
+      pcs_per_bundle: newPcsPerBundle, 
     });
   };
 

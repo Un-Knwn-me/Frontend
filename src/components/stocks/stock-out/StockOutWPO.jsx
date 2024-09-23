@@ -326,7 +326,6 @@ const StockOutWPO = ({ show, onClose, fetchStockOut }) => {
     setTotalInnerPcsPerBundle(0);
     setTotalProducts(0);
     setWarehouse("");
-
     onClose();
   };
  
